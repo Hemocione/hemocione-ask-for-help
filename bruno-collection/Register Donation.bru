@@ -1,0 +1,28 @@
+meta {
+  name: Register Donation
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api_url}}/v1/competitions/slug-do-pai/donations
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBjNDg5NTU3LTAwMDAtNDI4Ni05MWI4LWJmNzgwNjI3Zjg0NyIsImdpdmVuTmFtZSI6IlRoaWFnbyIsInN1ck5hbWUiOiJHdWltYXLDo2VzIiwiYmxvb2RUeXBlIjoiQSsiLCJlbWFpbCI6Imd1aW1hQGhlbW9jaW9uZS5jb20uYnIiLCJwaG9uZSI6IjIxOTg0NDI2NzE3IiwiZ2VuZGVyIjoiTSIsImlhdCI6MTcwNzg2NDg2MCwiZXhwIjoxNzA4NDY5NjYwfQ.jzU8r_mBBfuVRTk-0WjmBc8794DAgOMMbI6k75oyatA
+}
+
+body:json {
+  {
+    "competitionTeamId": 2,
+    "proof": "google.com",
+    "extraFields": [
+      {
+        "slug": "matricula",
+        "value": "118053123"
+      }
+    ]
+  }
+}

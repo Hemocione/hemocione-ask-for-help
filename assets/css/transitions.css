@@ -1,0 +1,135 @@
+.list-move, /* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.list-leave-active {
+  position: absolute;
+}
+
+.blur-enter-active,
+.blur-leave-active {
+  transition: all 0.4s;
+}
+.blur-enter-from,
+.blur-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+.slide-fade-down-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-down-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-down-enter-from,
+.slide-fade-down-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.slide-fade-right-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-fade-right-leave-active {
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-right-enter-from {
+  transform: translateX(-50px);
+  opacity: 0;
+}
+.slide-fade-right-leave-to {
+  transform: translateX(50px);
+  opacity: 0;
+}
+
+.slide-top-enter-active {
+  transition: all 1s ease-out;
+}
+
+.slide-top-leave-active {
+  transition: all 1s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-top-enter-from,
+.slide-top-leave-to {
+  transform: translateY(50px);
+  opacity: 0;
+}
+
+.slide-fade-left-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-fade-left-leave-active {
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-left-enter-from {
+  transform: translateX(50px);
+  opacity: 0;
+}
+.slide-fade-left-leave-to {
+  transform: translateX(-50px);
+  opacity: 0;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.5s;
+}
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translate(50px, 0);
+}
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translate(-50px, 0);
+}
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translate(-50px, 0);
+}
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translate(50px, 0);
+}
+
+.slide-top-fast-and-furious-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-top-fast-and-furious-leave-active {
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-top-fast-and-furious-enter-from,
+.slide-top-fast-and-furious-leave-to {
+  transform: translateY(50px);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
