@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Request {
+  id              Int            @id @default(autoincrement())
+  requester_id    Int
+  assisted_id     Int
+  local_name      String
+  // local_latitude float
+  // local_longitude float // TODO: get the location from the user
+  review_status   RequestStatus? @default(Pending)
+  active_campagin Boolean
+
+  assisted        Assisted          @relation(fields: [assisted_id], references: [id], onDelete: Cascade)
+  created_at      DateTime
+  updated_at      DateTime
+  RequestDonators RequestDonators[]
+}
+
+model Assisted {
+  id         Int       @id @default(autoincrement())
+  cpf        String    @unique
+  name       String
+  blood_type BloodType
+  photo_url  String
+  created_at DateTime
+  updated_at DateTime
+  Request    Request[]
+}
+
+model RequestDonators {
+  id         Int @id @default(autoincrement())
+  request_id Int
+  donator_id Int @unique
+
+  request Request @relation(fields: [request_id], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([request_id, donator_id])
+}
+
+enum RequestStatus {
+  Pending
+  Approved
+  Declined
+}
+
+enum BloodType {
+  A_POS  @map("A+")
+  A_NEG  @map("A-")
+  B_POS  @map("B+")
+  B_NEG  @map("B-")
+  AB_POS @map("AB+")
+  AB_NEG @map("AB-")
+  O_POS  @map("O+")
+  O_NEG  @map("O-")
+}
