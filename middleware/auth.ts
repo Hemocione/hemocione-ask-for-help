@@ -1,5 +1,5 @@
 import type { LocationQuery } from "#vue-router";
-import { useUserStore } from "~/store/user";
+import { useUserStore } from "~/stores/user";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.server) return;

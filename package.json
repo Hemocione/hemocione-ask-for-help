@@ -6,12 +6,24 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "utils:reset-db": "npx prisma db push --force-reset && npx prisma db push"
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.0.3",
     "nuxt": "^3.8.2",
+    "prisma": "^5.20.0",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.5",
+    "@prisma/nuxt": "^0.0.35"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "prisma": {
+    "schema": "server/db/schema.prisma"
   }
 }
