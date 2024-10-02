@@ -41,7 +41,7 @@
 }
 
 @font-face {
-  font-family: "Roboto", "Lato", monospace, -apple-system, BlinkMacSystemFont,
+  font-family:  "Lato", "Roboto", monospace, -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   src: url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
   font-display: swap;
@@ -61,7 +61,7 @@ body {
   padding: 0;
   overflow-x: -moz-hidden-unscrollable;
   overflow-x: clip;
-  font-family: "Roboto", "Lato", monospace, -apple-system, BlinkMacSystemFont,
+  font-family: "Lato", "Roboto", monospace, -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
 
