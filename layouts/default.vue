@@ -1,9 +1,8 @@
 <template>
   <div class="layout">
-    <NavBar />
     <div class="page">
       <NuxtLoadingIndicator color="#bb0a08" :height="3" />
-      <slot />
+      <slot/>
     </div>
   </div>
 </template>
