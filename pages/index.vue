@@ -2,15 +2,15 @@
   <div class="app-container">
     <div class ="main">
       <img src="../public/images/hemo_logo.svg" alt="Small Top Image" class="small-image"/>
-      <img src="../public/images/rafiki.svg" alt="Large Center Image" class="large-image" />
       <h2>Pedir ajuda</h2>
-      <p>Ajude e seja ajudado. <br>Salve uma vida.</p>
+      <p>Conectando pessoas que precisam de ajuda, com pessoas que gostam de ajudar.</p>
+      <img src="../public/images/rafiki.svg" alt="Large Center Image" class="large-image" />
     </div>
 
     <!-- Caixa Vermelha -->
     
     <div class="red-box" alt="button" @click="onClick">
-      <h3>Peça agora</h3>
+      <h3>Clique para salvar vidas</h3>
       <img src="../public/images/arrow.svg" alt="Arrow" class="arrow"/>
     </div>
     
@@ -49,7 +49,8 @@ header {
   max-width: 100px; /* Small image at the top */
   display: block;
   margin: 0 auto; /* Center image horizontally */
-  margin-top: 1rem; 
+  margin-top: 2rem; 
+  margin-bottom: 2rem;
 }
 
 .large-image {
@@ -76,17 +77,16 @@ header {
 
 }
 
-main h2 {
+.main h2 {
   font-size: 26px;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 0px;
 }
 
-main p {
+.main p {
   font-size: 16px;
   font-weight: normal;
   line-height: 1.5;
-  margin-top: 0.5rem;
 }
 
 .red-box {
@@ -98,7 +98,6 @@ main p {
   overflow: hidden;  /* Garante que conteúdo extra não vá além dessa altura */
   height: 15vh;
   color: var(--hemo-color-secondary);
-  font-size: 22px;
   font-weight: 600;
   gap: 20px;
   justify-content: center;
