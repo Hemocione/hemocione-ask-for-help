@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "npx prisma generate && nuxt dev",
+    "migrate-dev": "npx prisma migrate dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -26,8 +27,5 @@
   },
   "engines": {
     "node": ">=20"
-  },
-  "prisma": {
-    "schema": "server/db/schema.prisma"
   }
 }
