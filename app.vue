@@ -12,6 +12,8 @@
 <style scoped>
 .content-wrapper {
   width: 70vw;
+  display: flex;
+  justify-content: center;
   max-width: 100%;
 }
 @media screen and (max-width: 753px) {
