@@ -7,19 +7,7 @@
         </div>
         <!-- Card requests paginated list -->
         <div class="card-list">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Nome do paciente</h3>
-                    <p>Idade: 20 anos</p>
-                </div>
-                <div class="card-body">
-                    <p>Descrição do pedido</p>
-                </div>
-                <div class="card-footer">
-                    <button class="accept-button">Aceitar</button>
-                    <button class="reject-button">Rejeitar</button>
-                </div>
-            </div>
+            <CardRequest v-for="i in [1,2,3]"/>
         </div>
         <!-- footer button pedir ajuda -->
         <div class="footer">
@@ -39,6 +27,6 @@
     justify-content: center;
     height: 100vh;
     width: 100vw;
-    background-color: red;
+    /* background-color: red; */
 }
 </style>
