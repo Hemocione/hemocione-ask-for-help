@@ -1,17 +1,26 @@
+import type { CurrentUserData } from "~/utils/userPayloadDecoder";
+
 export const useUserStore = defineStore("user", {
   state: () => ({
-    user: null as any | null, // TODO: type correctly
+    user: null as CurrentUserData | null,
     token: null as string | null,
   }),
+
   getters: {
     loggedIn: (state) => Boolean(state.user),
   },
+
   actions: {
-    setUser(user: any | null) {
+    setUser(user: CurrentUserData | null) {
       this.user = user;
     },
     setToken(token: string | null) {
       this.token = token;
+    },
+
+    clear() {
+      this.user = null;
+      this.token = null;
     },
   },
 });
