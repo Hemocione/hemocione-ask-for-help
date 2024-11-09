@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.5",
-    "@prisma/nuxt": "^0.0.35"
+    "@prisma/nuxt": "^0.0.35",
+    "zod": "^3.23.8"
   },
   "engines": {
     "node": ">=20"
