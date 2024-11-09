@@ -1,8 +1,8 @@
 <template>
   <NuxtLayout>
+    <Header class="fixed top-0 z-50" />
     <div class="content-wrapper">
-      <Header class="w-full" />
-      <NuxtPage />
+      <NuxtPage class="pt-[4.5rem]" />
     </div>
   </NuxtLayout>
 </template>
