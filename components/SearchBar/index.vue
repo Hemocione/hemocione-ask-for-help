@@ -15,6 +15,9 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+// TODO: implements search router
+
+</script>
 
 <style scoped></style>

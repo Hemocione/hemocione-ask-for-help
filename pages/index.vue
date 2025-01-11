@@ -10,7 +10,7 @@
     <!-- Caixa Vermelha -->
     
     <div class="red-box" alt="button" @click="onClick">
-      <h3>Clique para salvar vidas</h3>
+      <NuxtLink to="/main">Clique para salvar vidas</NuxtLink>
       <img src="../public/images/arrow.svg" alt="Arrow" class="arrow"/>
     </div>
     
@@ -18,9 +18,12 @@
 </template>
 
 <script setup>
+// TODO: show this just in the first time login
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 
+
+// TODO: redirect to home
 function onClick() {
   console.log('Button clicked');
 }

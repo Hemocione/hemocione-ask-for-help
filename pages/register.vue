@@ -10,6 +10,7 @@
 
     <div
       class="w-28 h-28 bg-[#CD6D71] rounded-full flex items-center justify-center"
+      @click="uploadImage"
     >
       <img
         src="/public/images/gallery.svg"
@@ -20,13 +21,23 @@
 
     <div class="w-full">
       <label>Nome</label><span class="text-red-500">*</span>
-      <ElInput class="input" placeholder="Insira o nome completo"></ElInput>
+      <ElInput
+        class="input"
+        placeholder="Insira o nome completo"
+        v-model="requestSchema.name"
+      ></ElInput>
+      <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
     </div>
 
     <div class="w-full">
       <label>Documentação de identificação</label
       ><span class="text-red-500">*</span>
-      <ElInput class="input" placeholder="Insira o número de CPF"></ElInput>
+      <ElInput
+        class="input"
+        placeholder="Insira o número de CPF"
+        v-model="requestSchema.cpf"
+      ></ElInput>
+      <p v-if="errors.cpf" class="text-red-500 text-sm">{{ errors.cpf }}</p>
     </div>
 
     <div class="w-full">
@@ -34,17 +45,116 @@
       <ElInput
         class="input"
         placeholder="Insira Hospital ou Instituição"
+        v-model="requestSchema.local_name"
       ></ElInput>
+      <p v-if="errors.local_name" class="text-red-500 text-sm">
+        {{ errors.local_name }}
+      </p>
+    </div>
+
+    <div class="w-full">
+      <label>Tipo sanguíneo</label><span class="text-red-500">*</span>
+      <ElInput
+        class="input"
+        placeholder="Insira o tipo sanguíneo do solicitante"
+        v-model="requestSchema.blood_type"
+      ></ElInput>
+      <p v-if="errors.blood_type" class="text-red-500 text-sm">
+        {{ errors.blood_type }}
+      </p>
     </div>
 
     <div class="fixed p-4 bottom-0 left-0 w-full bg-white shadow-lg">
-      <Button>Continuar</Button>
+      <Button @click="registerRequest">Continuar</Button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { ref } from "vue";
+import z from "zod";
+import type { Request } from "~/server/api/request/index.post";
+
+const requestSchema = ref<Request>({} as Request);
+const errors = ref<{ [key: string]: string }>({});
+
+// Validação do formulário
+const validationFormWithZod = () => {
+  try {
+    const CreateRequestSchema = z.object({
+      local_name: z.string({
+        invalid_type_error: "Endereço inválido",
+        required_error: "O Endereço é obrigatório",
+      }),
+      cpf: z.string({
+        invalid_type_error: "CPF inválido",
+        required_error: "CPF é obrigatório",
+      }),
+      name: z.string({
+        invalid_type_error: "Nome inválido",
+        required_error: "Nome é obrigatório",
+      }),
+      blood_type: z
+        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], {
+          invalid_type_error: "Tipo sanguíneo inválido",
+          required_error: "Tipo sanguíneo é obrigatório",
+        })
+        .transform((e) => {
+          const bloodType = {
+            "A+": "A_POS",
+            "A-": "A_NEG",
+            "B+": "B_POS",
+            "B-": "B_NEG",
+            "AB+": "AB_POS",
+            "AB-": "AB_NEG",
+            "O+": "O_POS",
+            "O-": "O_NEG",
+          } as const;
+
+          return bloodType[e];
+        }),
+      photo_url: z.string().optional(),
+    });
+    CreateRequestSchema.parse(requestSchema.value);
+    return true;
+
+  } catch (err: any) {
+    type ZodError = {
+      path: string[];
+      message: string;
+    };
+    const zodErrors = err.errors as ZodError[];
+    for (const error of zodErrors) {
+      errors.value[error.path[0]] = error.message;
+    }
+    return false;
+  }
+};
+
+// Simula upload de imagem
+const uploadImage = () => {
+  console.log("Área para upload de imagem");
+  requestSchema.value.photo_url = "somefakeurl.com";
+};
+
+// Envio do formulário
+const registerRequest = async () => {
+  if (!validationFormWithZod()) {
+    console.log("Formulário inválido:", errors.value);
+    return;a
+  }
+
+  try {
+    const result = await $fetch("/api/request", {
+      method: "POST",
+      body: requestSchema.value,
+    });
+
+    console.log("Solicitação criada com sucesso", result);
+  } catch (err) {
+    console.log("Erro ao enviar solicitação", err);
+  }
+};
 </script>
 
 <style scoped>

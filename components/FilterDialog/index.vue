@@ -4,6 +4,8 @@
   </button>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+// TODO: implements filter dialog and logic to filter on "feed"
+</script>
 
 <style scoped></style>
