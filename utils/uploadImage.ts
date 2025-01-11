@@ -1,6 +1,6 @@
-const config = useRuntimeConfig();
 
 export const uploadImage = async (file: File, auth: { userToken?: string, secret?: string }): Promise<{ url: string }> => {
+  const config = useRuntimeConfig();
   const { userToken, secret } = auth;
   if (!userToken && !secret) {
     throw new Error("You need to provide a userToken or a secret");

@@ -10,12 +10,20 @@
 
     <div
       class="w-28 h-28 bg-[#CD6D71] rounded-full flex items-center justify-center"
-      @click="uploadImage"
     >
+      <input
+        id="file-input"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        class="hidden"
+        @change="handleFileSelect($event)"
+      />
       <img
-        src="/public/images/gallery.svg"
+        :src="photo_url"
         class="w-10 h-10"
         alt="Ícone de coração"
+        onclick="document.getElementById('file-input').click()"
       />
     </div>
 
@@ -77,6 +85,8 @@ import type { Request } from "~/server/api/request/index.post";
 
 const requestSchema = ref<Request>({} as Request);
 const errors = ref<{ [key: string]: string }>({});
+const uploadingImage = ref(false);
+const { token } = useUserStore();
 
 // Validação do formulário
 const validationFormWithZod = () => {
@@ -117,7 +127,6 @@ const validationFormWithZod = () => {
     });
     CreateRequestSchema.parse(requestSchema.value);
     return true;
-
   } catch (err: any) {
     type ZodError = {
       path: string[];
@@ -131,17 +140,67 @@ const validationFormWithZod = () => {
   }
 };
 
-// Simula upload de imagem
-const uploadImage = () => {
-  console.log("Área para upload de imagem");
-  requestSchema.value.photo_url = "somefakeurl.com";
-};
+async function handleFileSelect(event: any) {
+  uploadingImage.value = true;
+  const files = event.target?.files;
+  if (!files.length) {
+    return;
+  }
+  if (files.length > 1) {
+    ElMessage.error("Envie apenas uma imagem.");
+    return;
+  }
+
+  const file = files[0] as File;
+  // check if file is an image
+  if (!file.type.includes("image")) {
+    ElMessage.error("Envie uma imagem válida.");
+    return;
+  }
+
+  const MB = 1024 * 1024;
+  // check if file is less than 5mb
+  if (file.size > 5 * MB) {
+    ElMessage.error("Envie uma imagem menor que 5 MB");
+    return;
+  }
+
+  // TODO: check if File is older than competition start
+  // TODO: check file location + add bloodbank to form
+
+  const message = ElMessage({
+    message: "Enviando imagem...",
+    type: "info",
+    duration: 0,
+  });
+  try {
+    const { url } = await uploadImage(file, { userToken: String(token) });
+    message.close();
+    ElMessage({
+      message: "Imagem enviada com sucesso!",
+      type: "success",
+      duration: 3000,
+    });
+
+    requestSchema.value.photo_url = url;
+  } catch (error) {
+    message.close();
+    console.error("Error uploading image", error);
+    ElMessage({
+      type: "error",
+      message: "Erro ao enviar imagem. Por favor, tente novamente.",
+      duration: 3000,
+    });
+  }
+
+  uploadingImage.value = false;
+}
 
 // Envio do formulário
 const registerRequest = async () => {
   if (!validationFormWithZod()) {
     console.log("Formulário inválido:", errors.value);
-    return;a
+    return;
   }
 
   try {
@@ -155,6 +214,8 @@ const registerRequest = async () => {
     console.log("Erro ao enviar solicitação", err);
   }
 };
+// Photo URL computed
+const photo_url = computed(() => requestSchema.value.photo_url || "images/gallery.svg");
 </script>
 
 <style scoped>
