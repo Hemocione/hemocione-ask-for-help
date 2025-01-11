@@ -1,5 +1,5 @@
 import { type Request } from "@prisma/client";
-import { dbClient } from "~/server/db";
+import { dbClient } from "~/prisma";
 import { Request as RequestType } from "~/server/api/request/index.post";
 
 type CreateRequest = {

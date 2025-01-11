@@ -16,15 +16,25 @@ const siteUrl = getSiteUrl();
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
   routeRules: {
     // prerender index route by default
     "/": { prerender: true },
   },
+
   css: [
     "~/assets/css/main.css",
     "~/assets/css/transitions.css",
     "~/assets/css/animations.css",
   ],
+
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+  
   app: {
     pageTransition: {
       name: "slide-left",
@@ -36,7 +46,9 @@ export default defineNuxtConfig({
       mode: "out-in",
     },
   },
-  modules: ["@prisma/nuxt", "@pinia/nuxt"],
+
+  modules: ["@prisma/nuxt", "@pinia/nuxt", "@nuxt/image", "@element-plus/nuxt"],
+
   runtimeConfig: {
     public: {
       authCookieKey: process.env.HEMOCIONE_AUTH_COOKIE_KEY ?? "hemocioneId",
@@ -57,4 +69,6 @@ export default defineNuxtConfig({
       process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "hemocione",
     secret: process.env.API_SECRET ?? "secret",
   },
+
+  compatibilityDate: "2024-10-01",
 });
