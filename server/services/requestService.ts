@@ -1,4 +1,4 @@
-import { type Request } from "@prisma/client";
+import type { Request, Assisted } from "@prisma/client";
 import { dbClient } from "~/prisma";
 import { Request as RequestType } from "~/server/api/request/index.post";
 
@@ -9,6 +9,15 @@ type CreateRequest = {
   blood_type: RequestType["blood_type"];
   photo_url?: string;
 };
+
+type PaginateRequest = {
+  page?: number;
+  per_page?: number;
+};
+
+export type RequestWithAssisted = Request & {
+  assisted: Assisted;
+}
 
 export async function createRequest(
   request: CreateRequest,
@@ -52,5 +61,19 @@ export async function createRequest(
       assisted_id: assisted.id,
       active_campagin: true,
     },
+  });
+}
+
+export async function paginateListRequest({
+  page = 1,
+  per_page = 10,
+}: PaginateRequest): Promise<RequestWithAssisted[]> {
+ 
+  return dbClient.request.findMany({
+    take: per_page,
+    skip: (page - 1) * per_page,
+    include: {
+      assisted: true,
+    }
   });
 }
