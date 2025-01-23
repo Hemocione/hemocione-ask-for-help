@@ -1,7 +1,11 @@
 import type { Request, Assisted } from "@prisma/client";
 import { dbClient } from "~/prisma";
 import { Request as RequestType } from "~/server/api/request/index.post";
-import { BloodTypeKeys, dbTypeToBloodType } from "~/utils/bloodTypeTransformation";
+import {
+  BloodTypeKeys,
+  BloodTypeValues,
+  dbTypeToBloodType,
+} from "~/utils/bloodTypeTransformation";
 
 type CreateRequest = {
   local_name: string;
@@ -11,9 +15,15 @@ type CreateRequest = {
   photo_url?: string;
 };
 
+type QueryRequest = {
+  name?: string;
+  bloodType?: BloodTypeValues;
+};
+
 type PaginateRequest = {
   page?: number;
   per_page?: number;
+  query?: QueryRequest;
 };
 
 export type RequestWithAssisted = Request & {
@@ -76,8 +86,19 @@ export async function createRequest(
 export async function paginateListRequest({
   page = 1,
   per_page = 10,
+  query = {},
 }: PaginateRequest): Promise<RequestWithAssisted[]> {
+  console.log({ query });
   const requests = await dbClient.request.findMany({
+    where: {
+      assisted: {
+        name: {
+          contains: query.name,
+          mode: "insensitive",
+        },
+        blood_type: query.bloodType,
+      },
+    },
     take: per_page,
     skip: (page - 1) * per_page,
     include: {
