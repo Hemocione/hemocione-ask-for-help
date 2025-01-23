@@ -1,6 +1,7 @@
 import type { Request, Assisted } from "@prisma/client";
 import { dbClient } from "~/prisma";
 import { Request as RequestType } from "~/server/api/request/index.post";
+import { BloodTypeKeys, dbTypeToBloodType } from "~/utils/bloodTypeTransformation";
 
 type CreateRequest = {
   local_name: string;
@@ -16,8 +17,16 @@ type PaginateRequest = {
 };
 
 export type RequestWithAssisted = Request & {
-  assisted: Assisted;
-}
+  assisted: {
+    cpf: string;
+    name: string;
+    blood_type: BloodTypeKeys;
+    photo_url: string | null;
+    id: number;
+    created_at: Date;
+    updated_at: Date;
+  };
+};
 
 export async function createRequest(
   request: CreateRequest,
@@ -49,7 +58,7 @@ export async function createRequest(
     data: {
       cpf: request.cpf,
       name: request.name,
-      blood_type: request.blood_type,
+      blood_type: request.blood_type!,
       photo_url: request.photo_url,
     },
   });
@@ -68,12 +77,26 @@ export async function paginateListRequest({
   page = 1,
   per_page = 10,
 }: PaginateRequest): Promise<RequestWithAssisted[]> {
- 
-  return dbClient.request.findMany({
+  const requests = await dbClient.request.findMany({
     take: per_page,
     skip: (page - 1) * per_page,
     include: {
       assisted: true,
-    }
+    },
+    orderBy: {
+      id: "asc",
+    },
   });
+
+  const hydratedRequests = requests.map((request) => {
+    return {
+      ...request,
+      assisted: {
+        ...request.assisted,
+        blood_type: dbTypeToBloodType(request.assisted.blood_type)!,
+      },
+    };
+  });
+
+  return hydratedRequests;
 }
