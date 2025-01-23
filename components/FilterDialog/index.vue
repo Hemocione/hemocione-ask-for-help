@@ -10,7 +10,7 @@
     <el-dialog
       v-model="dialogVisible"
       :show-close="false"
-      class="absolute top-[29%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md sm:w-[312px] flex flex-col items-center"
+      class="absolute top-[29%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md sm:w-[312px] w-[70%] flex flex-col items-center"
     >
       <div class="flex flex-row justify-start items-start w-full gap-5 mb-5">
         <img
@@ -43,7 +43,7 @@
 
       <div class="flex justify-end">
         <el-button
-          @click="handleViewResults"
+          @click="emitBloodTypeSelection"
           class="bg-[#52575C] p-2 w-full rounded-2xl text-white hover:bg-[#A0A4A8]"
           >Ver Resultados</el-button
         >
@@ -76,15 +76,7 @@ const toggleBloodTypeSelection = (type: string) => {
       (t) => t !== type
     );
   } else {
-    selectedBloodTypes.value.push(type); 
-  }
-};
-
-const handleViewResults = () => {
-  if (selectedBloodTypes.value.length > 0) {
-    emitBloodTypeSelection();
-  } else {
-    alert("Selecione pelo menos um tipo sanguíneo.");
+    selectedBloodTypes.value.push(type);
   }
 };
 </script>

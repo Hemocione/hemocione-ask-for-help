@@ -17,7 +17,7 @@ type CreateRequest = {
 
 type QueryRequest = {
   name?: string;
-  bloodType?: BloodTypeValues;
+  bloodTypes?: BloodTypeValues[];
 };
 
 type PaginateRequest = {
@@ -95,7 +95,9 @@ export async function paginateListRequest({
           contains: query.name,
           mode: "insensitive",
         },
-        blood_type: query.bloodType
+        blood_type: {
+          in: query.bloodTypes,
+        }
       },
     },
     take: per_page,

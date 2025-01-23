@@ -39,10 +39,10 @@ const LIMIT_PAGE = 10;
 
 const query = ref<{
   name?: string;
-  bloodType?: string;
+  bloodTypes?: string[];
 }>({
   name: undefined, // Resultado do SearchBar
-  bloodType: undefined, // Resultado do FilterDialog
+  bloodTypes: undefined, // Resultado do FilterDialog
 });
 
 // Função chamada ao buscar dados no servidor
@@ -88,8 +88,8 @@ const onSearch = (searchTerm: string) => {
 };
 
 // Função chamada pelo componente FilterDialog
-const onFilter = (bloodType: string) => {
-  query.value.bloodType = bloodType;
+const onFilter = (bloodTypes: string[]) => {
+  query.value.bloodTypes = bloodTypes;
   resetAndFetch();
 };
 
