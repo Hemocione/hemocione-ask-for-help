@@ -88,7 +88,6 @@ export async function paginateListRequest({
   per_page = 10,
   query = {},
 }: PaginateRequest): Promise<RequestWithAssisted[]> {
-  console.log({ query });
   const requests = await dbClient.request.findMany({
     where: {
       assisted: {
@@ -96,7 +95,7 @@ export async function paginateListRequest({
           contains: query.name,
           mode: "insensitive",
         },
-        blood_type: query.bloodType,
+        blood_type: query.bloodType
       },
     },
     take: per_page,

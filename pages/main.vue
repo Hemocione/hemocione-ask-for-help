@@ -37,7 +37,10 @@ const hasMore = ref(true);
 const sentinel = ref<HTMLDivElement | null>(null);
 const LIMIT_PAGE = 10;
 
-const query = ref({
+const query = ref<{
+  name?: string;
+  bloodType?: string;
+}>({
   name: undefined, // Resultado do SearchBar
   bloodType: undefined, // Resultado do FilterDialog
 });
@@ -85,8 +88,8 @@ const onSearch = (searchTerm: string) => {
 };
 
 // Função chamada pelo componente FilterDialog
-const onFilter = (filter: { bloodType: string }) => {
-  query.value.bloodType = filter.bloodType;
+const onFilter = (bloodType: string) => {
+  query.value.bloodType = bloodType;
   resetAndFetch();
 };
 
