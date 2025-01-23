@@ -126,6 +126,7 @@ const mockData = [
 
 const requests = ref<RequestWithAssisted[]>(mockData);
 const page = ref(1);
+const hasMore = ref(true);
 const sentinel = ref<HTMLDivElement | null>(null);
 const LIMIT_PAGE = 10;
 
@@ -143,10 +144,16 @@ onMounted(async () => {
 });
 
 const fetchMore = async () => {
+  if (!hasMore.value) return;
+  
   const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
     method: "GET",
     params: { page: page.value, per_page: LIMIT_PAGE },
   });
+
+  if (fetchedData.length < LIMIT_PAGE) {
+    hasMore.value = false;
+  }
 
   page.value++;
   requests.value = [...requests.value, ...fetchedData];
