@@ -47,7 +47,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@prisma/nuxt", "@pinia/nuxt", "@nuxt/image", "@element-plus/nuxt"],
+  modules: [ "@pinia/nuxt", "@nuxt/image", "@element-plus/nuxt"],
 
   runtimeConfig: {
     public: {

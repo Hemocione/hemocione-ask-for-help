@@ -834,7 +834,7 @@
   resolved "https://registry.npmjs.org/@nuxt/devalue/-/devalue-2.0.2.tgz"
   integrity sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA==
 
-"@nuxt/devtools-kit@1.5.1", "@nuxt/devtools-kit@^1.3.3":
+"@nuxt/devtools-kit@1.5.1":
   version "1.5.1"
   resolved "https://registry.npmjs.org/@nuxt/devtools-kit/-/devtools-kit-1.5.1.tgz"
   integrity sha512-s2dpN1vCOgua2pSYG7/xUMjf7CyLTBeEK2IRqeOeiNpiElft4ygDddlg6P3ot0Hpp+GvWTz0uPGot/vI73uk4w==
@@ -920,7 +920,7 @@
   optionalDependencies:
     ipx "^2.1.0"
 
-"@nuxt/kit@3.13.2", "@nuxt/kit@^3.11.2", "@nuxt/kit@^3.12.3", "@nuxt/kit@^3.13.1", "@nuxt/kit@^3.13.2", "@nuxt/kit@^3.9.0":
+"@nuxt/kit@3.13.2", "@nuxt/kit@^3.12.3", "@nuxt/kit@^3.13.1", "@nuxt/kit@^3.13.2", "@nuxt/kit@^3.9.0":
   version "3.13.2"
   resolved "https://registry.npmjs.org/@nuxt/kit/-/kit-3.13.2.tgz"
   integrity sha512-KvRw21zU//wdz25IeE1E5m/aFSzhJloBRAQtv+evcFeZvuroIxpIQuUqhbzuwznaUwpiWbmwlcsp5uOWmi4vwA==
@@ -1142,11 +1142,6 @@
   resolved "https://registry.npmjs.org/@sxzz/popperjs-es/-/popperjs-es-2.11.7.tgz"
   integrity sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==
 
-"@prisma/client@^5.17.0":
-  version "5.21.1"
-  resolved "https://registry.npmjs.org/@prisma/client/-/client-5.21.1.tgz"
-  integrity sha512-3n+GgbAZYjaS/k0M03yQsQfR1APbr411r74foknnsGpmhNKBG49VuUkxIU6jORgvJPChoD4WC4PqoHImN1FP0w==
-
 "@prisma/client@^6.2.1":
   version "6.3.1"
   resolved "https://registry.npmjs.org/@prisma/client/-/client-6.3.1.tgz#4e4b05b27f4541ea541a601c57a8ada10b526848"
@@ -1187,19 +1182,6 @@
   integrity sha512-AYLq6Hk9xG73JdLWJ3Ip9Wg/vlP7xPvftGBalsPzKDOHr/ImhwJ09eS8xC2vNT12DlzGxhfk8BkL0ve2OriNhQ==
   dependencies:
     "@prisma/debug" "6.3.1"
-
-"@prisma/nuxt@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.npmjs.org/@prisma/nuxt/-/nuxt-0.0.35.tgz"
-  integrity sha512-p8AeISCMGDnMDRj7EOcvM/T61Qy7+RauzMR3zU7V5Jte2dexSg6OBxcsxJyss+qHJFi/Ego0NGuvitCkBXDwaw==
-  dependencies:
-    "@nuxt/devtools-kit" "^1.3.3"
-    "@nuxt/kit" "^3.11.2"
-    "@prisma/client" "^5.17.0"
-    chalk "^5.3.0"
-    defu "^6.1.4"
-    execa "^8.0.1"
-    prompts "^2.4.2"
 
 "@rollup/plugin-alias@^5.1.0":
   version "5.1.1"
