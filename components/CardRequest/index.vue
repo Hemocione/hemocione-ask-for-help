@@ -1,43 +1,55 @@
 <template>
-  <div class="card">
-    <div class="card-content">
-      <div class="card-header">
+  <div
+    class="flex flex-row items-center justify-between w-full p-4 rounded-2xl border border-gray-300"
+  >
+    <div class="flex flex-col justify-center w-7/12">
+      <div class="mb-2">
         <!-- Name -->
-        <h4 class="card-requester-name">Rafael Sangue Forte</h4>
+        <h4 class="text-lg font-semibold">{{ requesterName }}</h4>
         <!-- Local -->
-        <p class="card-requester-local">Hemorio</p>
+        <div class="flex flex-row items-center gap-3">
+          <img
+            src="/public/images/loc.png"
+            class="w-2.5 h-3.5 sm:w-4 sm:h-6 md:w-5 md:h-7 lg:w-6 lg:h-8"
+            alt="Localização"
+          />
+          <p class="text-[#52575C]">
+            {{ requesterLocal }}
+          </p>
+        </div>
       </div>
-      <div class="card-body">
+      <div class="flex flex-row gap-2">
         <!-- Blood Type -->
-        <p>Tipo Sanguíneo</p>
+        <p class="text-sm text-[#52575C]">Tipo Sanguíneo</p>
+
+        <div
+          class="bg-[#CD6D71] w-10 h-5 rounded-xl flex items-center justify-center"
+        >
+          <p class="text-white">{{ bloodType }}</p>
+        </div>
       </div>
     </div>
-    <div class="card-image">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s" width="80" height="80"/>
+    <div
+      class="rounded-full max-w-5/12 overflow-hidden border border-[#B2493A]"
+    >
+      <img
+        :src="requesterPhoto"
+        class="w-20 h-20 object-cover"
+        alt="Requester Photo"
+      />
     </div>
   </div>
 </template>
 
-<script lang="ts"></script>
+<script setup lang="ts">
+import { defineProps } from "vue";
 
-<style scoped>
-.card {
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  height: 7.5rem;
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid black;
-}
+type Props = {
+  requesterName: string;
+  requesterLocal: string;
+  requesterPhoto: string;
+  bloodType: string;
+};
 
-.card-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-}
-</style>
+defineProps<Props>();
+</script>

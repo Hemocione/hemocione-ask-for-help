@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 });
 
 export async function evaluateCurrentLogin(query?: LocationQuery) {
-  const { user, setUser, setToken } = useUserStore();
+  const { user, setUser, setToken, clear } = useUserStore();
   const config = useRuntimeConfig();
 
   if (user) return true;
@@ -44,8 +44,7 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
   }
 
   if (!tokenIsValid) {
-    setUser(null);
-    setToken(null);
+    clear();
     return false;
   }
 

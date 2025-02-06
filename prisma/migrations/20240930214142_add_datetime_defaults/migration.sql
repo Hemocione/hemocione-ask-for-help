@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Assisted" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "Request" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;

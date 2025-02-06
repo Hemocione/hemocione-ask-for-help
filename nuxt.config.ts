@@ -28,6 +28,13 @@ export default defineNuxtConfig({
     "~/assets/css/animations.css",
   ],
 
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+  
   app: {
     pageTransition: {
       name: "slide-left",
@@ -63,5 +70,5 @@ export default defineNuxtConfig({
     secret: process.env.API_SECRET ?? "secret",
   },
 
-  compatibilityDate: "2024-10-01"
+  compatibilityDate: "2024-10-01",
 });

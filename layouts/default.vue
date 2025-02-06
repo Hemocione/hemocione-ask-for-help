@@ -15,7 +15,6 @@
 
 .page {
   width: 100%;
-  min-height: var(--hemo-page-min-height);
   height: 100%;
   display: flex;
   align-items: center;

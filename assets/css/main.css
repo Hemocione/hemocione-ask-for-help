@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --hemo-color-primary: #bb0a08;
   --hemo-color-primary-dark: #8a0000;
