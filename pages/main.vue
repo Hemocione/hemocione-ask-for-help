@@ -2,106 +2,107 @@
   <div class="flex flex-col items-center justify-center w-full">
     <div class="flex-grow w-full pb-20">
       <div class="flex flex-row justify-between items-center w-full p-4">
-        <SearchBar />
-        <FilterDialog />
+        <SearchBar @update:search="onSearch" />
+        <FilterDialog @update:filter="onFilter" />
       </div>
-      <!-- Card requests paginated list -->
       <div class="flex flex-col gap-4 w-full p-4">
         <CardRequest
-          v-for="(person, idx) in mockData"
+          v-for="(person, idx) in requests"
           :key="idx"
-          :requesterName="person.requesterName"
-          :requesterLocal="person.requesterLocal"
-          :requesterPhoto="person.requesterPhoto"
-          :bloodType="person.bloodType"
+          :requesterName="person.assisted.name"
+          :requesterLocal="person.local_name"
+          :requesterPhoto="person.assisted.photo_url!"
+          :bloodType="person.assisted.blood_type"
         />
       </div>
+      <div ref="sentinel"></div>
     </div>
     <div class="fixed p-4 bottom-0 left-0 w-full bg-white shadow-lg">
-      <ButtonAskForHelp>
-        <img
-          src="/public/images/gotinha.svg"
-          class="w-6 h-6"
-          alt="Ícone de coração"
-        />
-        <h4 class="font-semibold">Pedir ajuda</h4></ButtonAskForHelp
-      >
+      <ButtonAskForHelp @click="redirect('register')"></ButtonAskForHelp>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const mockData = [
-  {
-    requesterName: "Rafael Sangue Forte",
-    requesterLocal: "Hemorio",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s",
-    bloodType: "O+",
-  },
-  {
-    requesterName: "Ana Clara",
-    requesterLocal: "Hospital de Câncer",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTadRXfv3LlFDKspHYPk1qg6DKkxsAyJ4bKyw&s",
-    bloodType: "A-",
-  },
-  {
-    requesterName: "Carlos Silva",
-    requesterLocal: "Hospital São Paulo",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvGprnRaXZT5yIXWdcja5BIDLRSfsHVPtuqg&s",
-    bloodType: "B+",
-  },
-  {
-    requesterName: "Mariana Souza",
-    requesterLocal: "Hemocentro de Brasília",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJ9S13SnSnlFCruYgeZIVa3U6W0uA8PJV-A&s",
-    bloodType: "AB-",
-  },
-  {
-    requesterName: "Lucas Pereira",
-    requesterLocal: "Hospital da Criança",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQylKlGcz_m3scQl6_bzjnq3EGjIWeOWJ6rxw&s",
-    bloodType: "O-",
-  },
+import { ref, watch } from "vue";
+import { debounce } from "lodash-es"; // Biblioteca para debounce
+import type { RequestWithAssisted } from "~/server/services/requestService";
 
-  {
-    requesterName: "Lucas Pereira",
-    requesterLocal: "Hospital da Criança",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQylKlGcz_m3scQl6_bzjnq3EGjIWeOWJ6rxw&s",
-    bloodType: "O-",
-  },
-  {
-    requesterName: "Lucas Pereira",
-    requesterLocal: "Hospital da Criança",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQylKlGcz_m3scQl6_bzjnq3EGjIWeOWJ6rxw&s",
-    bloodType: "O-",
-  },
-  {
-    requesterName: "Lucas Pereira",
-    requesterLocal: "Hospital da Criança",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQylKlGcz_m3scQl6_bzjnq3EGjIWeOWJ6rxw&s",
-    bloodType: "O-",
-  },
-  {
-    requesterName: "Lucas Pereira",
-    requesterLocal: "Hospital da Criança",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQylKlGcz_m3scQl6_bzjnq3EGjIWeOWJ6rxw&s",
-    bloodType: "O-",
-  },
-  {
-    requesterName: "Lucas Pereira",
-    requesterLocal: "Hospital da Criança",
-    requesterPhoto:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQylKlGcz_m3scQl6_bzjnq3EGjIWeOWJ6rxw&s",
-    bloodType: "O-",
-  },
-];
+const router = useRouter();
+const redirect = (path: string) => router.push(path);
+
+const requests = ref<RequestWithAssisted[]>([]);
+const page = ref(1);
+const hasMore = ref(true);
+const sentinel = ref<HTMLDivElement | null>(null);
+const LIMIT_PAGE = 10;
+
+const query = ref<{
+  name?: string;
+  bloodTypes?: string[];
+}>({
+  name: undefined, // Resultado do SearchBar
+  bloodTypes: undefined, // Resultado do FilterDialog
+});
+
+// Função chamada ao buscar dados no servidor
+const fetchRequests = async () => {
+  if (!hasMore.value) return;
+
+  const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
+
+  const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
+    method: "GET",
+    params,
+  });
+
+  if (fetchedData.length < LIMIT_PAGE) {
+    hasMore.value = false;
+  }
+
+  page.value++;
+  if (page.value === 1) {
+    requests.value = fetchedData;
+  } else {
+    requests.value = [...requests.value, ...fetchedData];
+  }
+};
+
+// Função para resetar paginação ao alterar filtros ou busca
+const resetAndFetch = () => {
+  page.value = 1;
+  hasMore.value = true;
+  requests.value = [];
+  fetchRequests();
+};
+
+// Debounce para busca
+const debouncedSearch = debounce((searchTerm: string) => {
+  query.value.name = searchTerm;
+  resetAndFetch();
+}, 300); // 300ms de debounce
+
+// Função chamada pelo componente SearchBar
+const onSearch = (searchTerm: string) => {
+  debouncedSearch(searchTerm);
+};
+
+// Função chamada pelo componente FilterDialog
+const onFilter = (bloodTypes: string[]) => {
+  query.value.bloodTypes = bloodTypes;
+  resetAndFetch();
+};
+
+// Observador de scroll infinito
+onMounted(() => {
+  if (sentinel.value) {
+    const observer = new IntersectionObserver(async (entries) => {
+      if (entries[0].isIntersecting) {
+        await fetchRequests();
+      }
+    });
+
+    observer.observe(sentinel.value);
+  }
+});
 </script>

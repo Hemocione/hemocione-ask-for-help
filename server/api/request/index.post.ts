@@ -1,5 +1,6 @@
 import { createRequest } from "~/server/services/requestService";
 import z from "zod";
+import { bloodTypeToDbType } from "~/utils/bloodTypeTransformation";
 
 const CreateRequestSchema = z.object({
   local_name: z.string(),
@@ -7,20 +8,7 @@ const CreateRequestSchema = z.object({
   name: z.string(),
   blood_type: z
     .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-    .transform((e) => {
-      const bloodType = {
-        "A+": "A_POS",
-        "A-": "A_NEG",
-        "B+": "B_POS",
-        "B-": "B_NEG",
-        "AB+": "AB_POS",
-        "AB-": "AB_NEG",
-        "O+": "O_POS",
-        "O-": "O_NEG",
-      } as const;
-
-      return bloodType[e];
-    }),
+    .transform((e) => bloodTypeToDbType(e)),
   photo_url: z.string().optional(),
 });
 
