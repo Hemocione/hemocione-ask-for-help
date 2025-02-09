@@ -9,7 +9,7 @@ const getSiteUrl = () => {
     return "http://localhost:3000";
   }
 
-  return "https://copa.hemocione.com.br";
+  return "https://hemocione-ask-for-help.vercel.app/";
 };
 
 const siteUrl = getSiteUrl();
