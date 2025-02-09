@@ -223,7 +223,7 @@ const photo_url = computed(
   () => requestSchema.value.photo_url || "images/gallery.svg"
 );
 const isOwnPhoto = computed(
-  () => requestSchema.value.photo_url !== "images/gallery.svg"
+  () => photo_url.value !== "images/gallery.svg"
 );
 </script>
 
