@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center w-full">
+  <div class="flex flex-col items-center justify-center w-full h-dvh">
     <div class="flex-grow w-full pb-20">
       <div class="flex flex-row justify-between items-center w-full p-4">
         <SearchBar @update:search="onSearch" />
@@ -17,7 +17,7 @@
       </div>
       <div ref="sentinel"></div>
     </div>
-    <div class="fixed p-4 bottom-0 left-0 w-full bg-white shadow-lg">
+    <div class="sticky p-4 bottom-0 left-0 w-full bg-white shadow-lg">
       <ButtonAskForHelp @click="redirect('register')"></ButtonAskForHelp>
     </div>
   </div>

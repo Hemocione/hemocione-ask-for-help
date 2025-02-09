@@ -1,78 +1,79 @@
 <template>
-  <div class="p-4 flex flex-col h-screen w-full gap-4 items-center">
-    <div class="flex flex-row justify-start items-start w-full p-4">
-      <img
-        class="w-6 h-6"
-        src="/public/images/go-back.svg"
-        @click="$router.back()"
-      />
-    </div>
+  <div class="h-dvh">
+    <div class="p-4 flex-1 flex flex-col h-dvh w-full gap-4 items-center">
+      <div class="flex flex-row justify-start items-start w-full p-4">
+        <img
+          class="w-6 h-6"
+          src="/public/images/go-back.svg"
+          @click="$router.back()"
+        />
+      </div>
 
-    <div
-      class="w-28 h-28 bg-[#CD6D71] rounded-full flex items-center justify-center"
-    >
-      <input
-        id="file-input"
-        type="file"
-        accept="image/*"
-        capture="environment"
-        class="hidden"
-        @change="handleFileSelect($event)"
-      />
-      <img
-        :src="photo_url"
-        class="w-10 h-10"
-        alt="Ícone de coração"
-        onclick="document.getElementById('file-input').click()"
-      />
-    </div>
+      <div
+        class="w-28 h-28 bg-[#CD6D71] rounded-full flex items-center justify-center"
+      >
+        <input
+          id="file-input"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          class="hidden"
+          @change="handleFileSelect($event)"
+        />
+        <img
+          :src="photo_url"
+          class="w-10 h-10"
+          alt="Ícone de coração"
+          onclick="document.getElementById('file-input').click()"
+        />
+      </div>
 
-    <div class="w-full">
-      <label>Nome</label><span class="text-red-500">*</span>
-      <ElInput
-        class="input"
-        placeholder="Insira o nome completo"
-        v-model="requestSchema.name"
-      ></ElInput>
-      <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
-    </div>
+      <div class="w-full">
+        <label>Nome</label><span class="text-red-500">*</span>
+        <ElInput
+          class="input"
+          placeholder="Insira o nome completo"
+          v-model="requestSchema.name"
+        ></ElInput>
+        <p v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</p>
+      </div>
 
-    <div class="w-full">
-      <label>Documentação de identificação</label
-      ><span class="text-red-500">*</span>
-      <ElInput
-        class="input"
-        placeholder="Insira o número de CPF"
-        v-model="requestSchema.cpf"
-      ></ElInput>
-      <p v-if="errors.cpf" class="text-red-500 text-sm">{{ errors.cpf }}</p>
-    </div>
+      <div class="w-full">
+        <label>Documentação de identificação</label
+        ><span class="text-red-500">*</span>
+        <ElInput
+          class="input"
+          placeholder="Insira o número de CPF"
+          v-model="requestSchema.cpf"
+        ></ElInput>
+        <p v-if="errors.cpf" class="text-red-500 text-sm">{{ errors.cpf }}</p>
+      </div>
 
-    <div class="w-full">
-      <label>Local para doação</label><span class="text-red-500">*</span>
-      <ElInput
-        class="input"
-        placeholder="Insira Hospital ou Instituição"
-        v-model="requestSchema.local_name"
-      ></ElInput>
-      <p v-if="errors.local_name" class="text-red-500 text-sm">
-        {{ errors.local_name }}
-      </p>
-    </div>
+      <div class="w-full">
+        <label>Local para doação</label><span class="text-red-500">*</span>
+        <ElInput
+          class="input"
+          placeholder="Insira Hospital ou Instituição"
+          v-model="requestSchema.local_name"
+        ></ElInput>
+        <p v-if="errors.local_name" class="text-red-500 text-sm">
+          {{ errors.local_name }}
+        </p>
+      </div>
 
-    <div class="w-full">
-      <label>Tipo sanguíneo</label><span class="text-red-500">*</span>
-      <ElInput
-        class="input"
-        placeholder="Insira o tipo sanguíneo do solicitante"
-        v-model="requestSchema.blood_type"
-      ></ElInput>
-      <p v-if="errors.blood_type" class="text-red-500 text-sm">
-        {{ errors.blood_type }}
-      </p>
+      <div class="w-full">
+        <label>Tipo sanguíneo</label><span class="text-red-500">*</span>
+        <ElInput
+          class="input"
+          placeholder="Insira o tipo sanguíneo do solicitante"
+          v-model="requestSchema.blood_type"
+        ></ElInput>
+        <p v-if="errors.blood_type" class="text-red-500 text-sm">
+          {{ errors.blood_type }}
+        </p>
+      </div>
     </div>
-
-    <div class="fixed p-4 bottom-0 left-0 w-full bg-white shadow-lg">
+    <div class="sticky p-4 bottom-0 left-0 w-full bg-white shadow-lg">
       <Button @click="registerRequest">Continuar</Button>
     </div>
   </div>
@@ -215,7 +216,9 @@ const registerRequest = async () => {
   }
 };
 // Photo URL computed
-const photo_url = computed(() => requestSchema.value.photo_url || "images/gallery.svg");
+const photo_url = computed(
+  () => requestSchema.value.photo_url || "images/gallery.svg"
+);
 </script>
 
 <style scoped>
