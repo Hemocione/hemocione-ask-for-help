@@ -7,7 +7,8 @@
     "migrate-dev": "npx prisma migrate dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "migrate:deploy": "if [ \"$ENABLE_MIGRATIONS\" = \"1\" ]; then npx prisma migrate deploy; else echo \"no migrations enabled\"; fi",
+    "postinstall": "yarn migrate:deploy && npx prisma generate && nuxt prepare",
     "utils:reset-db": "npx prisma db push --force-reset && npx prisma db push"
   },
   "devDependencies": {
