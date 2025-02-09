@@ -23,7 +23,10 @@
         <img
           :src="photo_url"
           class="w-10 h-10"
-          alt="Ícone de coração"
+          :class="{
+            '!w-28 !h-28 !rounded-full': isOwnPhoto,
+          }"
+          :alt="isOwnPhoto ? 'Foto do solicitante' : 'Ícone de coração'"
           onclick="document.getElementById('file-input').click()"
         />
       </div>
@@ -218,6 +221,9 @@ const registerRequest = async () => {
 // Photo URL computed
 const photo_url = computed(
   () => requestSchema.value.photo_url || "images/gallery.svg"
+);
+const isOwnPhoto = computed(
+  () => requestSchema.value.photo_url !== "images/gallery.svg"
 );
 </script>
 
