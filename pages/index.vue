@@ -1,125 +1,112 @@
 <template>
-  <div class="app-container">
-    <div class="main">
-      <img
-        src="../public/images/hemo_logo.svg"
-        alt="Small Top Image"
-        class="small-image"
-      />
-      <h2>Pedir ajuda</h2>
-      <p>
-        Conectando pessoas que precisam de ajuda, com pessoas que gostam de
-        ajudar.
-      </p>
-      <img
-        src="../public/images/rafiki.svg"
-        alt="Large Center Image"
-        class="large-image"
-      />
+  <div class="flex flex-col items-center justify-center w-full h-dvh">
+    <div class="flex-grow w-full pb-20">
+      <div class="flex flex-row justify-between items-center w-full p-4">
+        <SearchBar @update:search="onSearch" />
+        <FilterDialog @update:filter="onFilter" />
+      </div>
+      <div class="flex flex-col gap-4 w-full p-4">
+        <CardRequest
+          v-for="(person, idx) in requests"
+          :key="idx"
+          :requesterName="person.assisted.name"
+          :requesterLocal="person.local_name"
+          :requesterPhoto="person.assisted.photo_url!"
+          :bloodType="person.assisted.blood_type"
+        />
+      </div>
+      <div ref="sentinel"></div>
     </div>
-
-    <!-- Caixa Vermelha -->
-    <div class="red-box" alt="button" @click="onClick">
-      <NuxtLink to="/main">Clique para salvar vidas</NuxtLink>
-      <img src="../public/images/arrow.svg" alt="Arrow" class="arrow" />
+    <div class="sticky p-4 bottom-0 left-0 w-full bg-white shadow-lg">
+      <ButtonAskForHelp @click="redirect('register')"></ButtonAskForHelp>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import { debounce } from "lodash-es"; // Biblioteca para debounce
+import type { RequestWithAssisted } from "~/server/services/requestService";
+
 const router = useRouter();
+const redirect = (path: string) => router.push(path);
 
-if (getLocalStorage("welcomeAlreadyShown") === null) {
-  setLocalStorage("welcomeAlreadyShown", true);
-} else {
-  router.push("/main");
-}
+// first time user
+if (getLocalStorage("welcomeAlreadyShown") === null)
+  router.replace("/welcomePage");
 
-function onClick() {
-  router.push("/main");
-}
-</script>
+const requests = ref<RequestWithAssisted[]>([]);
+const page = ref(1);
+const hasMore = ref(true);
+const sentinel = ref<HTMLDivElement | null>(null);
+const LIMIT_PAGE = 10;
 
-<style scoped>
-@media screen and (max-width: 600px) {
-  .large-image {
-    width: 90% !important;
-    height: 90% !important;
+const query = ref<{
+  name?: string;
+  bloodTypes?: string[];
+}>({
+  name: undefined, // Resultado do SearchBar
+  bloodTypes: undefined, // Resultado do FilterDialog
+});
+
+// Função chamada ao buscar dados no servidor
+const fetchRequests = async () => {
+  if (!hasMore.value) return;
+
+  const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
+
+  const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
+    method: "GET",
+    params,
+  });
+
+  if (fetchedData.length < LIMIT_PAGE) {
+    hasMore.value = false;
   }
-}
 
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  align-items: center; /* Center content horizontally */
-  text-align: center; /* Center the text in the main section */
-  background-color: var(--hemo-color-primary);
-}
+  page.value++;
+  if (page.value === 1) {
+    requests.value = fetchedData;
+  } else {
+    requests.value = [...requests.value, ...fetchedData];
+  }
+};
 
-header {
-  padding: 1rem;
-  width: 100%;
-}
+// Função para resetar paginação ao alterar filtros ou busca
+const resetAndFetch = () => {
+  page.value = 1;
+  hasMore.value = true;
+  requests.value = [];
+  fetchRequests();
+};
 
-.small-image {
-  max-width: 100px; /* Small image at the top */
-  display: block;
-  margin: 0 auto; /* Center image horizontally */
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
+// Debounce para busca
+const debouncedSearch = debounce((searchTerm: string) => {
+  query.value.name = searchTerm;
+  resetAndFetch();
+}, 300); // 300ms de debounce
 
-.large-image {
-  width: 35% !important;
-  height: 30% !important;
-  margin-top: 1rem; /* Diminui o espaço entre as duas imagens */
-}
+// Função chamada pelo componente SearchBar
+const onSearch = (searchTerm: string) => {
+  debouncedSearch(searchTerm);
+};
 
-.main {
-  height: 75vh; /* Define uma altura máxima, você pode ajustar conforme necessário */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 0; /* Remove o padding superior */
-  margin-top: 0; /* Remove qualquer margem superior */
-  overflow: hidden; /* Garante que conteúdo extra não vá além dessa altura */
-  background-color: var(--hemo-color-secondary);
-  width: 100vw;
-  border-bottom-left-radius: 50px;
-  border-bottom-right-radius: 50px;
-}
+// Função chamada pelo componente FilterDialog
+const onFilter = (bloodTypes: string[]) => {
+  query.value.bloodTypes = bloodTypes;
+  resetAndFetch();
+};
 
-.main h2 {
-  font-size: 26px;
-  font-weight: bold;
-  margin-bottom: 0px;
-}
+// Observador de scroll infinito
+onMounted(() => {
+  if (sentinel.value) {
+    const observer = new IntersectionObserver(async (entries) => {
+      if (entries[0].isIntersecting) {
+        await fetchRequests();
+      }
+    });
 
-.main p {
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 1.5;
-}
-
-.red-box {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-top: 0; /* Remove o padding superior */
-  margin-top: 0; /* Remove qualquer margem superior */
-  overflow: hidden; /* Garante que conteúdo extra não vá além dessa altura */
-  height: 15vh;
-  color: var(--hemo-color-secondary);
-  font-weight: 600;
-  gap: 20px;
-  justify-content: center;
-  text-align: center;
-}
-
-.arrow {
-  margin-top: 4px;
-  width: 20px;
-  height: 20px;
-}
-</style>
+    observer.observe(sentinel.value);
+  }
+});
+</script>
