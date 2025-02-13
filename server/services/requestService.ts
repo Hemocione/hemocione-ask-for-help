@@ -122,3 +122,12 @@ export async function paginateListRequest({
 
   return hydratedRequests;
 }
+
+export const getRequestById = async (id: number) => {
+  return dbClient.request.findUnique({
+    where: { id },
+    include: {
+      assisted: true,
+    },
+  });
+};
