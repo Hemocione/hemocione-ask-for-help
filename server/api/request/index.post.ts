@@ -1,14 +1,12 @@
 import { createRequest } from "~/server/services/requestService";
+import { DBBloodTypes } from "~/types/blood";
 import z from "zod";
-import { bloodTypeToDbType } from "~/utils/bloodTypeTransformation";
 
 const CreateRequestSchema = z.object({
   local_name: z.string(),
   cpf: z.string(),
   name: z.string(),
-  blood_type: z
-    .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-    .transform((e) => bloodTypeToDbType(e)),
+  blood_type: z.enum(DBBloodTypes),
   photo_url: z.string().optional(),
 });
 
