@@ -83,6 +83,18 @@ export async function createRequest(
   });
 }
 
+function hydrateRequest(request: Request & { assisted: Assisted }) {
+  return {
+    ...request,
+    assisted: {
+      ...request.assisted,
+      blood_type: dbTypeToBloodType(request.assisted.blood_type)!,
+    },
+  };
+
+}
+
+
 export async function paginateListRequest({
   page = 1,
   per_page = 10,
@@ -110,24 +122,18 @@ export async function paginateListRequest({
     },
   });
 
-  const hydratedRequests = requests.map((request) => {
-    return {
-      ...request,
-      assisted: {
-        ...request.assisted,
-        blood_type: dbTypeToBloodType(request.assisted.blood_type)!,
-      },
-    };
-  });
-
-  return hydratedRequests;
+  return requests.map(hydrateRequest);
 }
 
 export const getRequestById = async (id: number) => {
-  return dbClient.request.findUnique({
+  const request = await dbClient.request.findUnique({
     where: { id },
     include: {
       assisted: true,
     },
   });
+
+  if(!request) return null;
+  
+  return hydrateRequest(request)
 };
