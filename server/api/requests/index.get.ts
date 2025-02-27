@@ -1,5 +1,6 @@
 import z from "zod";
 import { paginateListRequest } from "~/server/services/requestService";
+import { bloodTypes } from "~/types/blood";
 import {
   bloodTypeToDbType,
   BloodTypeValues,
@@ -16,10 +17,12 @@ const ListRequestSchema = z.object({
     .optional(),
   name: z.string().optional(),
   bloodTypes: z
-    .array(
-      z
-        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-        .transform((e) => bloodTypeToDbType(e))
+    .preprocess((val) => (typeof val === "string" ? [val] : val), 
+      z.array(
+        z
+          .enum(bloodTypes)
+          .transform(bloodTypeToDbType)
+      )
     )
     .optional(),
 });
@@ -31,6 +34,8 @@ export default defineEventHandler(async (event) => {
     event,
     ListRequestSchema.parse
   );
+
+  console.log("page", page);
 
   const query: {
     name?: string;
