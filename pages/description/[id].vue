@@ -1,47 +1,55 @@
 <template>
-	<div v-if="request">
-		<div class="app-container">
-			<div class="main">
+	<div v-if="request" class="app-container">
+		<div class="flex flex-row justify-start items-start w-full p-4 pt-6">
+			<img class="w-6 h-6" src="/public/images/go-back.svg" @click="$router.back()" />
+		</div>
 
-				<div class="person-image">
-					<img v-if="request.assisted.photo_url" :src="request.assisted.photo_url!" />
-				</div>
+		<div class="main">
 
-				<div class="description">
-					<h3>{{ request.assisted.name }}</h3>
-					<p :style="{ 'font-size': '14px', 'font-weight': 'normal' }">{{ request.assisted.blood_type }}</p>
-					<p :style="{ 'font-size': '12px', 'font-weight': 'normal', 'margin-bottom': '30px' }">{{
-						request.local_name }}</p>
-
-
-					<div class="container">
-						<p class="title">Compatibilidades</p>
-						<p class="content">
-							Lorem ipsum dolor sit amet. Est debitis asperiores aut excepturi aliquid et doloremque
-							facilis. Sit illum quia et rerum velit et porro eligendi sed minima dolore est consequatur
-							amet! Ut fuga dolorem et placeat inventore et delectus modi et nobis enim aut assumenda
-							reiciendis ut consequatur cumque.
-						</p>
-					</div>
-				</div>
-
+			<div class="person-image">
+				<img v-if="request.assisted.photo_url" :src="request.assisted.photo_url!" />
 			</div>
 
-			<!-- Caixa Vermelha -->
+			<div class="description">
+				<div class="request-info">
+					<h3 :style="{ 'font-size': '22px', 'font-weight': 'medium' }">{{ request.assisted.name }}</h3>
+					<span class="blood-container">
+						<p class="text">Tipo Sanguíneo</p>
+						<div class="badge">{{ request.assisted.blood_type }}</div>
+					</span>
 
-			<div class="register-donation" alt="button" @click="onClick">
-				<div class="register-donation-text">
-					<img src="/images/plus_donation.svg" alt="Plus_donation" class="plus_donation" width="20"
-						height="20" />
-					Registrar doação
+					<span class="location">
+						<img src="/images/loc.png">
+						<p>{{ request.local_name }}</p>
+					</span>
 				</div>
-				<div class="share-donation-text">
-					<img src="/images/share_icon.svg" alt="share_icon" class="share_icon" />
-					Compartilhar este pedido
+
+				<div class="compatibility-container">
+					<p class="title">Compatibilidade de doações</p>
+					<p class="content">
+					<div v-for="(type, idx) in bloodTypes" :key="idx" :class="{ 'blood-compatible': isCompatible(type) }"
+						class="blood-type">
+						{{ type }}
+					</div>
+					</p>
 				</div>
 			</div>
 
 		</div>
+
+		<!-- Caixa Vermelha -->
+
+		<div class="register-donation" alt="button" @click="onClick">
+			<div class="share-donation-text">
+				<img src="/images/share_icon_white.svg" alt="share_icon" class="share_icon" />
+				Compartilhar este pedido
+			</div>
+			<div class="register-donation-text">
+				<img src="/images/plus_donation_gray.svg" alt="Plus_donation" class="plus_donation" width="20" height="20" />
+				Registrar doação
+			</div>
+		</div>
+
 	</div>
 	<!-- TODO: adicionar loading -->
 	<div v-else>
@@ -53,6 +61,7 @@
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import type { RequestWithAssisted } from "~/server/services/requestService";
+import { bloodReceiveCompatibilities, bloodTypes, type BloodType } from '~/types/blood';
 
 function onClick() {
 	console.log('Button clicked');
@@ -66,20 +75,23 @@ request.value = await $fetch(`/api/request/${id}`, {
 	method: "GET"
 });
 
+const bloodCompatibilities = bloodReceiveCompatibilities[request.value?.assisted.blood_type!];
+
+const isCompatible = (bloodType: BloodType) => {
+	return bloodCompatibilities.includes(bloodType)
+}
+
 </script>
 
 <style scoped>
 .app-container {
 	display: flex;
 	flex-direction: column;
-	min-height: 50vh;
 	align-items: center;
-	/* Center content horizontally */
 	text-align: center;
-	/* Center the text in the main section */
 	background-color: #FFFFFF;
-	width: 100vw;
-
+	width: 100%;
+	height: 100vh;
 }
 
 header {
@@ -90,122 +102,161 @@ header {
 
 
 .main {
-	flex: 1;
+	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding-top: 0;
-	/* Remove o padding superior */
-	margin-top: 0;
-	/* Remove qualquer margem superior */
-	height: 100%;
-	/* Define uma altura máxima, você pode ajustar conforme necessário */
-	overflow: hidden;
-	/* Garante que conteúdo extra não vá além dessa altura */
+	justify-content: center;
+	gap: 40px;
 	background-color: #FFFFFF;
-	width: 100vw;
-
+	width: 90vw;
 }
 
 .register-donation {
+	position: sticky;
+	bottom: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	padding-top: 0;
-	margin-top: 0;
-	overflow: hidden;
-	min-height: 20vh;
-	width: 100vw;
-	/* Estende a largura até os cantos da tela */
+	gap: 8px;
+	width: 100%;
 	color: var(--hemo-color-secondary);
 	font-weight: 600;
-	text-align: center;
 	border-top: 2px solid #E8E8E8;
-	/* Borda apenas no topo */
-	box-sizing: border-box;
-	/* Garante que a borda não ultrapasse a largura total */
-
-}
-
-.register-donation .register-donation-text {
-	font-size: 14px;
-	color: #F9F9FA;
-	background-color: var(--hemo-color-primary);
-	border-radius: 18px;
-	width: 90%;
-	height: 12vw;
-	/* Ajusta a altura para ser maior */
-	display: flex;
-	align-items: center;
-	/* Centraliza o texto verticalmente */
-	justify-content: center;
-	/* Centraliza o texto horizontalmente */
-	margin-bottom: 3px;
-	/* Adiciona um espaço entre os botões */
-	padding: 10px;
+	padding: 20px;
 }
 
 .register-donation .share-donation-text {
-	font-size: 14px;
-	color: #52575C;
-	width: 90%;
-	border-radius: 18px;
-	border: 2px #A0A4A8 solid;
-	height: 12vw;
-	/* Ajusta a altura para ser maior */
+	font-size: 0.875rem;
+	color: var(--hemo-color-secondary);
+	background-color: var(--hemo-color-primary);
+	width: 100%;
+	border-radius: 16px;
+	height: 40px;
 	display: flex;
 	align-items: center;
-	/* Centraliza o texto verticalmente */
 	justify-content: center;
-	/* Centraliza o texto horizontalmente */
-	margin-top: 3px;
-	/* Adiciona um espaço entre os botões */
-
+	padding: 10px;
 }
 
+.register-donation .register-donation-text {
+	font-size: 0.875rem;
+	color: var(--black-80);
+	border: 2px #A0A4A8 solid;
+	border-radius: 16px;
+	width: 100%;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+}
 
 .register-donation img {
 	margin-right: 10px;
-	/* Adiciona margem à direita da imagem */
-	width: 20px;
-	height: 20px;
+	width: 16px;
+	height: 16px;
 }
 
 .person-image {
-	width: 125px;
-	height: 125px;
+	width: 120px;
+	height: 120px;
 	border-radius: 50%;
-	overflow: hidden;
 	background-color: gray;
 }
 
 .description {
 	background-color: #F9F9FA;
-	border-radius: 5%;
-	margin: 0 5vw;
-	padding: 24px;
+	border-radius: 16px;
+	padding: 24px	;
 	border: 2px #E8E8E8 solid;
-
+	width: 100%;
 }
 
-.container {
+.request-info {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-bottom: 24px;
+}
+
+.blood-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+}
+
+.blood-container .text {
+	color: var(--black-80);
+	font-weight: 500;
+	font-size: 1rem;
+}
+
+.blood-container .badge {
+	background-color: var(--hemo-color-primary);
+	width: 40px;
+	height: 20px;
+	border-radius: 1rem;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+
+.location {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 12px;
+	color: var(--black-80);
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+
+
+.compatibility-container {
 	background-color: #F9F9FA;
 	border-radius: 8px;
-	margin: 0 5vw;
-	text-align: left;
-
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
-.container .title {
-	font-size: 14px;
+.compatibility-container .title {
+	font-size: 1rem;
 	font-weight: 600;
-	line-height: 1.5;
-	margin-bottom: 10px;
+	margin-bottom: 22px;
 }
 
-.container .content {
-	font-size: 14px;
+.compatibility-container .content {
+	font-size: 0.875rem;
 	font-weight: normal;
+	display: grid;
+	grid-template-columns: repeat(4, auto);
+	gap: 16px;
+}
+
+.compatibility-container .blood-type {
+	font-size: 0.875rem;
+	color: #A0A4A8;
+	font-weight: 500;
+	border: 0.063rem solid #A0A4A8;
+	border-radius: 1rem;
+	width: 40px;
+	height: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.compatibility-container .blood-compatible {
+	color: white;
+	border: 0.063rem solid #6E91C7;
+	background-color: #6E91C7;
 }
 </style>
