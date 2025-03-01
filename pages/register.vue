@@ -75,7 +75,7 @@
               'text-[#52575C] border border-[#A0A4A8]':
                 !isSelectedBloodType(type),
             }"
-            @click="requestSchema.blood_type = bloodTypeToDbType(type)"
+            @click="requestSchema.blood_type = bloodTypeToDbType(type)!"
             size="default"
             type="default"
             class="rounded-2xl font-semibold min-w-[3.5rem] !h-10 flex items-center justify-center flex-1"
@@ -107,7 +107,12 @@ definePageMeta({
 const requestSchema = ref<Request>({} as Request);
 const errors = ref<{ [key: string]: string }>({});
 const uploadingImage = ref(false);
-const { token } = useUserStore();
+const { token, user } = useUserStore();
+const router = useRouter();
+
+if (user?.id) {
+  requestSchema.value.requester_id = user.id;
+}
 
 // Validação do formulário
 const validationFormWithZod = () => {
@@ -215,6 +220,13 @@ const registerRequest = async () => {
       method: "POST",
       body: requestSchema.value,
     });
+
+    if (!result?.review_status) {
+      router.replace("/");
+      return
+    }
+
+    router.push(`review/${result.review_status.toLowerCase()}`);
 
     console.log("Solicitação criada com sucesso", result);
   } catch (err) {

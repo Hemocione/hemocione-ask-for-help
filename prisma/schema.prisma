@@ -9,7 +9,7 @@ datasource db {
 
 model Request {
   id              Int            @id @default(autoincrement())
-  requester_id    Int
+  requester_id    String
   assisted_id     Int
   local_name      String
   // local_latitude float

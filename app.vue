@@ -2,7 +2,7 @@
   <NuxtLayout>
     <div class="content-wrapper">
       <Header class="sticky top-0 z-50" />
-      <NuxtPage />
+      <NuxtPage keepalive />
     </div>
   </NuxtLayout>
 </template>
