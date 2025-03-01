@@ -15,6 +15,7 @@ const getSiteUrl = () => {
 const siteUrl = getSiteUrl();
 
 export default defineNuxtConfig({
+  ssr: false,
   devtools: { enabled: true },
 
   routeRules: {
