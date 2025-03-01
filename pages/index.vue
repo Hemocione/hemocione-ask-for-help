@@ -5,10 +5,12 @@
         <SearchBar @update:search="onSearch" />
         <FilterDialog @update:filter="onFilter" />
       </div>
-      <!-- TODO: Adicionar a versão final, quando o design estiver completo -->
+      <div v-if="fetching" class="flex flex-col gap-4 w-full p-4">
+        <SkeletonCardRequest v-for="i in 6" :key="i" />
+      </div>
       <div
         class="flex flex-col items-center gap-4 w-full h-full"
-        v-if="resultsNotFound"
+        v-else-if="resultsNotFound"
       >
         <h2>Nenhum pedido encontrado :(</h2>
         <img
@@ -27,7 +29,9 @@
           :bloodType="person.assisted.blood_type"
         />
       </div>
-      <div ref="sentinel"></div>
+      <div ref="sentinel" class="px-4">
+        <SkeletonCardRequest v-if="fetching && alreadyFetched" />
+      </div>
     </div>
     <div class="sticky p-4 bottom-0 left-0 w-full bg-white shadow-lg">
       <ButtonAskForHelp @click="redirect('register')"></ButtonAskForHelp>
@@ -52,7 +56,7 @@ const page = ref(1);
 const hasMore = ref(true);
 const sentinel = ref<HTMLDivElement | null>(null);
 const LIMIT_PAGE = 10;
-const fetching = ref(false);
+const fetching = ref(true);
 const alreadyFetched = ref(false);
 
 const query = ref<{

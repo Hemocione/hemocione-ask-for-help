@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-row items-center justify-between w-full p-4 rounded-2xl border border-gray-300"
+    class="flex flex-row items-center min-h-32 justify-between w-full p-4 rounded-2xl border border-gray-300"
   >
     <div class="flex flex-col justify-center w-7/12">
       <div class="mb-2">
