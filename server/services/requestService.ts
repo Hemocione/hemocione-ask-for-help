@@ -40,7 +40,7 @@ export type RequestWithAssisted = Request & {
 
 export async function createRequest(
   request: CreateRequest,
-  requester_id: number
+  requester_id: string
 ): Promise<Request> {
   let assisted = await dbClient.assisted.findFirst({
     where: {
@@ -107,6 +107,32 @@ export async function paginateListRequest({
     },
     orderBy: {
       id: "asc",
+    },
+  });
+
+  const hydratedRequests = requests.map((request) => {
+    return {
+      ...request,
+      assisted: {
+        ...request.assisted,
+        blood_type: dbTypeToBloodType(request.assisted.blood_type)!,
+      },
+    };
+  });
+
+  return hydratedRequests;
+}
+
+export async function getAllPendingRequests(): Promise<RequestWithAssisted[]> {
+  const pendencyStatus = "pending" as Request["review_status"];
+
+  const requests = await dbClient.request.findMany({
+    where: {
+      active_campagin: true,
+      review_status: pendencyStatus,
+    },
+    include: {
+      assisted: true,
     },
   });
 

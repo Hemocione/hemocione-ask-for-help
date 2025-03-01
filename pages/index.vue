@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center w-full h-dvh">
+  <div class="flex flex-col items-center justify-between w-full h-screen">
     <div class="flex-grow w-full pb-20">
       <div class="flex flex-row justify-between items-center w-full p-4">
         <SearchBar @update:search="onSearch" />
@@ -9,8 +9,8 @@
         <SkeletonCardRequest v-for="i in 6" :key="i" />
       </div>
       <div
-        class="flex flex-col items-center gap-4 w-full h-full"
-        v-else-if="resultsNotFound"
+        class="flex flex-col items-center gap-4 w-full"
+        v-if="resultsNotFound"
       >
         <h2>Nenhum pedido encontrado :(</h2>
         <img
@@ -63,8 +63,8 @@ const query = ref<{
   name?: string;
   bloodTypes?: string[];
 }>({
-  name: undefined, // Resultado do SearchBar
-  bloodTypes: undefined, // Resultado do FilterDialog
+  name: undefined,
+  bloodTypes: undefined,
 });
 
 // Função chamada ao buscar dados no servidor
@@ -108,14 +108,12 @@ const resetAndFetch = () => {
 const debouncedSearch = debounce((searchTerm: string) => {
   query.value.name = searchTerm;
   resetAndFetch();
-}, 300); // 300ms de debounce
+}, 300);
 
-// Função chamada pelo componente SearchBar
 const onSearch = (searchTerm: string) => {
   debouncedSearch(searchTerm);
 };
 
-// Função chamada pelo componente FilterDialog
 const onFilter = (bloodTypes: string[]) => {
   query.value.bloodTypes = bloodTypes;
   alreadyFetched.value = false;
@@ -126,7 +124,6 @@ const resultsNotFound = computed(() => {
   return alreadyFetched.value && !requests.value.length && !fetching.value;
 });
 
-// Observador de scroll infinito
 onMounted(() => {
   if (sentinel.value) {
     const observer = new IntersectionObserver(async (entries) => {
