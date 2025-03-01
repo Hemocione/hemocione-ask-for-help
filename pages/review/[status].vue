@@ -3,6 +3,7 @@
     :photo_url="currData.photo_url"
     :title="currData.title"
     :reason="currData.reason"
+    :background-color="currData.backgroundColor"
   />
 </template>
 
@@ -15,20 +16,24 @@ const { status } = route.params as { status: Status };
 
 const currData = {
   pending: {
-    title: "Aguardando aprovação",
-    photo_url: "/images/bx_hourglass.png",
+    title: "Seu pedido está em análise!",
+    photo_url: "/images/fi-rr-search-alt.png",
     reason:
       "Acompanhe o seu pedido na aba de configurações. Quaisquer atualizações sobre a solicitação serão notificadas via e-mail.",
+    backgroundColor: "#CD6D71",
   },
   approved: {
-    title: "Seu pedido foi aceito",
-    photo_url: "/images/bx_hourglass.png",
-    reason: "Seu cadastro foi aprovado com sucesso.",
+    title: "Seu pedido foi aprovado!",
+    photo_url: "/images/fi-rr-shield-check.png",
+    reason:
+      "Sua solicitação estará presente na tela de início. Compartilhe e arrecade mais doações.",
+    backgroundColor: "#2AC769",
   },
   rejected: {
-    title: "Seu pedido não foi aceito",
-    photo_url: "/images/bx_hourglass.png",
-    reason: "Seu cadastro foi rejeitado, tente novamente.",
+    title: "Seu pedido foi rejeitado",
+    photo_url: "/images/fi-rr-shield-exclamation.png",
+    reason: "Não se preocupe, outra solicitação poderá ser feita.",
+    backgroundColor: "#F6A609",
   },
 }[status];
 </script>
