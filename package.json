@@ -26,6 +26,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@nuxt/fonts": "^0.10.3",
     "@pinia/nuxt": "^0.5.5",
     "lodash-es": "^4.17.21",
     "zod": "^3.23.8"
