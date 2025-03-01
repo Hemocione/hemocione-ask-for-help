@@ -12,7 +12,7 @@
 
 			<div class="description">
 				<div class="request-info">
-					<h3 :style="{ 'font-size': '22px', 'font-weight': 'medium' }">{{ request.assisted.name }}</h3>
+					<h3>{{ request.assisted.name }}</h3>
 					<span class="blood-container">
 						<p class="text">Tipo Sanguíneo</p>
 						<div class="badge">{{ request.assisted.blood_type }}</div>
@@ -37,9 +37,7 @@
 
 		</div>
 
-		<!-- Caixa Vermelha -->
-
-		<div class="register-donation" alt="button" @click="onClick">
+		<div class="register-donation" alt="button">
 			<div class="share-donation-text">
 				<img src="/images/share_icon_white.svg" alt="share_icon" class="share_icon" />
 				Compartilhar este pedido
@@ -59,13 +57,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { onMounted } from 'vue';
 import type { RequestWithAssisted } from "~/server/services/requestService";
 import { bloodReceiveCompatibilities, bloodTypes, type BloodType } from '~/types/blood';
-
-function onClick() {
-	console.log('Button clicked');
-}
 
 const route = useRoute()
 const request = ref<RequestWithAssisted | null>(null)
@@ -107,9 +100,9 @@ header {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: 40px;
+	gap: 24px;
 	background-color: #FFFFFF;
-	width: 90vw;
+	width: 90%;
 }
 
 .register-donation {
@@ -178,6 +171,11 @@ header {
 	flex-direction: column;
 	gap: 12px;
 	margin-bottom: 24px;
+}
+
+.request-info h3 {
+	font-size: 1.5rem;
+	font-weight: 400;
 }
 
 .blood-container {
