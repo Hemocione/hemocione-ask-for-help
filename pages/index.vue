@@ -25,6 +25,8 @@
           :requesterLocal="person.local_name"
           :requesterPhoto="person.assisted.photo_url!"
           :bloodType="person.assisted.blood_type"
+          class="cursor-pointer"
+          @click="redirect(`description/${person.id}`)"
         />
       </div>
       <div ref="sentinel"></div>
