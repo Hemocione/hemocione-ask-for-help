@@ -35,7 +35,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  
+
   app: {
     pageTransition: {
       name: "slide-left",
@@ -48,7 +48,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: [ "@pinia/nuxt", "@nuxt/image", "@element-plus/nuxt"],
+  modules: ["@pinia/nuxt", "@nuxt/image", "@element-plus/nuxt", "@nuxt/fonts"],
 
   runtimeConfig: {
     public: {
