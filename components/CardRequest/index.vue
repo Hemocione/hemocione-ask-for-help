@@ -23,7 +23,7 @@
         <p class="text-sm text-[#52575C]">Tipo Sanguíneo</p>
 
         <div
-          class="bg-[#CD6D71] w-10 h-5 rounded-xl flex items-center justify-center"
+          class="bg-[--hemo-color-primary] w-10 h-5 rounded-xl flex items-center justify-center"
         >
           <p class="text-white">{{ bloodType }}</p>
         </div>

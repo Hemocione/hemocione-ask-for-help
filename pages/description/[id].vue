@@ -123,6 +123,7 @@ header {
 	gap: 8px;
 	width: 100%;
 	color: var(--hemo-color-secondary);
+	background-color: var(--black-0);
 	font-weight: 600;
 	border-top: 2px solid var(--black-20);
 	padding: 20px;

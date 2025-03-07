@@ -6,7 +6,7 @@
         <FilterDialog @update:filter="onFilter" />
       </div>
       <div v-if="fetching" class="flex flex-col gap-4 w-full p-4">
-        <SkeletonCardRequest v-for="i in 6" :key="i" />
+        <SkeletonCardRequest v-for="i in 3" :key="i" />
       </div>
       <div
         class="flex flex-col items-center gap-4 w-full"
