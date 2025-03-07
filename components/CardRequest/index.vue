@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-row items-center min-h-32 justify-between w-full p-4 rounded-2xl border border-gray-300"
+    class="flex flex-row items-center min-h-32 justify-between w-full p-4 rounded-2xl border border-(--black-40) bg-[--black-5]"
   >
     <div class="flex flex-col justify-center w-7/12">
       <div class="mb-2">
@@ -9,8 +9,7 @@
         <!-- Local -->
         <div class="flex flex-row items-center gap-3">
           <img
-            src="/public/images/loc.png"
-            class="w-2.5 h-3.5 sm:w-4 sm:h-6 md:w-5 md:h-7 lg:w-6 lg:h-8"
+            src="/public/images/loc.svg"
             alt="Localização"
           />
           <p class="text-[#52575C]">
@@ -23,7 +22,7 @@
         <p class="text-sm text-[#52575C]">Tipo Sanguíneo</p>
 
         <div
-          class="bg-[#CD6D71] w-10 h-5 rounded-xl flex items-center justify-center"
+          class="bg-[--hemo-color-primary] w-10 h-5 rounded-xl flex items-center justify-center"
         >
           <p class="text-white">{{ bloodType }}</p>
         </div>

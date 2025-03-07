@@ -5,7 +5,7 @@
     <el-dialog
       v-model="dialogVisible"
       :show-close="false"
-      class="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md !w-[312px] flex flex-col items-center"
+      class="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[--black-5] border border-(--black-40) p-4 rounded-lg !w-[312px] flex flex-col items-center"
     >
       <div class="flex flex-row justify-start items-start w-full gap-5 mb-5">
         <img
