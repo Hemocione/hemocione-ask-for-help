@@ -1,6 +1,6 @@
 <template>
 	<div v-if="request" class="app-container">
-		<div class="flex flex-row justify-start items-start w-full p-4 pt-6">
+		<div class="flex flex-row justify-start items-start w-full p-4 pt-6 cursor-pointer">
 			<img class="w-6 h-6" src="/public/images/go-back.svg" @click="$router.back()" />
 		</div>
 
@@ -19,7 +19,7 @@
 					</span>
 
 					<span class="location">
-						<img src="/images/loc.png">
+						<img src="/images/loc.svg">
 						<p>{{ request.local_name }}</p>
 					</span>
 				</div>
@@ -125,7 +125,9 @@ header {
 	color: var(--hemo-color-secondary);
 	background-color: var(--black-0);
 	font-weight: 600;
-	border-top: 2px solid var(--black-20);
+	border: 2px solid var(--black-20);
+	border-top-left-radius: 24px;
+	border-top-right-radius: 24px;
 	padding: 20px;
 }
 
