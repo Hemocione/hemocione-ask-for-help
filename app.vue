@@ -15,7 +15,7 @@
   justify-content: center;
   flex-direction: column;
   max-width: 100%;
-  height: 100vh;
+  height: 100dvh;
 }
 @media screen and (max-width: 753px) {
   .content-wrapper {

@@ -38,11 +38,11 @@
 		</div>
 
 		<div class="register-donation" alt="button">
-			<div class="share-donation-text">
+			<div class="share-donation-text" @click="shareDonation">
 				<img src="/images/share_icon_white.svg" alt="share_icon" class="share_icon" />
 				Compartilhar este pedido
 			</div>
-			<div class="register-donation-text">
+			<div class="register-donation-text" @click="registerDonation">
 				<img src="/images/plus_donation_gray.svg" alt="Plus_donation" class="plus_donation" width="20" height="20" />
 				Registrar doação
 			</div>
@@ -64,11 +64,23 @@ const route = useRoute()
 const request = ref<RequestWithAssisted | null>(null)
 const id = route.params.id
 
-request.value = await $fetch(`/api/request/${id}`, {
-	method: "GET"
-});
+// TODO: funções dos butões
+const shareDonation = () => {
+	console.log("Button clicked")
+}
+const registerDonation = () => {
+	console.log("Button clicked")
+}
 
-const bloodCompatibilities = bloodReceiveCompatibilities[request.value?.assisted.blood_type!];
+try {
+	request.value = await $fetch(`/api/request/${id}`, {
+		method: "GET"
+	});
+} catch (error) {
+	throw createError({ statusCode: 500, statusMessage: "Erro inesperado ao recuperar a solicitação." });
+}
+
+const bloodCompatibilities = request.value ?  bloodReceiveCompatibilities[request.value.assisted.blood_type] : [];
 
 const isCompatible = (bloodType: BloodType) => {
 	return bloodCompatibilities.includes(bloodType)
@@ -82,7 +94,7 @@ const isCompatible = (bloodType: BloodType) => {
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
-	background-color: #FFFFFF;
+	background-color: var(--black-0);
 	width: 100%;
 	height: 100vh;
 }
@@ -90,9 +102,7 @@ const isCompatible = (bloodType: BloodType) => {
 header {
 	padding: 1rem;
 	width: 100%;
-
 }
-
 
 .main {
 	flex-grow: 1;
@@ -101,7 +111,6 @@ header {
 	align-items: center;
 	justify-content: center;
 	gap: 24px;
-	background-color: #FFFFFF;
 	width: 90%;
 }
 
@@ -115,7 +124,7 @@ header {
 	width: 100%;
 	color: var(--hemo-color-secondary);
 	font-weight: 600;
-	border-top: 2px solid #E8E8E8;
+	border-top: 2px solid var(--black-20);
 	padding: 20px;
 }
 
@@ -135,7 +144,7 @@ header {
 .register-donation .register-donation-text {
 	font-size: 0.875rem;
 	color: var(--black-80);
-	border: 2px #A0A4A8 solid;
+	border: 2px var(--black-60) solid;
 	border-radius: 16px;
 	width: 100%;
 	height: 40px;
@@ -155,14 +164,14 @@ header {
 	width: 120px;
 	height: 120px;
 	border-radius: 50%;
-	background-color: gray;
+	background-color: var(--black-60);
 }
 
 .description {
-	background-color: #F9F9FA;
+	background-color: var(--black-5);
 	border-radius: 16px;
 	padding: 24px	;
-	border: 2px #E8E8E8 solid;
+	border: 2px var(--black-10) solid;
 	width: 100%;
 }
 
@@ -197,7 +206,7 @@ header {
 	width: 40px;
 	height: 20px;
 	border-radius: 1rem;
-	color: white;
+	color: var(--black-0);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -218,7 +227,6 @@ header {
 
 
 .compatibility-container {
-	background-color: #F9F9FA;
 	border-radius: 8px;
 	display: flex;
 	flex-direction: column;
@@ -241,10 +249,10 @@ header {
 
 .compatibility-container .blood-type {
 	font-size: 0.875rem;
-	color: #A0A4A8;
+	color: var(--black-60);
 	font-weight: 500;
-	border: 0.063rem solid #A0A4A8;
-	border-radius: 1rem;
+	border: 1px solid var(--black-60);
+	border-radius: 16px;
 	width: 40px;
 	height: 20px;
 	display: flex;
@@ -253,8 +261,8 @@ header {
 }
 
 .compatibility-container .blood-compatible {
-	color: white;
-	border: 0.063rem solid #6E91C7;
-	background-color: #6E91C7;
+	color: var(--black-0);
+	border: 1px solid var(--cornflower-blue);
+	background-color: var(--cornflower-blue);
 }
 </style>
