@@ -1,10 +1,11 @@
+import type { BloodType } from "~/types/blood";
 import { decodeB64 } from "./decodeB64";
 
 export interface CurrentUserData {
   id: string;
   givenName: string;
   surName: string;
-  bloodType: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+  bloodType: BloodType;
   email: string;
   phone: string;
   document: string;

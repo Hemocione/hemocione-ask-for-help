@@ -1,5 +1,5 @@
 <template>
-  <div class="h-dvh">
+  <div class="h-dvh bg-white">
     <div class="p-4 flex-1 flex flex-col h-dvh w-full gap-4 items-center">
       <div class="flex flex-row justify-start items-start w-full p-4">
         <img
@@ -65,12 +65,24 @@
       </div>
 
       <div class="w-full">
-        <label>Tipo sanguíneo</label><span class="text-red-500">*</span>
-        <ElInput
-          class="input"
-          placeholder="Insira o tipo sanguíneo do solicitante"
-          v-model="requestSchema.blood_type"
-        ></ElInput>
+        <label>Tipo sanguíneo</label><span class="text-red-500 mb-6">*</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+          <el-button
+            v-for="(type, idx) in bloodTypes"
+            :key="idx"
+            :class="{
+              '!bg-[#BB0A08] !text-white': isSelectedBloodType(type),
+              'text-[#52575C] border border-[#A0A4A8]':
+                !isSelectedBloodType(type),
+            }"
+            @click="requestSchema.blood_type = bloodTypeToDbType(type)!"
+            size="default"
+            type="default"
+            class="rounded-2xl font-semibold min-w-[3.5rem] !h-10 flex items-center justify-center flex-1"
+          >
+            {{ type }}
+          </el-button>
+        </div>
         <p v-if="errors.blood_type" class="text-red-500 text-sm">
           {{ errors.blood_type }}
         </p>
@@ -86,11 +98,21 @@
 import { ref } from "vue";
 import z from "zod";
 import type { Request } from "~/server/api/request/index.post";
+import { bloodTypes, DBBloodTypes, type BloodType } from "~/types/blood";
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 const requestSchema = ref<Request>({} as Request);
 const errors = ref<{ [key: string]: string }>({});
 const uploadingImage = ref(false);
-const { token } = useUserStore();
+const { token, user } = useUserStore();
+const router = useRouter();
+
+if (user?.id) {
+  requestSchema.value.requester_id = user.id;
+}
 
 // Validação do formulário
 const validationFormWithZod = () => {
@@ -108,25 +130,11 @@ const validationFormWithZod = () => {
         invalid_type_error: "Nome inválido",
         required_error: "Nome é obrigatório",
       }),
-      blood_type: z
-        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], {
-          invalid_type_error: "Tipo sanguíneo inválido",
-          required_error: "Tipo sanguíneo é obrigatório",
-        })
-        .transform((e) => {
-          const bloodType = {
-            "A+": "A_POS",
-            "A-": "A_NEG",
-            "B+": "B_POS",
-            "B-": "B_NEG",
-            "AB+": "AB_POS",
-            "AB-": "AB_NEG",
-            "O+": "O_POS",
-            "O-": "O_NEG",
-          } as const;
+      blood_type: z.enum(DBBloodTypes, {
+        invalid_type_error: "Tipo sanguíneo inválido",
+        required_error: "Tipo sanguíneo é obrigatório",
+      }),
 
-          return bloodType[e];
-        }),
       photo_url: z.string().optional(),
     });
     CreateRequestSchema.parse(requestSchema.value);
@@ -213,18 +221,26 @@ const registerRequest = async () => {
       body: requestSchema.value,
     });
 
+    if (!result?.review_status) {
+      router.replace("/");
+      return
+    }
+
+    router.push(`review/${result.review_status.toLowerCase()}`);
+
     console.log("Solicitação criada com sucesso", result);
   } catch (err) {
     console.log("Erro ao enviar solicitação", err);
   }
 };
+const isSelectedBloodType = (type: BloodType) =>
+  requestSchema.value.blood_type === bloodTypeToDbType(type);
+
 // Photo URL computed
 const photo_url = computed(
   () => requestSchema.value.photo_url || "images/gallery.svg"
 );
-const isOwnPhoto = computed(
-  () => photo_url.value !== "images/gallery.svg"
-);
+const isOwnPhoto = computed(() => photo_url.value !== "images/gallery.svg");
 </script>
 
 <style scoped>

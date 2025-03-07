@@ -40,7 +40,7 @@ export type RequestWithAssisted = Request & {
 
 export async function createRequest(
   request: CreateRequest,
-  requester_id: number
+  requester_id: string
 ): Promise<Request> {
   let assisted = await dbClient.assisted.findFirst({
     where: {
@@ -137,3 +137,20 @@ export const getRequestById = async (id: number) => {
   
   return hydrateRequest(request)
 };
+
+export async function getAllPendingRequests(): Promise<RequestWithAssisted[]> {
+  const pendencyStatus = "pending" as Request["review_status"];
+
+  const requests = await dbClient.request.findMany({
+    where: {
+      active_campagin: true,
+      review_status: pendencyStatus,
+    },
+    include: {
+      assisted: true,
+    },
+  });
+
+
+  return requests.map(hydrateRequest);
+}

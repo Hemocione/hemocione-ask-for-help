@@ -16,6 +16,7 @@
     "@nuxt/devtools": "^1.0.3",
     "@nuxt/image": "^1.8.1",
     "@prisma/client": "^6.2.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "autoprefixer": "^10.4.20",
     "element-plus": "^2.8.5",
     "nuxt": "^3.8.2",
@@ -26,7 +27,9 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@nuxt/fonts": "^0.10.3",
     "@pinia/nuxt": "^0.5.5",
+    "jsonwebtoken": "^9.0.2",
     "lodash-es": "^4.17.21",
     "zod": "^3.23.8"
   },
