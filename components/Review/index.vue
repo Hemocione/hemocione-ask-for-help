@@ -11,7 +11,8 @@
       <h4 class="font-medium pt-16">{{ title }}</h4>
 
       <div
-        class="!w-44 !h-44 bg-[#CD6D71] rounded-full flex items-center justify-center"
+        class="!w-44 !h-44 rounded-full flex items-center justify-center"
+        :style="{ backgroundColor: backgroundColor }"
       >
         <img class="w-28 h-28" :src="photo_url" alt="Review Icon" />
       </div>
@@ -28,6 +29,7 @@ type Props = {
   title: string;
   photo_url: string;
   reason: string;
+  backgroundColor: string
 };
 
 const { photo_url, reason, title } = defineProps<Props>();

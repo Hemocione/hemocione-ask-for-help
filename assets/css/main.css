@@ -44,15 +44,6 @@
   margin: 0 !important;
 }
 
-@font-face {
-  font-family:  "Lato", "Roboto", monospace, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  src: url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 400;
-}
-
 .el-tabs__header {
   margin: 0 !important;
 }
@@ -80,6 +71,7 @@ body {
 }
 
 * {
+  font-family: 'Lato', sans-serif;
   box-sizing: border-box;
 }
 
