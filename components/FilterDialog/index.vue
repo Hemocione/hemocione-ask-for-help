@@ -5,7 +5,8 @@
     <el-dialog
       v-model="dialogVisible"
       :show-close="false"
-      class="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md !w-[312px] flex flex-col items-center"
+      :align-center="true"
+      class="bg-[--black-5] border border-(--black-80) p-4 rounded-lg !w-[312px] flex flex-col items-center"
     >
       <div class="flex flex-row justify-start items-start w-full gap-5 mb-5">
         <img
@@ -30,7 +31,7 @@
           @click="toggleBloodTypeSelection(type)"
           size="large"
           type="default"
-          class="rounded-lg py-2 font-semibold w-12 h-8 flex items-center justify-center"
+          class="rounded-lg py-2 w-12 h-8 flex items-center justify-center"
         >
           {{ type }}
         </el-button>
@@ -49,7 +50,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { ElDialog, ElButton } from "element-plus";
+import { ElButton } from "element-plus";
 import { bloodTypes } from "~/types/blood";
 
 const emit = defineEmits<{
