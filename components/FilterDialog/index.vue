@@ -6,7 +6,7 @@
       v-model="dialogVisible"
       :show-close="false"
       :align-center="true"
-      class="bg-[--black-5] border border-(--black-80) p-4 rounded-lg !w-[312px] flex flex-col items-center"
+      class="bg-[--black-5] border border-[--black-80] p-4 rounded-lg !w-[312px] flex flex-col items-center"
     >
       <div class="flex flex-row justify-start items-start w-full gap-5 mb-5">
         <img
