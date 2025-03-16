@@ -37,7 +37,6 @@ const imageURL = ref(
 const loggedIn = computed(() => userStore.loggedIn);
 const user = computed(() => userStore.user);
 
-console.log(user.value);
 const loggedName = computed(
   () => user.value?.givenName + " " + user.value?.surName
 );

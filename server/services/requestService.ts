@@ -83,6 +83,20 @@ export async function createRequest(
   });
 }
 
+export async function reviewRequest(
+  requestId: number,
+  data: { review_status: Request["review_status"] }
+) {
+  return dbClient.request.update({
+    where: {
+      id: requestId,
+    },
+    data: {
+      review_status: data.review_status,
+    },
+  });
+}
+
 function hydrateRequest(request: Request & { assisted: Assisted }) {
   return {
     ...request,
@@ -91,9 +105,7 @@ function hydrateRequest(request: Request & { assisted: Assisted }) {
       blood_type: dbTypeToBloodType(request.assisted.blood_type)!,
     },
   };
-
 }
-
 
 export async function paginateListRequest({
   page = 1,
@@ -109,7 +121,7 @@ export async function paginateListRequest({
         },
         blood_type: {
           in: query.bloodTypes,
-        }
+        },
       },
     },
     take: per_page,
@@ -133,18 +145,18 @@ export const getRequestById = async (id: number) => {
     },
   });
 
-  if(!request) return null;
-  
-  return hydrateRequest(request)
+  if (!request) return null;
+
+  return hydrateRequest(request);
 };
 
 export async function getAllPendingRequests(): Promise<RequestWithAssisted[]> {
-  const pendencyStatus = "pending" as Request["review_status"];
+  const pendingStatus = "pending" as Request["review_status"];
 
   const requests = await dbClient.request.findMany({
     where: {
       active_campagin: true,
-      review_status: pendencyStatus,
+      review_status: pendingStatus,
     },
     include: {
       assisted: true,

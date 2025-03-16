@@ -35,8 +35,6 @@ export default defineEventHandler(async (event) => {
     ListRequestSchema.parse
   );
 
-  console.log("page", page);
-
   const query: {
     name?: string;
     bloodTypes?: BloodTypeValues[];
