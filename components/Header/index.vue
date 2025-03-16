@@ -1,6 +1,6 @@
 <template>
   <header
-    class="max-h-[72px] flex flex-row items-center justify-between gap-4 p-5 bg-[#BB0A08] h-[4.5rem] rounded-b-3xl w-full"
+    class="h-[72px] flex flex-row items-center justify-between gap-4 p-5 bg-[#BB0A08] h-[4.5rem] rounded-b-3xl w-full"
   >
     <div class="flex flex-row items-center gap-3">
       <img :src="imageURL" class="w-10 h-10 rounded-full" />

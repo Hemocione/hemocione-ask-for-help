@@ -151,6 +151,5 @@ export async function getAllPendingRequests(): Promise<RequestWithAssisted[]> {
     },
   });
 
-
   return requests.map(hydrateRequest);
 }
