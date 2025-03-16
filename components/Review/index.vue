@@ -33,6 +33,4 @@ type Props = {
 };
 
 const { photo_url, reason, title } = defineProps<Props>();
-
-console.log(title, photo_url, reason);
 </script>
