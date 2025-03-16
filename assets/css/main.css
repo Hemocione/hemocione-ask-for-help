@@ -16,7 +16,13 @@
   --zap: #32d851;
   --crazy-gray: #d9d9d9;
   --midsummer-dream: #b2cfd8;
-  --cornflower-blue: #3b629c;
+  --cornflower-blue: #6E91C7;
+  --black-0: #FFFFFF;
+  --black-5: #F9F9FA;
+  --black-10: #E8E8E8;
+  --black-20: #DBDDE0;
+  --black-40: #CACCCF;
+  --black-60: #A0A4A8;
   --black-80: #52575c;
   --black-100: #25282b;
   --el-color-primary: var(--hemo-color-primary) !important;
@@ -44,15 +50,6 @@
   margin: 0 !important;
 }
 
-@font-face {
-  font-family:  "Lato", "Roboto", monospace, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  src: url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 400;
-}
-
 .el-tabs__header {
   margin: 0 !important;
 }
@@ -75,11 +72,12 @@ body {
 }
 
 body {
-  min-height: 100dvh;
-  width: 100vw;
+  min-height: 100dvh !important;
+  width: 100vw !important;
 }
 
 * {
+  font-family: 'Lato', sans-serif;
   box-sizing: border-box;
 }
 

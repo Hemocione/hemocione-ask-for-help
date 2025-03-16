@@ -40,7 +40,7 @@ export type RequestWithAssisted = Request & {
 
 export async function createRequest(
   request: CreateRequest,
-  requester_id: number
+  requester_id: string
 ): Promise<Request> {
   let assisted = await dbClient.assisted.findFirst({
     where: {
@@ -83,6 +83,18 @@ export async function createRequest(
   });
 }
 
+function hydrateRequest(request: Request & { assisted: Assisted }) {
+  return {
+    ...request,
+    assisted: {
+      ...request.assisted,
+      blood_type: dbTypeToBloodType(request.assisted.blood_type)!,
+    },
+  };
+
+}
+
+
 export async function paginateListRequest({
   page = 1,
   per_page = 10,
@@ -110,15 +122,34 @@ export async function paginateListRequest({
     },
   });
 
-  const hydratedRequests = requests.map((request) => {
-    return {
-      ...request,
-      assisted: {
-        ...request.assisted,
-        blood_type: dbTypeToBloodType(request.assisted.blood_type)!,
-      },
-    };
+  return requests.map(hydrateRequest);
+}
+
+export const getRequestById = async (id: number) => {
+  const request = await dbClient.request.findUnique({
+    where: { id },
+    include: {
+      assisted: true,
+    },
   });
 
-  return hydratedRequests;
+  if(!request) return null;
+  
+  return hydrateRequest(request)
+};
+
+export async function getAllPendingRequests(): Promise<RequestWithAssisted[]> {
+  const pendencyStatus = "pending" as Request["review_status"];
+
+  const requests = await dbClient.request.findMany({
+    where: {
+      active_campagin: true,
+      review_status: pendencyStatus,
+    },
+    include: {
+      assisted: true,
+    },
+  });
+
+  return requests.map(hydrateRequest);
 }

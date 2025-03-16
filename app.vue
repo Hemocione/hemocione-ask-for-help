@@ -2,7 +2,7 @@
   <NuxtLayout>
     <div class="content-wrapper">
       <Header class="sticky top-0 z-50" />
-      <NuxtPage />
+      <NuxtPage class="nuxt-page" keepalive />
     </div>
   </NuxtLayout>
 </template>
@@ -15,6 +15,12 @@
   justify-content: center;
   flex-direction: column;
   max-width: 100%;
+  height: 100dvh;
+}
+
+.nuxt-page {
+  flex-grow: 1;
+  overflow: auto;
 }
 @media screen and (max-width: 753px) {
   .content-wrapper {
