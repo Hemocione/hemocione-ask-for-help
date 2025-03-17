@@ -20,7 +20,7 @@
 
     <!-- Caixa Vermelha -->
     <div class="red-box" alt="button" @click="onClick">
-      <NuxtLink to="/main">Clique para salvar vidas</NuxtLink>
+      <NuxtLink to="/">Clique para salvar vidas</NuxtLink>
       <img src="../public/images/arrow.svg" alt="Arrow" class="arrow" />
     </div>
   </div>
