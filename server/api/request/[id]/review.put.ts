@@ -19,8 +19,9 @@ export default defineEventHandler(async (event) => {
     event,
     ReviewRequestParamsSchema.parse
   );
-
-  return await reviewRequest(id, {
+  await reviewRequest(id, {
     review_status,
   });
+
+  return { success: true };
 });
