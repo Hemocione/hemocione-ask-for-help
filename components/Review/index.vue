@@ -2,11 +2,9 @@
   <div class="h-dvh">
     <div class="p-4 flex-1 flex flex-col h-dvh w-full gap-4 items-center">
       <div class="flex flex-row justify-start items-start w-full p-4">
-        <img
-          class="w-6 h-6"
-          src="/public/images/go-back.svg"
-          @click="$router.back()"
-        />
+        <NuxtLink to="/">
+          <img class="w-6 h-6" src="/public/images/go-back.svg" />
+        </NuxtLink>
       </div>
       <h4 class="font-medium pt-16">{{ title }}</h4>
 
@@ -29,7 +27,7 @@ type Props = {
   title: string;
   photo_url: string;
   reason: string;
-  backgroundColor: string
+  backgroundColor: string;
 };
 
 const { photo_url, reason, title } = defineProps<Props>();
