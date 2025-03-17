@@ -1,4 +1,4 @@
-import type { Request, Assisted } from "@prisma/client";
+import type { Request, Assisted, RequestStatus } from "@prisma/client";
 import { dbClient } from "~/prisma";
 import { Request as RequestType } from "~/server/api/request/index.post";
 import {
@@ -151,7 +151,7 @@ export const getRequestById = async (id: number) => {
 };
 
 export async function getAllPendingRequests(): Promise<RequestWithAssisted[]> {
-  const pendingStatus = "pending" as Request["review_status"];
+  const pendingStatus = "Pending" as RequestStatus;
 
   const requests = await dbClient.request.findMany({
     where: {
