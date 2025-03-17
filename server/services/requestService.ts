@@ -114,6 +114,8 @@ export async function paginateListRequest({
 }: PaginateRequest): Promise<RequestWithAssisted[]> {
   const requests = await dbClient.request.findMany({
     where: {
+      active_campagin: true,
+      review_status: "Approved",
       assisted: {
         name: {
           contains: query.name,
