@@ -59,7 +59,7 @@ export async function createRequest(
     if (activeRequest) {
       throw createError({
         message: "Assisted already has an active request",
-        status: 400,
+        status: 409,
       });
     }
   }

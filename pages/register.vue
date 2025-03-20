@@ -1,13 +1,12 @@
 <template>
   <div class="h-dvh bg-white">
     <div class="p-4 flex-1 flex flex-col h-dvh w-full gap-4 items-center">
-      <div class="flex flex-row justify-start items-start w-full p-4">
-        <img
-          class="w-6 h-6"
-          src="/public/images/go-back.svg"
-          @click="$router.back()"
-        />
-      </div>
+      <NuxtLink
+        class="flex flex-row justify-start items-start w-full p-4"
+        to="/"
+      >
+        <img class="w-6 h-6" src="/public/images/go-back.svg" />
+      </NuxtLink>
 
       <div
         class="w-28 h-28 bg-[#CD6D71] rounded-full flex items-center justify-center"
@@ -203,13 +202,18 @@ async function handleFileSelect(event: any) {
       message: "Erro ao enviar imagem. Por favor, tente novamente.",
       duration: 3000,
     });
+  } finally {
+    uploadingImage.value = false;
   }
-
-  uploadingImage.value = false;
 }
 
 // Envio do formulário
 const registerRequest = async () => {
+  const message = ElMessage({
+    message: "Criando solicitação...",
+    type: "info",
+    duration: 0,
+  });
   if (!validationFormWithZod()) {
     console.log("Formulário inválido:", errors.value);
     return;
@@ -223,14 +227,27 @@ const registerRequest = async () => {
 
     if (!result?.review_status) {
       router.replace("/");
-      return
+      return;
     }
 
     router.push(`review/${result.review_status.toLowerCase()}`);
 
-    console.log("Solicitação criada com sucesso", result);
+    message.close();
+    ElMessage({
+      message: "Solicitação criada com sucesso!",
+      type: "success",
+      duration: 3000,
+    });
   } catch (err) {
-    console.log("Erro ao enviar solicitação", err);
+    if (err.status === 409) {
+      message.close();
+      console.error("Erro ao criar solicitação", err);
+      ElMessage({
+        type: "error",
+        message: "Já foi registrada uma solicitação com esse CPF",
+        duration: 3000,
+      });
+    }
   }
 };
 const isSelectedBloodType = (type: BloodType) =>

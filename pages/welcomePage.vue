@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container z-50 absolute inset-0">
     <div class="main">
       <img
         src="../public/images/hemo_logo.svg"
@@ -28,11 +28,12 @@
 
 <script setup>
 const router = useRouter();
+const emits = defineEmits(['close'])
 
 setLocalStorage("welcomeAlreadyShown", true);
 
 function onClick() {
-  router.replace("/");
+  emits('close')
 }
 </script>
 
@@ -51,6 +52,7 @@ function onClick() {
   align-items: center; /* Center content horizontally */
   text-align: center; /* Center the text in the main section */
   background-color: var(--hemo-color-primary);
+  overflow: hidden;
 }
 
 header {

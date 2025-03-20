@@ -49,10 +49,6 @@ import type { RequestWithAssisted } from "~/server/services/requestService";
 const router = useRouter();
 const redirect = (path: string) => router.push(path);
 
-// first time user
-if (getLocalStorage("welcomeAlreadyShown") === null)
-  router.replace("/welcomePage");
-
 const requests = ref<RequestWithAssisted[]>([]);
 const page = ref(1);
 const hasMore = ref(true);
@@ -70,13 +66,12 @@ const query = ref<{
 });
 
 // Função chamada ao buscar dados no servidor
-const fetchRequests = async () => {
+const fetchRequests = debounce(async () => {
   try {
     if (!hasMore.value) return;
 
     const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
 
-    fetching.value = true;
     const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
       method: "GET",
       params,
@@ -96,13 +91,15 @@ const fetchRequests = async () => {
     fetching.value = false;
     alreadyFetched.value = true;
   }
-};
+}, 300);
 
 // Função para resetar paginação ao alterar filtros ou busca
 const resetAndFetch = () => {
   page.value = 1;
   hasMore.value = true;
   requests.value = [];
+
+  fetching.value = true;
   fetchRequests();
 };
 
@@ -130,6 +127,7 @@ onMounted(() => {
   if (sentinel.value) {
     const observer = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting) {
+        fetching.value = true;
         await fetchRequests();
       }
     });

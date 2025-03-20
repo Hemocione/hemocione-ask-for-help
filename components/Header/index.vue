@@ -14,9 +14,10 @@
       </p>
     </div>
 
-    <button class="w-10 h-10 flex items-center justify-center">
+    <!-- TODO: Integrar com o menu do app -->
+    <!-- <button class="w-10 h-10 flex items-center justify-center">
       <img src="/public/images/hamburger.svg" alt="Menu" class="w-6 h-4" />
-    </button>
+    </button> -->
   </header>
 </template>
 
@@ -32,7 +33,6 @@ const { hemocioneIdUrl, siteUrl } = config.public;
 const imageURL = ref(
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s"
 );
-
 
 const loggedIn = computed(() => userStore.loggedIn);
 const user = computed(() => userStore.user);
