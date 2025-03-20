@@ -66,10 +66,11 @@ const query = ref<{
 });
 
 // Função chamada ao buscar dados no servidor
-const fetchRequests = debounce(async () => {
+const fetchRequests = async () => {
   try {
     if (!hasMore.value) return;
 
+    fetching.value = true;
     const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
 
     const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
@@ -91,7 +92,7 @@ const fetchRequests = debounce(async () => {
     fetching.value = false;
     alreadyFetched.value = true;
   }
-}, 300);
+};
 
 // Função para resetar paginação ao alterar filtros ou busca
 const resetAndFetch = () => {
@@ -99,7 +100,6 @@ const resetAndFetch = () => {
   hasMore.value = true;
   requests.value = [];
 
-  fetching.value = true;
   fetchRequests();
 };
 
@@ -127,7 +127,6 @@ onMounted(() => {
   if (sentinel.value) {
     const observer = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting) {
-        fetching.value = true;
         await fetchRequests();
       }
     });
