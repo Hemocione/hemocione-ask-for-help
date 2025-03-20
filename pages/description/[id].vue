@@ -6,8 +6,8 @@
 
 		<div class="main">
 
-			<div class="person-image">
-				<img v-if="request.assisted.photo_url" :src="request.assisted.photo_url!" />
+			<div class="person-image border border-[#B2493A]">
+				<img v-if="true" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s" />
 			</div>
 
 			<div class="description">
@@ -42,10 +42,11 @@
 				<img src="/images/share_icon_white.svg" alt="share_icon" class="share_icon" />
 				Compartilhar este pedido
 			</div>
-			<div class="register-donation-text" @click="registerDonation">
+			<!-- TODO: adicionar quando implementar a lógica de registrar doação -->
+			<!-- <div class="register-donation-text" @click="registerDonation">
 				<img src="/images/plus_donation_gray.svg" alt="Plus_donation" class="plus_donation" width="20" height="20" />
 				Registrar doação
-			</div>
+			</div> -->
 		</div>
 
 	</div>
@@ -109,9 +110,10 @@ header {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	gap: 24px;
-	width: 90%;
+	justify-content: start;
+	gap: 50px;
+	width: 100%;
+	padding: 20px;
 }
 
 .register-donation {
@@ -164,10 +166,11 @@ header {
 }
 
 .person-image {
-	width: 120px;
-	height: 120px;
+	width: 140px;
+	height: 140px;
 	border-radius: 50%;
 	background-color: var(--black-60);
+	overflow: hidden;
 }
 
 .description {
@@ -214,7 +217,7 @@ header {
 	align-items: center;
 	justify-content: center;
 	font-size: 0.875rem;
-	font-weight: 500;
+	font-weight: 700;
 }
 
 .location {
@@ -252,8 +255,9 @@ header {
 
 .compatibility-container .blood-type {
 	font-size: 0.875rem;
+	padding: 10px 20px;
 	color: var(--black-60);
-	font-weight: 500;
+	font-weight: 700;
 	border: 1px solid var(--black-60);
 	border-radius: 16px;
 	width: 40px;

@@ -18,6 +18,10 @@ export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },
 
+  features: {
+    inlineStyles: false,
+  },
+
   routeRules: {
     // prerender index route by default
     "/": { prerender: true },
@@ -71,5 +75,8 @@ export default defineNuxtConfig({
     secret: process.env.API_SECRET ?? "secret",
   },
 
+  nitro: {
+    compressPublicAssets: true,
+  },
   compatibilityDate: "2024-10-01",
 });
