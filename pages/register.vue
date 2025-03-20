@@ -10,7 +10,7 @@
       </div>
 
       <div
-        class="w-28 h-28 bg-[#CD6D71] rounded-full flex items-center justify-center"
+        class="w-28 h-28 bg-[--mexican-chile] rounded-full flex items-center justify-center"
       >
         <input
           id="file-input"
@@ -71,8 +71,8 @@
             v-for="(type, idx) in bloodTypes"
             :key="idx"
             :class="{
-              '!bg-[#BB0A08] !text-white': isSelectedBloodType(type),
-              'text-[#52575C] border border-[#A0A4A8]':
+              '!bg-[--hemo-color-primary] !text-[--hemo-color-text-primary]': isSelectedBloodType(type),
+              'text-[--black-80] border border-[--black-60]':
                 !isSelectedBloodType(type),
             }"
             @click="requestSchema.blood_type = bloodTypeToDbType(type)!"
