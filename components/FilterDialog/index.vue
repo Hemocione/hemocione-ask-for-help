@@ -89,7 +89,7 @@ button.bg-gray-200 {
   justify-content: center;
   border-radius: 50%;
   padding: 12px;
-  background-color: #e8e8e8;
+  background-color: var(--black-10);
   border: none;
 }
 </style>
