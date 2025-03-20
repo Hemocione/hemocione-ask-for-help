@@ -50,9 +50,53 @@ export default defineNuxtConfig({
       name: "slide-left",
       mode: "out-in",
     },
+    head: {
+      title: "Hemocione - Pedir ajuda",
+      htmlAttrs: {
+        lang: "pt-BR",
+      },
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content:
+            "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",
+        },
+        {
+          hid: "og:description",
+          property: "og:description",
+          content:
+            "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",
+        },
+        {
+          hid: "og:image",
+          property: "og:image",
+          content:
+            "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
+        },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          hid: "viewport",
+          name: "viewport",
+          content: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
+        },
+      ],
+    },
   },
 
-  modules: ["@pinia/nuxt", "@nuxt/image", "@element-plus/nuxt", "@nuxt/fonts"],
+  modules: [
+    "@pinia/nuxt",
+    "@nuxt/image",
+    "@element-plus/nuxt",
+    "@nuxt/fonts",
+    ["@nuxtjs/robots", { configPath: "~/config/robots.config" }],
+  ],
+
+  site: { indexable: true },
 
   runtimeConfig: {
     public: {

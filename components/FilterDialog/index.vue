@@ -13,6 +13,7 @@
           class="w-4 h-4"
           src="/public/images/go-back.svg"
           @click="dialogVisible = false"
+          alt="Setinha para voltar pra página anterior"
         />
         <h2 class="text-[#374957] text-sm">
           Selecione os filtros que deseja aplicar

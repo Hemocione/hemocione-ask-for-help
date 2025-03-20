@@ -1,13 +1,13 @@
 <template>
 	<div v-if="request" class="app-container">
 		<div class="flex flex-row justify-start items-start w-full p-4 pt-6 cursor-pointer">
-			<img class="w-6 h-6" src="/public/images/go-back.svg" @click="$router.back()" />
+			<img class="w-6 h-6" src="/public/images/go-back.svg" @click="$router.back()" alt="Setinha para voltar pra página anterior"/>
 		</div>
 
 		<div class="main">
 
 			<div class="person-image border border-[#B2493A]">
-				<img v-if="true" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s" />
+				<img v-if="request.assisted.photo_url" :src="request.assisted.photo_url!" alt="Imagem do usuário solicitante que precisa de doação"/>
 			</div>
 
 			<div class="description">
@@ -19,7 +19,7 @@
 					</span>
 
 					<span class="location">
-						<img src="/images/loc.svg">
+						<img src="/images/loc.svg" alt="Localização do usuário solicitante">
 						<p>{{ request.local_name }}</p>
 					</span>
 				</div>
@@ -39,7 +39,7 @@
 
 		<div class="register-donation" alt="button">
 			<div class="share-donation-text" @click="shareDonation">
-				<img src="/images/share_icon_white.svg" alt="share_icon" class="share_icon" />
+				<img src="/images/share_icon_white.svg" alt="icone de compartilhamento" class="share_icon" />
 				Compartilhar este pedido
 			</div>
 			<!-- TODO: adicionar quando implementar a lógica de registrar doação -->

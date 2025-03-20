@@ -15,7 +15,7 @@
         <h2>Nenhum pedido encontrado :(</h2>
         <img
           src="/images/rafiki.svg"
-          alt="Large Center Image"
+          alt="Imagem ilustrativa de uma pessoa doando sangue"
           class="w-[250px] mx-auto"
         />
       </div>
