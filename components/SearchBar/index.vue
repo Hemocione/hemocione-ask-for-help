@@ -4,7 +4,7 @@
       type="text"
       v-model="searchQuery"
       placeholder="Buscar por pedidos disponíveis"
-      class="rounded-full p-2 pl-10 w-full bg-[#E8E8E8] focus:outline-none focus:ring-2 focus:ring-gray-400 placeholder-[#52575C]"
+      class="rounded-full p-2 pl-10 w-full bg-[--black-10] focus:outline-none focus:ring-2 focus:ring-gray-400 placeholder-[--black-80]"
       @input="handleSearch"
     />
     <span class="absolute left-3 top-2.5 text-gray-400">

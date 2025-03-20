@@ -6,7 +6,7 @@
 
 		<div class="main">
 
-			<div class="person-image border border-[#B2493A]">
+			<div class="person-image border border-[--hemo-color-primary]">
 				<img v-if="true" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s" />
 			</div>
 
