@@ -3,7 +3,7 @@
     class="h-[72px] flex flex-row items-center justify-between gap-4 p-5 bg-[#BB0A08] h-[4.5rem] rounded-b-3xl w-full"
   >
     <div class="flex flex-row items-center gap-3">
-      <img :src="imageURL" class="w-10 h-10 rounded-full" />
+      <img :src="imageURL" class="w-10 h-10 rounded-full" alt="Imagem do usuário logado"/>
 
       <p class="text-white">
         {{ dinamicTitle }}
@@ -14,9 +14,10 @@
       </p>
     </div>
 
-    <button class="w-10 h-10 flex items-center justify-center">
+    <!-- TODO: Integrar com o menu do app -->
+    <!-- <button class="w-10 h-10 flex items-center justify-center">
       <img src="/public/images/hamburger.svg" alt="Menu" class="w-6 h-4" />
-    </button>
+    </button> -->
   </header>
 </template>
 
@@ -32,7 +33,6 @@ const { hemocioneIdUrl, siteUrl } = config.public;
 const imageURL = ref(
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s"
 );
-
 
 const loggedIn = computed(() => userStore.loggedIn);
 const user = computed(() => userStore.user);

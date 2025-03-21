@@ -15,7 +15,7 @@
         <h2>Nenhum pedido encontrado :(</h2>
         <img
           src="/images/rafiki.svg"
-          alt="Large Center Image"
+          alt="Imagem ilustrativa de uma pessoa doando sangue"
           class="w-[250px] mx-auto"
         />
       </div>
@@ -47,11 +47,7 @@ import { debounce } from "lodash-es";
 import type { RequestWithAssisted } from "~/server/services/requestService";
 
 const router = useRouter();
-const redirect = (path: string) => router.push(path);
-
-// first time user
-if (getLocalStorage("welcomeAlreadyShown") === null)
-  router.replace("/welcomePage");
+const redirect = (path: string) => router.push(`/${path}`);
 
 const requests = ref<RequestWithAssisted[]>([]);
 const page = ref(1);
@@ -74,9 +70,9 @@ const fetchRequests = async () => {
   try {
     if (!hasMore.value) return;
 
+    fetching.value = true;
     const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
 
-    fetching.value = true;
     const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
       method: "GET",
       params,
@@ -103,6 +99,7 @@ const resetAndFetch = () => {
   page.value = 1;
   hasMore.value = true;
   requests.value = [];
+
   fetchRequests();
 };
 

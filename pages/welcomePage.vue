@@ -1,9 +1,9 @@
 <template>
-  <div class="app-container">
+  <div class="app-container z-50 absolute inset-0">
     <div class="main">
       <img
         src="../public/images/hemo_logo.svg"
-        alt="Small Top Image"
+        alt="Logo da hemocione"
         class="small-image"
       />
       <h2>Pedir ajuda</h2>
@@ -13,7 +13,7 @@
       </p>
       <img
         src="../public/images/rafiki.svg"
-        alt="Large Center Image"
+        alt="Imagem ilustrativa de uma pessoa doando sangue"
         class="large-image"
       />
     </div>
@@ -21,18 +21,23 @@
     <!-- Caixa Vermelha -->
     <div class="red-box" alt="button" @click="onClick">
       <NuxtLink to="/">Clique para salvar vidas</NuxtLink>
-      <img src="../public/images/arrow.svg" alt="Arrow" class="arrow" />
+      <img
+        src="../public/images/arrow.svg"
+        class="arrow"
+        alt="Setinha para prosseguir no aplicativo"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
 const router = useRouter();
+const emits = defineEmits(["close"]);
 
 setLocalStorage("welcomeAlreadyShown", true);
 
 function onClick() {
-  router.replace("/");
+  emits("close");
 }
 </script>
 
@@ -51,6 +56,7 @@ function onClick() {
   align-items: center; /* Center content horizontally */
   text-align: center; /* Center the text in the main section */
   background-color: var(--hemo-color-primary);
+  overflow: hidden;
 }
 
 header {
