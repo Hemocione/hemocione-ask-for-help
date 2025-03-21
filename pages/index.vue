@@ -47,7 +47,7 @@ import { debounce } from "lodash-es";
 import type { RequestWithAssisted } from "~/server/services/requestService";
 
 const router = useRouter();
-const redirect = (path: string) => router.push(path);
+const redirect = (path: string) => router.push(`/${path}`);
 
 const requests = ref<RequestWithAssisted[]>([]);
 const page = ref(1);
