@@ -74,8 +74,7 @@
             v-for="(type, idx) in bloodTypes"
             :key="idx"
             :class="{
-              '!bg-[--hemo-color-primary] !text-white':
-                isSelectedBloodType(type),
+              '!bg-[--hemo-color-primary] !text-[--hemo-color-text-primary]': isSelectedBloodType(type),
               'text-[--black-80] border border-[--black-60]':
                 !isSelectedBloodType(type),
             }"

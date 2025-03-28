@@ -25,7 +25,7 @@
           v-for="(type, idx) in bloodTypes"
           :key="idx"
           :class="{
-            'bg-[--hemo-color-primary] text-white': selectedBloodTypes.includes(type),
+            'bg-[--hemo-color-primary] text-[--black-60]': selectedBloodTypes.includes(type),
             ' text-[--black-80] border border-[--black-60]':
               !selectedBloodTypes.includes(type),
           }"
@@ -41,7 +41,7 @@
       <div class="flex justify-end">
         <el-button
           @click="emitBloodTypeSelection"
-          class="bg-[--hemo-color-primary] p-2 w-full rounded-2xl text-white hover:bg-red-500"
+          class="bg-[--hemo-color-primary] p-2 w-full rounded-2xl text-[--hemo-color-text-primary] hover:bg-red-500"
           >Ver Resultados</el-button
         >
       </div>

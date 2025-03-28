@@ -5,11 +5,11 @@
     <div class="flex flex-row items-center gap-3">
       <img :src="imageURL" class="w-10 h-10 rounded-full" alt="Imagem do usuário logado"/>
 
-      <p class="text-white">
+      <p class="text-[--hemo-color-text-primary]">
         {{ dinamicTitle }}
 
         <NuxtLink v-if="!loggedIn" :to="authUrl" class="auth-button" external>
-          <span class="text-white text-base bold">Faça Login</span>
+          <span class="text-[--hemo-color-text-primary] text-base bold">Faça Login</span>
         </NuxtLink>
       </p>
     </div>

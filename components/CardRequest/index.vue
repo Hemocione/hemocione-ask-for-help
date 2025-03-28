@@ -24,12 +24,12 @@
         <div
           class="bg-[--hemo-color-primary] w-10 h-5 rounded-xl flex items-center justify-center"
         >
-          <p class="text-white">{{ bloodType }}</p>
+          <p class="text-[--hemo-color-text-primary]">{{ bloodType }}</p>
         </div>
       </div>
     </div>
     <div
-      class="rounded-full max-w-5/12 overflow-hidden border border-[#B2493A]"
+      class="rounded-full max-w-5/12 overflow-hidden border border-[--hemo-color-primary]"
     >
       <img
         :src="requesterPhoto"

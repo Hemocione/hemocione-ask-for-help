@@ -6,7 +6,7 @@
 
 		<div class="main">
 
-			<div class="person-image border border-[#B2493A]">
+			<div class="person-image border border-[--hemo-color-primary]">
 				<img v-if="request.assisted.photo_url" :src="request.assisted.photo_url!" alt="Imagem do usuário solicitante que precisa de doação"/>
 			</div>
 
