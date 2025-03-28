@@ -87,6 +87,24 @@ const isCompatible = (bloodType: BloodType) => {
 	return bloodCompatibilities.includes(bloodType)
 }
 
+const ogImageOptions = {
+  width: 800,
+  height: 400,
+  component: "EventDetail",
+  title: `${eventConfig.name ?? eventConfig.slug}`,
+  description:
+    eventConfig.description ??
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.name ?? eventConfig.slug
+    }`,
+  addressText,
+  timeText,
+  startAt: eventConfig.startAt,
+  logo: eventConfig.logo,
+};
+
+defineOgImage(ogImageOptions);
+
 </script>
 
 <style scoped>
