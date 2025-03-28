@@ -95,10 +95,10 @@ const ogImageOptions = {
   width: 400,
   height: 800,
   component: "RequestDetails",
-	name: request.value?.assisted.name ?? "";
-  bloodType: request.value?.assisted.blood_type ?? "";
-  photoURL: request.value?.assisted.photo_url?? "";
-  location: request.value?.local_name ?? "";
+	name: request.value?.assisted.name ?? "",
+  bloodType: request.value?.assisted.blood_type ?? "",
+  photoURL: request.value?.assisted.photo_url?? "",
+  location: request.value?.local_name ?? "",
 };
 
 defineOgImage(ogImageOptions);
