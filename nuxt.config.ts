@@ -15,7 +15,6 @@ const getSiteUrl = () => {
 const siteUrl = getSiteUrl();
 
 export default defineNuxtConfig({
-  ssr: false,
   devtools: { enabled: true },
 
   features: {
@@ -57,30 +56,30 @@ export default defineNuxtConfig({
       },
       meta: [
         {
-          hid: "description",
+          id: "description",
           name: "description",
           content:
             "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",
         },
         {
-          hid: "og:description",
+          id: "og:description",
           property: "og:description",
           content:
             "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",
         },
         {
-          hid: "og:image",
+          id: "og:image",
           property: "og:image",
           content:
             "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
         },
         {
-          hid: "twitter:card",
+          id: "twitter:card",
           name: "twitter:card",
           content: "summary_large_image",
         },
         {
-          hid: "viewport",
+          id: "viewport",
           name: "viewport",
           content: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
         },
@@ -94,9 +93,23 @@ export default defineNuxtConfig({
     "@element-plus/nuxt",
     "@nuxt/fonts",
     ["@nuxtjs/robots", { configPath: "~/config/robots.config" }],
+    "@nuxtjs/seo",
   ],
 
-  site: { indexable: true },
+  routeRules: {
+    "/review/:status": {
+      ssr: false,
+    },
+    "/": {
+      ssr: false,
+    },
+    "/register": {
+      ssr: false,
+    },
+    "/welcomePage": {
+      ssr: false,
+    },
+  },
 
   runtimeConfig: {
     public: {
@@ -119,8 +132,25 @@ export default defineNuxtConfig({
     secret: process.env.API_SECRET ?? "secret",
   },
 
+  site: {
+    indexable: true /* Allow search engines to index the site */,
+    url: "https://hemocione-ask-for-help.vercel.app/",
+    name: "Hemocione Pedir Ajuda",
+    description:
+      "Conecta pessoas que precisam de doações de sangue com doadores",
+    defaultLocale: "pt-BR",
+    identity: {
+      type: "Organization",
+    },
+    email: "contato@hemocione.com.br",
+    twitter: "@hemocione",
+    facebook: "hemocione",
+    instagram: "@hemocione",
+  },
+
   nitro: {
     compressPublicAssets: true,
   },
-  compatibilityDate: "2024-10-01",
+
+  compatibilityDate: "2025-10-03",
 });

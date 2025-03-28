@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center p-4 border border-[--black-60] rounded-2xl"
+    class="flex flex-col items-center justify-center p-4 border border-[--black-60] rounded-2xl min-h-[800px] min-w-[380px]"
   >
     <!-- logo hemocione -->
     <img
@@ -74,7 +74,7 @@ import {
 } from "~/types/blood";
 type Props = {
   name: string;
-  bloodType: string;
+  bloodType: BloodType;
   location: string;
   photoURL: string;
 };
@@ -88,6 +88,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const isCompatible = (bloodType: BloodType) => {
-  return bloodReceiveCompatibilities[props.bloodType]?.includes(bloodType) || false;
+  return (
+    bloodReceiveCompatibilities[props.bloodType]?.includes(bloodType) || false
+  );
 };
 </script>
