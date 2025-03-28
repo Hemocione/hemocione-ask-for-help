@@ -24,7 +24,7 @@ useServerSeoMeta({
 
 import WelcomePage from "~/pages/welcomePage.vue";
 
-const isOpenWelcome = ref<boolean>(getLocalStorage("welcomeAlreadyShown"));
+const isOpenWelcome = ref<boolean>(getLocalStorage("welcomeAlreadyShown") || true);
 const shouldShowWelcome = computed(() => !isOpenWelcome.value);
 </script>
 <style scoped>
