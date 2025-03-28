@@ -88,6 +88,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const isCompatible = (bloodType: BloodType) => {
-  return bloodReceiveCompatibilities[props.bloodType].includes(bloodType);
+  return bloodReceiveCompatibilities[props.bloodType]?.includes(bloodType) || false;
 };
 </script>
