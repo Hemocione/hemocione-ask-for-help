@@ -6,7 +6,16 @@ const getSiteUrl = () => {
   }
 
   if (process.env.VERCEL_ENV === undefined) {
-    return "http://localhost:3000";
+    const nuxtDevConfig = process.env.__NUXT_DEV__;
+    let networkAddress;
+    if (nuxtDevConfig) {
+      const parsedConfig = JSON.parse(nuxtDevConfig);
+      networkAddress = parsedConfig?.proxy?.urls?.find(
+        (addr: any) => addr.type === "network"
+      )?.url;
+    }
+
+    return networkAddress || "http://localhost:3000";
   }
 
   return "https://hemocione-ask-for-help.vercel.app/";
@@ -19,11 +28,6 @@ export default defineNuxtConfig({
 
   features: {
     inlineStyles: false,
-  },
-
-  routeRules: {
-    // prerender index route by default
-    "/": { prerender: true },
   },
 
   css: [
@@ -48,43 +52,7 @@ export default defineNuxtConfig({
     layoutTransition: {
       name: "slide-left",
       mode: "out-in",
-    },
-    head: {
-      title: "Hemocione - Pedir ajuda",
-      htmlAttrs: {
-        lang: "pt-BR",
-      },
-      meta: [
-        {
-          id: "description",
-          name: "description",
-          content:
-            "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",
-        },
-        {
-          id: "og:description",
-          property: "og:description",
-          content:
-            "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",
-        },
-        {
-          id: "og:image",
-          property: "og:image",
-          content:
-            "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
-        },
-        {
-          id: "twitter:card",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        {
-          id: "viewport",
-          name: "viewport",
-          content: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
-        },
-      ],
-    },
+    }
   },
 
   modules: [
@@ -102,6 +70,7 @@ export default defineNuxtConfig({
     },
     "/": {
       ssr: false,
+      prerender: true,
     },
     "/register": {
       ssr: false,
@@ -133,8 +102,8 @@ export default defineNuxtConfig({
   },
 
   site: {
+    url: siteUrl,
     indexable: true /* Allow search engines to index the site */,
-    url: "https://hemocione-ask-for-help.vercel.app/",
     name: "Hemocione Pedir Ajuda",
     description:
       "Conecta pessoas que precisam de doações de sangue com doadores",

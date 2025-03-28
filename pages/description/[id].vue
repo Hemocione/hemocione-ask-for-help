@@ -93,6 +93,26 @@ const route = useRoute();
 const request = ref<RequestWithAssisted | null>(null);
 const id = route.params.id;
 
+const config = useRuntimeConfig();
+
+useHead({
+  title: `${request.value?.assisted.name ?? ""}`,
+});
+
+useServerSeoMeta({
+  title: `${request.value?.assisted.name ?? "Pedido de ajuda"}`,
+  ogTitle: `${request.value?.assisted.name ?? "Pedido de ajuda"}`,
+  description: `Pedido de ajuda da ${
+    request.value?.assisted.name ?? "Solicitante"
+  }`,
+  ogDescription: `Pedido de ajuda da ${
+    request.value?.assisted.name ?? "Solicitante"
+  }`,
+  twitterCard: "summary_large_image",
+  fbAppId: "Hemocione",
+  ogUrl: `${config.public.siteUrl}/description/${id}`,
+});
+
 defineOgImageComponent("RequestDetails", {
   width: 400,
   height: 800,
@@ -128,10 +148,6 @@ const bloodCompatibilities = request.value
 const isCompatible = (bloodType: BloodType) => {
   return bloodCompatibilities.includes(bloodType);
 };
-
-useHead({
-  title: `${request.value?.assisted.name ?? ""}`,
-});
 </script>
 
 <style scoped>

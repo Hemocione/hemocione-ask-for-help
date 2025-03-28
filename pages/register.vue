@@ -51,6 +51,7 @@
           class="input"
           placeholder="Insira o número de CPF"
           v-model="requestSchema.cpf"
+          @input="formatCpf"
         ></ElInput>
         <p v-if="errors.cpf" class="text-red-500 text-sm">{{ errors.cpf }}</p>
       </div>
@@ -74,7 +75,8 @@
             v-for="(type, idx) in bloodTypes"
             :key="idx"
             :class="{
-              '!bg-[--hemo-color-primary] !text-[--hemo-color-text-primary]': isSelectedBloodType(type),
+              '!bg-[--hemo-color-primary] !text-[--hemo-color-text-primary]':
+                isSelectedBloodType(type),
               'text-[--black-80] border border-[--black-60]':
                 !isSelectedBloodType(type),
             }"
@@ -117,18 +119,33 @@ if (user?.id) {
   requestSchema.value.requester_id = user.id;
 }
 
+watch(
+  requestSchema,
+  (newValue) => {
+    for (const key in errors.value) {
+      if (newValue[key as keyof typeof requestSchema.value]) {
+        delete errors.value[key];
+      }
+    }
+  },
+  { deep: true }
+);
+
 // Validação do formulário
 const validationFormWithZod = () => {
+  errors.value = {};
+
   try {
     const CreateRequestSchema = z.object({
       local_name: z.string({
         invalid_type_error: "Endereço inválido",
         required_error: "O Endereço é obrigatório",
       }),
-      cpf: z.string({
-        invalid_type_error: "CPF inválido",
-        required_error: "CPF é obrigatório",
-      }),
+      cpf: z
+        .string()
+        .min(11, "O CPF deve ter 11 dígitos")
+        .max(14, "O CPF deve ter no máximo 14 caracteres")
+        .refine(isValidCPF, { message: "CPF inválido" }),
       name: z.string({
         invalid_type_error: "Nome inválido",
         required_error: "Nome é obrigatório",
@@ -138,7 +155,9 @@ const validationFormWithZod = () => {
         required_error: "Tipo sanguíneo é obrigatório",
       }),
 
-      photo_url: z.string().optional(),
+      photo_url: z.string({
+        required_error: "Foto é obrigatório",
+      }),
     });
     CreateRequestSchema.parse(requestSchema.value);
     return true;
@@ -211,6 +230,18 @@ async function handleFileSelect(event: any) {
   }
 }
 
+const formatCpf = () => {
+  let rawCpf = requestSchema.value.cpf.replace(/\D/g, ""); // Remove tudo que não for número
+
+  if (rawCpf.length > 11) rawCpf = rawCpf.slice(0, 11); // Limita a 11 dígitos
+
+  // Aplica a máscara de CPF dinamicamente
+  requestSchema.value.cpf = rawCpf
+    .replace(/^(\d{3})(\d)/, "$1.$2")
+    .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/\.(\d{3})(\d)/, ".$1-$2");
+};
+
 // Envio do formulário
 const registerRequest = async () => {
   const message = ElMessage({
@@ -219,7 +250,13 @@ const registerRequest = async () => {
     duration: 0,
   });
   if (!validationFormWithZod()) {
+    message.close();
     console.log("Formulário inválido:", errors.value);
+    ElMessage({
+      type: "error",
+      message: errors.value[Object.keys(errors.value)[0]],
+      duration: 3000,
+    });
     return;
   }
 
