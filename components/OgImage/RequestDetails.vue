@@ -61,7 +61,7 @@
       </div>
     </div>
     <a class="flex flex-row gap-1" href="">
-      <img src="/images/instagram.svg" />
+      <img src="/images/instagram.svg" alt="Instagram Hemocione" />
       <p class="text-xs text-[--hemo-color-primary]">Hemocione</p>
     </a>
   </div>
