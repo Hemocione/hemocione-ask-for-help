@@ -15,18 +15,18 @@
           @click="dialogVisible = false"
           alt="Setinha para voltar pra página anterior"
         />
-        <h2 class="text-[#374957] text-sm">
+        <h2 class="text-[--black-80] text-sm">
           Selecione os filtros que deseja aplicar
         </h2>
       </div>
-      <p class="text-[#374957]">Tipo Sanguíneo</p>
+      <p class="text-[--black-80]">Tipo Sanguíneo</p>
       <div class="grid grid-cols-4 gap-4 mb-3 p-4">
         <el-button
           v-for="(type, idx) in bloodTypes"
           :key="idx"
           :class="{
-            'bg-[#BB0A08] text-white': selectedBloodTypes.includes(type),
-            ' text-[#52575C] border border-[#A0A4A8]':
+            'bg-[--hemo-color-primary] text-white': selectedBloodTypes.includes(type),
+            ' text-[--black-80] border border-[--black-60]':
               !selectedBloodTypes.includes(type),
           }"
           @click="toggleBloodTypeSelection(type)"
@@ -41,7 +41,7 @@
       <div class="flex justify-end">
         <el-button
           @click="emitBloodTypeSelection"
-          class="bg-[#BB0A08] p-2 w-full rounded-2xl text-white hover:bg-red-500"
+          class="bg-[--hemo-color-primary] p-2 w-full rounded-2xl text-white hover:bg-red-500"
           >Ver Resultados</el-button
         >
       </div>
@@ -90,7 +90,7 @@ button.bg-gray-200 {
   justify-content: center;
   border-radius: 50%;
   padding: 12px;
-  background-color: #e8e8e8;
+  background-color: var(--black-10);
   border: none;
 }
 </style>

@@ -5,11 +5,16 @@
         class="flex flex-row justify-start items-start w-full p-4"
         to="/"
       >
-        <img class="w-6 h-6" src="/public/images/go-back.svg" alt="Setinha para voltar pra página anterior" />
+        <img
+          class="w-6 h-6"
+          src="/public/images/go-back.svg"
+          alt="Setinha para voltar pra página anterior"
+        />
       </NuxtLink>
 
       <div
-        class="w-28 h-28 bg-[#CD6D71] rounded-full flex items-center justify-center"
+        class="w-28 h-28 bg-[--mexican-chile] rounded-full flex items-center justify-center"
+        onclick="document.getElementById('file-input').click()"
       >
         <input
           id="file-input"
@@ -26,7 +31,6 @@
             '!w-28 !h-28 !rounded-full': isOwnPhoto,
           }"
           :alt="isOwnPhoto ? 'Foto do solicitante' : 'Ícone de coração'"
-          onclick="document.getElementById('file-input').click()"
         />
       </div>
 
@@ -70,8 +74,9 @@
             v-for="(type, idx) in bloodTypes"
             :key="idx"
             :class="{
-              '!bg-[#BB0A08] !text-white': isSelectedBloodType(type),
-              'text-[#52575C] border border-[#A0A4A8]':
+              '!bg-[--hemo-color-primary] !text-white':
+                isSelectedBloodType(type),
+              'text-[--black-80] border border-[--black-60]':
                 !isSelectedBloodType(type),
             }"
             @click="requestSchema.blood_type = bloodTypeToDbType(type)!"

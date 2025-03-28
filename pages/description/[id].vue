@@ -27,10 +27,10 @@
 				<div class="compatibility-container">
 					<p class="title">Compatibilidade de doações</p>
 					<p class="content">
-					<div v-for="(type, idx) in bloodTypes" :key="idx" :class="{ 'blood-compatible': isCompatible(type) }"
-						class="blood-type">
-						{{ type }}
-					</div>
+						<div v-for="(type, idx) in bloodTypes" :key="idx" :class="{ 'blood-compatible': isCompatible(type) }"
+							class="blood-type">
+							{{ type }}
+						</div>
 					</p>
 				</div>
 			</div>
@@ -87,20 +87,18 @@ const isCompatible = (bloodType: BloodType) => {
 	return bloodCompatibilities.includes(bloodType)
 }
 
+useHead({
+  title: `${request.value?.assisted.name ?? ""}`,
+});
+
 const ogImageOptions = {
-  width: 800,
-  height: 400,
-  component: "EventDetail",
-  title: `${eventConfig.name ?? eventConfig.slug}`,
-  description:
-    eventConfig.description ??
-    `Evento de doação de sangue do Hemocione - ${
-      eventConfig.name ?? eventConfig.slug
-    }`,
-  addressText,
-  timeText,
-  startAt: eventConfig.startAt,
-  logo: eventConfig.logo,
+  width: 400,
+  height: 800,
+  component: "RequestDetails",
+	name: request.value?.assisted.name ?? "";
+  bloodType: request.value?.assisted.blood_type ?? "";
+  photoURL: request.value?.assisted.photo_url?? "";
+  location: request.value?.local_name ?? "";
 };
 
 defineOgImage(ogImageOptions);

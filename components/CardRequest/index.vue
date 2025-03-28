@@ -12,14 +12,14 @@
             src="/public/images/loc.svg"
             alt="Localização"
           />
-          <p class="text-[#52575C]">
+          <p class="text-[--black-80]">
             {{ requesterLocal }}
           </p>
         </div>
       </div>
       <div class="flex flex-row gap-2">
         <!-- Blood Type -->
-        <p class="text-sm text-[#52575C]">Tipo Sanguíneo</p>
+        <p class="text-sm text-[--black-80]">Tipo Sanguíneo</p>
 
         <div
           class="bg-[--hemo-color-primary] w-10 h-5 rounded-xl flex items-center justify-center"
