@@ -41,7 +41,7 @@
       </div>
       <div class="flex items-center gap-2 pb-4">
         <img src="/images/loc.svg" alt="Localização do usuário solicitante" />
-        <p class="text-xs text-[--black-80]">Hospital Federal de Bonsucesso</p>
+        <p class="text-xs text-[--black-80]">{{ location }}</p>
       </div>
       <div class="rounded-lg flex flex-col items-center">
         <p class="text-base font-semibold mb-5">Tipos sanguíneos compatíveis</p>
