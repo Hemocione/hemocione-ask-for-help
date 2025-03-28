@@ -15,7 +15,7 @@
         <h2>Nenhum pedido encontrado :(</h2>
         <img
           src="/images/rafiki.svg"
-          alt="Large Center Image"
+          alt="Imagem ilustrativa de uma pessoa doando sangue"
           class="w-[250px] mx-auto"
         />
       </div>
@@ -47,7 +47,7 @@ import { debounce } from "lodash-es";
 import type { RequestWithAssisted } from "~/server/services/requestService";
 
 const router = useRouter();
-const redirect = (path: string) => router.push(path);
+const redirect = (path: string) => router.push(`/${path}`);
 
 const requests = ref<RequestWithAssisted[]>([]);
 const page = ref(1);
@@ -66,10 +66,11 @@ const query = ref<{
 });
 
 // Função chamada ao buscar dados no servidor
-const fetchRequests = debounce(async () => {
+const fetchRequests = async () => {
   try {
     if (!hasMore.value) return;
 
+    fetching.value = true;
     const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
 
     const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
@@ -91,7 +92,7 @@ const fetchRequests = debounce(async () => {
     fetching.value = false;
     alreadyFetched.value = true;
   }
-}, 300);
+};
 
 // Função para resetar paginação ao alterar filtros ou busca
 const resetAndFetch = () => {
@@ -99,7 +100,6 @@ const resetAndFetch = () => {
   hasMore.value = true;
   requests.value = [];
 
-  fetching.value = true;
   fetchRequests();
 };
 
@@ -127,7 +127,6 @@ onMounted(() => {
   if (sentinel.value) {
     const observer = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting) {
-        fetching.value = true;
         await fetchRequests();
       }
     });
