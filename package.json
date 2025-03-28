@@ -19,7 +19,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "autoprefixer": "^10.4.20",
     "element-plus": "^2.8.5",
-    "nuxt": "^3.8.2",
+    "nuxt": "^3.16.1",
     "postcss": "^8.4.47",
     "prisma": "^6.2.1",
     "tailwindcss": "^3.4.14",
@@ -29,6 +29,7 @@
   "dependencies": {
     "@nuxt/fonts": "^0.10.3",
     "@nuxtjs/robots": "^5.2.8",
+    "@nuxtjs/seo": "^3.0.1",
     "@pinia/nuxt": "^0.5.5",
     "jsonwebtoken": "^9.0.2",
     "lodash-es": "^4.17.21",

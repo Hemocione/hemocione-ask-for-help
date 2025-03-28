@@ -5,11 +5,16 @@
         class="flex flex-row justify-start items-start w-full p-4"
         to="/"
       >
-        <img class="w-6 h-6" src="/public/images/go-back.svg" alt="Setinha para voltar pra página anterior" />
+        <img
+          class="w-6 h-6"
+          src="/public/images/go-back.svg"
+          alt="Setinha para voltar pra página anterior"
+        />
       </NuxtLink>
 
       <div
         class="w-28 h-28 bg-[--mexican-chile] rounded-full flex items-center justify-center"
+        onclick="document.getElementById('file-input').click()"
       >
         <input
           id="file-input"
@@ -26,7 +31,6 @@
             '!w-28 !h-28 !rounded-full': isOwnPhoto,
           }"
           :alt="isOwnPhoto ? 'Foto do solicitante' : 'Ícone de coração'"
-          onclick="document.getElementById('file-input').click()"
         />
       </div>
 
