@@ -52,7 +52,7 @@ export default defineNuxtConfig({
     layoutTransition: {
       name: "slide-left",
       mode: "out-in",
-    }
+    },
   },
 
   modules: [
@@ -115,6 +115,10 @@ export default defineNuxtConfig({
     twitter: "@hemocione",
     facebook: "hemocione",
     instagram: "@hemocione",
+  },
+
+  experimental: {
+    componentIslands: true,
   },
 
   nitro: {
