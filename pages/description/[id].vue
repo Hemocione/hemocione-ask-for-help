@@ -140,17 +140,19 @@ useServerSeoMeta({
   ogUrl: `${config.public.siteUrl}/description/${id}`,
 });
 
-defineOgImage({
-  component: "RequestDetails",
-  width: 400,
-  height: 800,
-  props: {
+defineOgImageComponent(
+  "RequestDetails",
+  {
     name: request.value?.assisted.name ?? "",
     bloodType: request.value?.assisted.blood_type ?? "",
     photoURL: request.value?.assisted.photo_url ?? "",
     location: request.value?.local_name ?? "",
   },
-});
+  {
+    width: 400,
+    height: 800,
+  }
+);
 </script>
 
 <style scoped>
