@@ -141,7 +141,7 @@ useServerSeoMeta({
 });
 
 defineOgImageComponent(
-  "RequestDetailsTwo",
+  "RequestDetails",
   {
     name: request.value?.assisted.name ?? "",
     bloodType: request.value?.assisted.blood_type ?? "",
