@@ -70,25 +70,27 @@
 defineOptions({
   inheritAttrs: false,
 });
-import {
-  bloodReceiveCompatibilities,
-  bloodTypes,
-  type BloodType,
-} from "~/types/blood";
-type Props = {
+
+const props = defineProps<{
   name: string;
   bloodType: BloodType;
   location: string;
   photoURL: string;
+}>();
+
+const bloodReceiveCompatibilities: Record<BloodType, BloodType[]> = {
+  "O-": ["O-"],
+  "O+": ["O-", "O+"],
+  "A-": ["O-", "A-"],
+  "A+": ["O-", "O+", "A-", "A+"],
+  "B-": ["O-", "B-"],
+  "B+": ["O-", "O+", "B-", "B+"],
+  "AB-": ["O-", "A-", "B-", "AB-"],
+  "AB+": ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
 };
 
-const props = withDefaults(defineProps<Props>(), {
-  name: "Nome do solicitante",
-  bloodType: "A+",
-  location: "Localização do solicitante",
-  photoURL:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s",
-});
+const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
+type BloodType = (typeof bloodTypes)[number];
 
 const isCompatible = (bloodType: BloodType) => {
   return (
