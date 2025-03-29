@@ -67,6 +67,9 @@
   </div>
 </template>
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false,
+});
 import {
   bloodReceiveCompatibilities,
   bloodTypes,
