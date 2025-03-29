@@ -99,6 +99,33 @@ const id = route.params.id;
 
 const config = useRuntimeConfig();
 
+// TODO: funções dos butões
+const shareDonation = () => {
+  console.log("Button clicked");
+};
+const registerDonation = () => {
+  console.log("Button clicked");
+};
+
+try {
+  request.value = await $fetch(`/api/request/${id}`, {
+    method: "GET",
+  });
+} catch (error) {
+  throw createError({
+    statusCode: 500,
+    statusMessage: "Erro inesperado ao recuperar a solicitação.",
+  });
+}
+
+const bloodCompatibilities = request.value
+  ? bloodReceiveCompatibilities[request.value.assisted.blood_type]
+  : [];
+
+const isCompatible = (bloodType: BloodType) => {
+  return bloodCompatibilities.includes(bloodType);
+};
+
 useHead({
   title: `${request.value?.assisted.name ?? ""}`,
 });
@@ -129,32 +156,6 @@ defineOgImage({
   },
 });
 
-// TODO: funções dos butões
-const shareDonation = () => {
-  console.log("Button clicked");
-};
-const registerDonation = () => {
-  console.log("Button clicked");
-};
-
-try {
-  request.value = await $fetch(`/api/request/${id}`, {
-    method: "GET",
-  });
-} catch (error) {
-  throw createError({
-    statusCode: 500,
-    statusMessage: "Erro inesperado ao recuperar a solicitação.",
-  });
-}
-
-const bloodCompatibilities = request.value
-  ? bloodReceiveCompatibilities[request.value.assisted.blood_type]
-  : [];
-
-const isCompatible = (bloodType: BloodType) => {
-  return bloodCompatibilities.includes(bloodType);
-};
 </script>
 
 <style scoped>
