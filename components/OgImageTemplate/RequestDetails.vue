@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center p-4 border border-[--black-60] rounded-2xl min-h-[800px] min-w-[380px]"
+    class="flex flex-col items-center justify-center p-4 border border-[--black-60] rounded-2xl"
   >
     <!-- logo hemocione -->
     <img
