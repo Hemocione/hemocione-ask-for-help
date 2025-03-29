@@ -35,7 +35,9 @@
         <SkeletonCardRequest v-if="fetching && alreadyFetched" />
       </div>
     </div>
-    <div class="sticky p-4 bottom-0 left-0 w-full bg-white shadow-lg">
+    <div
+      class="sticky p-4 bottom-0 left-0 w-full bg-white shadow-lg rounded-t-3xl border-2 border[--black-20]"
+    >
       <ButtonAskForHelp @click="redirect('register')"></ButtonAskForHelp>
     </div>
   </div>

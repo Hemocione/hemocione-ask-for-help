@@ -69,8 +69,8 @@
       </div>
 
       <div class="w-full">
-        <label>Tipo sanguíneo</label><span class="text-red-500 mb-6">*</span>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+        <label>Tipo sanguíneo</label><span class="text-red-500">*</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 pt-2">
           <el-button
             v-for="(type, idx) in bloodTypes"
             :key="idx"
@@ -303,6 +303,6 @@ const isOwnPhoto = computed(() => photo_url.value !== "images/gallery.svg");
 
 <style scoped>
 .input {
-  @apply h-14;
+  @apply h-14 pt-2;
 }
 </style>
