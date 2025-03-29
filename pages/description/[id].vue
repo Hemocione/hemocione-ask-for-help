@@ -94,6 +94,7 @@ import {
 } from "~/types/blood";
 
 const route = useRoute();
+const router = useRouter();
 const request = ref<RequestWithAssisted | null>(null);
 const id = route.params.id;
 
@@ -107,16 +108,11 @@ const registerDonation = () => {
   console.log("Button clicked");
 };
 
-try {
-  request.value = await $fetch(`/api/request/${id}`, {
-    method: "GET",
-  });
-} catch (error) {
-  throw createError({
-    statusCode: 500,
-    statusMessage: "Erro inesperado ao recuperar a solicitação.",
-  });
-}
+request.value = await $fetch(`/api/request/${id}`, {
+  method: "GET",
+});
+
+if (!request.value) router.push("/");
 
 const bloodCompatibilities = request.value
   ? bloodReceiveCompatibilities[request.value.assisted.blood_type]
@@ -155,7 +151,6 @@ defineOgImage({
     location: request.value?.local_name ?? "",
   },
 });
-
 </script>
 
 <style scoped>
