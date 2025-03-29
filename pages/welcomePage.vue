@@ -1,13 +1,13 @@
 <template>
-  <div class="app-container z-50 absolute inset-0">
+  <div class="app-container z-50  absolute overflow-hidden inset-0">
     <div class="main">
       <img
         src="../public/images/hemo_logo.svg"
         alt="Logo da hemocione"
         class="small-image"
       />
-      <h2>Pedir ajuda</h2>
-      <p>
+      <h2 class="pb-2">Pedir ajuda</h2>
+      <p class="max-w-[80%] text-[--black-80]">
         Conectando pessoas que precisam de ajuda, com pessoas que gostam de
         ajudar.
       </p>
@@ -20,7 +20,7 @@
 
     <!-- Caixa Vermelha -->
     <div class="red-box" alt="button" @click="onClick">
-      <NuxtLink to="/">Clique para salvar vidas</NuxtLink>
+      <NuxtLink to="/" class="text-xl">Clique para salvar vidas</NuxtLink>
       <img
         src="../public/images/arrow.svg"
         class="arrow"
@@ -53,8 +53,8 @@ function onClick() {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  align-items: center; /* Center content horizontally */
-  text-align: center; /* Center the text in the main section */
+  align-items: center; 
+  text-align: center; 
   background-color: var(--hemo-color-primary);
   overflow: hidden;
 }
@@ -65,27 +65,27 @@ header {
 }
 
 .small-image {
-  max-width: 100px; /* Small image at the top */
+  max-width: 100px; 
   display: block;
-  margin: 0 auto; /* Center image horizontally */
+  margin: 0 auto;
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
 .large-image {
-  width: 35% !important;
-  height: 30% !important;
-  margin-top: 1rem; /* Diminui o espaço entre as duas imagens */
+  width: 70% !important;
+  height: 50% !important;
+  margin-top: 5rem;
 }
 
 .main {
-  height: 75vh; /* Define uma altura máxima, você pode ajustar conforme necessário */
+  height: 90vh; 
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 0; /* Remove o padding superior */
-  margin-top: 0; /* Remove qualquer margem superior */
-  overflow: hidden; /* Garante que conteúdo extra não vá além dessa altura */
+  padding-top: 0;
+  margin-top: 0; 
+  overflow: hidden; 
   background-color: var(--hemo-color-secondary);
   width: 100vw;
   border-bottom-left-radius: 50px;

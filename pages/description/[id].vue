@@ -25,7 +25,11 @@
           <h3>{{ request.assisted.name }}</h3>
           <span class="blood-container">
             <p class="text">Tipo Sanguíneo</p>
-            <div class="badge">{{ request.assisted.blood_type }}</div>
+            <div
+              class="w-10 h-5 bg-[--hemo-color-primary] text-white rounded-full flex items-center justify-center text-sm font-medium"
+            >
+              {{ request.assisted.blood_type }}
+            </div>
           </span>
 
           <span class="location">
@@ -113,13 +117,16 @@ useServerSeoMeta({
   ogUrl: `${config.public.siteUrl}/description/${id}`,
 });
 
-defineOgImageComponent("RequestDetails", {
+defineOgImage({
+  component: "RequestDetails",
   width: 400,
   height: 800,
-  name: request.value?.assisted.name ?? "",
-  bloodType: request.value?.assisted.blood_type ?? "",
-  photoURL: request.value?.assisted.photo_url ?? "",
-  location: request.value?.local_name ?? "",
+  props: {
+    name: request.value?.assisted.name ?? "",
+    bloodType: request.value?.assisted.blood_type ?? "",
+    photoURL: request.value?.assisted.photo_url ?? "",
+    location: request.value?.local_name ?? "",
+  },
 });
 
 // TODO: funções dos butões
@@ -195,12 +202,12 @@ header {
 }
 
 .register-donation .share-donation-text {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--hemo-color-secondary);
   background-color: var(--hemo-color-primary);
   width: 100%;
   border-radius: 16px;
-  height: 40px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,19 +273,6 @@ header {
   color: var(--black-80);
   font-weight: 500;
   font-size: 1rem;
-}
-
-.blood-container .badge {
-  background-color: var(--hemo-color-primary);
-  width: 40px;
-  height: 20px;
-  border-radius: 1rem;
-  color: var(--black-0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  font-weight: 700;
 }
 
 .location {
