@@ -3,7 +3,7 @@
     <div class="content-wrapper">
       <WelcomePage v-if="shouldShowWelcome" @close="isOpenWelcome = !isOpenWelcome"></WelcomePage>
       <template v-else>
-        <Header class="sticky top-0 z-50" />
+        <Header class="sticky top-0 z-50" v-if="!hideHeader" />
         <NuxtPage class="nuxt-page" keepalive />
       </template>
     </div>
@@ -11,6 +11,8 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute();
+const hideHeader = computed(() => route?.meta?.hideHeader || false);
 useServerSeoMeta({
   description:
     "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",
@@ -42,6 +44,7 @@ const shouldShowWelcome = computed(() => !isOpenWelcome.value);
   flex-grow: 1;
   overflow: auto;
 }
+
 @media screen and (max-width: 753px) {
   .content-wrapper {
     width: 100vw;

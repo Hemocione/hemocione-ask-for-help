@@ -14,7 +14,7 @@
     <h3 class="font-semibold text-lg py-2">Ajude com a sua doação!</h3>
 
     <!-- Imagem do solicitante -->
-    <div class="rounded-full border border-[#B2493A] w-56 h-56">
+    <div class="rounded-full border border-[#B2493A] w-44 h-44 sm:!w-56 sm:!h-56">
       <img
         v-if="photoURL"
         :src="photoURL!"
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Apelo -->
-    <p class="text-sm text-center max-w-[70%] py-2">
+    <p class="text-sm text-center max-w-[80%] py-2">
       Se não puder doar, compartilhe para alcançar o maior número de pessoas!
     </p>
 
