@@ -45,7 +45,11 @@ request.value = await $fetch(`/api/request/${id}`, {
   method: "GET",
 });
 
-const currentUrl = computed(() => window?.location?.href ?? '');
+const currentUrl = ref('');
+onMounted(() => {
+  currentUrl.value = window.location.href
+})
+
 const instagramShareUrl = computed(() => `https://www.instagram.com/share?url=${encodeURIComponent(currentUrl.value)}`);
 const whatsappShareUrl = computed(() => `https://wa.me/?text=${encodeURIComponent(currentUrl.value)}`);
 
