@@ -16,7 +16,7 @@
 
     <div class="flex flex-row items-center justify-center gap-10 mt-6">
       <div
-        @click="() => shareEvent(true)"
+        @click="() => shareHelpRequest(true)"
         class="flex flex-col items-center justify-between gap-2"
       >
         <img src="/images/instagram_colorido.svg" alt="Logo do instagram" />
@@ -34,7 +34,7 @@
       </NuxtLink>
 
       <button
-        @click="() => shareEvent(false)"
+        @click="() => shareHelpRequest(false)"
         class="flex flex-col items-center justify-between gap-2"
       >
         <img src="/images/plus_share.svg" alt="Icone de mais" />
@@ -67,6 +67,7 @@ request.value = await $fetch(`/api/request/${id}`, {
 });
 
 const currentUrl = ref("");
+const config = useRuntimeConfig();
 
 const instagramImageBlob = ref<Blob | null>(null);
 const instagramImageLocalUrl = ref<string | null>(null);
@@ -96,7 +97,7 @@ const zapUrl = computed(() =>
     : "#"
 );
 
-async function shareEvent(withImage: boolean = false) {
+async function shareHelpRequest(withImage: boolean = false) {
   try {
     const data: {
       title: string;
@@ -139,4 +140,34 @@ async function shareEvent(withImage: boolean = false) {
     });
   }
 }
+
+useHead({
+  title: `Pedir Ajuda - ${request.value?.assisted.name ?? ""}`,
+});
+
+useServerSeoMeta({
+  title: `${request.value?.assisted.name ?? "Pedido de ajuda"}`,
+  ogTitle: `${request.value?.assisted.name ?? "Pedido de ajuda"}`,
+  description: `Pedido de ajuda da ${request.value?.assisted.name ?? "Solicitante"
+    }`,
+  ogDescription: `Pedido de ajuda da ${request.value?.assisted.name ?? "Solicitante"
+    }`,
+  twitterCard: "summary_large_image",
+  fbAppId: "Hemocione",
+  ogUrl: `${config.public.siteUrl}/share/${id}`,
+});
+
+defineOgImageComponent(
+  "RequestDetails",
+  {
+    name: request.value?.assisted.name ?? "",
+    bloodType: request.value?.assisted.blood_type ?? "",
+    photoURL: request.value?.assisted.photo_url ?? "",
+    location: request.value?.local_name ?? "",
+  },
+  {
+    width: 800,
+    height: 450,
+  }
+);
 </script>
