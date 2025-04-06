@@ -251,7 +251,6 @@ const registerRequest = async () => {
   });
   if (!validationFormWithZod()) {
     message.close();
-    console.log("Formulário inválido:", errors.value);
     ElMessage({
       type: "error",
       message: errors.value[Object.keys(errors.value)[0]],
@@ -279,7 +278,7 @@ const registerRequest = async () => {
       type: "success",
       duration: 3000,
     });
-  } catch (err) {
+  } catch (err: any) {
     if (err.status === 409) {
       message.close();
       console.error("Erro ao criar solicitação", err);
