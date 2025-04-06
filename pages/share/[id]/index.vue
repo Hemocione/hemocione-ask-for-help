@@ -4,7 +4,7 @@
       src="/images/x.svg"
       alt="Botão em formato X para fechar"
       @click="goBack"
-      class="absolute top-5 left-5"
+      class="absolute top-5 left-5 cursor-pointer"
     />
 
     <OgImageTemplateRequestDetailsInstagram
@@ -17,7 +17,7 @@
     <div class="flex flex-row items-center justify-center gap-10 mt-6">
       <div
         @click="() => shareHelpRequest(true)"
-        class="flex flex-col items-center justify-between gap-2"
+        class="flex flex-col items-center justify-between gap-2 cursor-pointer"
       >
         <img src="/images/instagram_colorido.svg" alt="Logo do instagram" />
         <span>Stories</span>
@@ -59,7 +59,7 @@ const id = route.params.id as string;
 const request = ref<RequestWithAssisted | null>(null);
 
 const goBack = () => {
-  router.back();
+  router.replace('/');
 };
 
 request.value = await $fetch(`/api/request/${id}`, {

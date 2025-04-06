@@ -1,14 +1,23 @@
 <template>
   <div v-if="request" class="app-container">
-    <div class="flex flex-row justify-start items-start w-full p-4 pt-6 cursor-pointer">
-      <img class="w-6 h-6" src="/public/images/go-back.svg" @click="$router.back()"
-        alt="Setinha para voltar pra página anterior" />
+    <div
+      class="flex flex-row justify-start items-start w-full p-4 pt-6 cursor-pointer"
+    >
+      <img
+        class="w-6 h-6"
+        src="/public/images/go-back.svg"
+        @click="$router.back()"
+        alt="Setinha para voltar pra página anterior"
+      />
     </div>
 
     <div class="main">
       <div class="person-image border border-[--hemo-color-primary]">
-        <img v-if="request.assisted.photo_url" :src="request.assisted.photo_url!"
-          alt="Imagem do usuário solicitante que precisa de doação" />
+        <img
+          v-if="request.assisted.photo_url"
+          :src="request.assisted.photo_url!"
+          alt="Imagem do usuário solicitante que precisa de doação"
+        />
       </div>
 
       <div class="description">
@@ -17,13 +26,17 @@
           <span class="blood-container">
             <p class="text">Tipo Sanguíneo</p>
             <div
-              class="w-10 h-5 bg-[--hemo-color-primary] text-white rounded-full flex items-center justify-center text-sm font-medium">
+              class="w-10 h-5 bg-[--hemo-color-primary] text-white rounded-full flex items-center justify-center text-sm font-medium"
+            >
               {{ request.assisted.blood_type }}
             </div>
           </span>
 
           <span class="location">
-            <img src="/images/loc.svg" alt="Localização do usuário solicitante" />
+            <img
+              src="/images/loc.svg"
+              alt="Localização do usuário solicitante"
+            />
             <p>{{ request.local_name }}</p>
           </span>
         </div>
@@ -33,12 +46,15 @@
             Tipos sanguíneos compatíveis
           </p>
           <div class="grid grid-cols-4 gap-4 text-sm">
-            <div v-for="(type, idx) in bloodTypes" :key="idx"
+            <div
+              v-for="(type, idx) in bloodTypes"
+              :key="idx"
               class="flex items-center justify-center w-10 h-5 px-5 py-2 font-bold border rounded-2xl border-[--black-60] text-[--black-60]"
               :class="{
                 'bg-[--cornflower-blue] border-[--cornflower-blue] !text-white':
                   isCompatible(type),
-              }">
+              }"
+            >
               {{ type }}
             </div>
           </div>
@@ -47,15 +63,19 @@
     </div>
 
     <div class="register-donation" alt="button">
-      <div class="share-donation-text" @click="shareDonation">
-        <img src="/images/share_icon_white.svg" alt="icone de compartilhamento" class="share_icon" />
+      <Button @click="shareDonation">
+        <img
+          src="/images/share_icon_white.svg"
+          alt="icone de compartilhamento"
+          class="share_icon"
+        />
         Compartilhar este pedido
-      </div>
+      </Button>
       <!-- TODO: adicionar quando implementar a lógica de registrar doação -->
-      <!-- <div class="register-donation-text" @click="registerDonation">
+      <!-- <Button @click="registerDonation">
 				<img src="/images/plus_donation_gray.svg" alt="Plus_donation" class="plus_donation" width="20" height="20" />
 				Registrar doação
-			</div> -->
+			</Button> -->
     </div>
   </div>
   <!-- TODO: adicionar loading -->
@@ -87,7 +107,7 @@ request.value = await $fetch(`/api/request/${id}`, {
 if (!request.value) router.push("/");
 
 const shareDonation = () => {
-  router.push(`/share/${id}`)
+  router.push(`/share/${id}`);
 };
 const registerDonation = () => {
   console.log("Button clicked");
@@ -108,10 +128,12 @@ useHead({
 useServerSeoMeta({
   title: `${request.value?.assisted.name ?? "Pedido de ajuda"}`,
   ogTitle: `${request.value?.assisted.name ?? "Pedido de ajuda"}`,
-  description: `Pedido de ajuda da ${request.value?.assisted.name ?? "Solicitante"
-    }`,
-  ogDescription: `Pedido de ajuda da ${request.value?.assisted.name ?? "Solicitante"
-    }`,
+  description: `Pedido de ajuda da ${
+    request.value?.assisted.name ?? "Solicitante"
+  }`,
+  ogDescription: `Pedido de ajuda da ${
+    request.value?.assisted.name ?? "Solicitante"
+  }`,
   twitterCard: "summary_large_image",
   fbAppId: "Hemocione",
   ogUrl: `${config.public.siteUrl}/description/${id}`,
@@ -174,19 +196,6 @@ header {
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
   padding: 20px;
-}
-
-.register-donation .share-donation-text {
-  font-size: 1rem;
-  color: var(--hemo-color-secondary);
-  background-color: var(--hemo-color-primary);
-  width: 100%;
-  border-radius: 16px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
 }
 
 .register-donation .register-donation-text {
