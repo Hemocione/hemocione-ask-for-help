@@ -13,6 +13,9 @@
 <script setup lang="ts">
 const route = useRoute();
 const hideHeader = computed(() => route?.meta?.hideHeader || false);
+useHead({
+  title: `Pedir Ajuda`,
+});
 useServerSeoMeta({
   description:
     "Aplicativo para conectar pessoas que precisam de doações de sangue com doadores",

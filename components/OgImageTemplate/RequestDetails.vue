@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center p-4">
+  <div class="flex flex-col justify-center items-center p-2">
     <!-- logo hemocione -->
     <img
       src="/images/assinatura_svg_b.svg"
@@ -9,10 +9,10 @@
     />
 
     <!-- Ajude com a sua doação! -->
-    <h3 class="font-semibold text-lg py-2">Ajude com a sua doação!</h3>
+    <h3 class="font-semibold text-lg">Ajude com a sua doação!</h3>
 
     <!-- Apelo -->
-    <p class="text-sm text-center max-w-[80%] py-2">
+    <p class="text-sm text-center max-w-[80%]">
       Se não puder doar, compartilhe para alcançar o maior número de pessoas!
     </p>
 

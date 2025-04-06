@@ -102,7 +102,7 @@ const isCompatible = (bloodType: BloodType) => {
 };
 
 useHead({
-  title: `${request.value?.assisted.name ?? ""}`,
+  title: `Pedir Ajuda - ${request.value?.assisted.name ?? ""}`,
 });
 
 useServerSeoMeta({
@@ -127,7 +127,7 @@ defineOgImageComponent(
   },
   {
     width: 800,
-    height: 500,
+    height: 450,
   }
 );
 </script>
