@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-start h-full pl-14 bg-white">
+  <div class="flex flex-col justify-center items-start h-full pl-20 bg-white">
     <div class="flex flex-row items-center gap-4">
       <div class="rounded-full border border-[#B2493A] w-[300px] h-[300px]">
         <img
@@ -29,7 +29,7 @@
             <div
               v-for="(type, idx) in bloodTypes"
               :key="idx"
-              class="flex items-center justify-center w-30 h-25 px-5 py-2 font-bold border rounded-2xl border-[#a0a4a8] text-[#a0a4a8]"
+              class="flex items-center justify-center w-25 h-20 px-5 py-2 font-bold border rounded-2xl border-[#a0a4a8] text-[#a0a4a8]"
               :class="{
                 'bg-[#6e91c7] border-[#6e91c7] !text-white': isCompatible(type),
               }"
