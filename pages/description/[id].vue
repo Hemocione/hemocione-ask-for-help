@@ -124,7 +124,7 @@ const isCompatible = (bloodType: BloodType) => {
 };
 
 useHead({
-  title: `Pedir Ajuda - ${request.value?.assisted.name ?? ""}`,
+  title: `Ajuda aí - ${request.value?.assisted.name ?? ""}`,
 });
 
 useServerSeoMeta({
