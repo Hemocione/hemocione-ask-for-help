@@ -56,6 +56,14 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
 
   setUser(currentUser);
   setToken(token);
+
+  const tokenCookie = useCookie(config.public.authCookieKey, {
+    maxAge: 60 * 60 * 24 * 7,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  tokenCookie.value = token;
+
   return true;
 }
 
@@ -70,8 +78,12 @@ export function getCurrentToken(query?: LocationQuery): string | null {
   }
 
   const config = useRuntimeConfig();
-  const cookieToken = useCookie(config.public.authCookieKey).value as string;
-  return cookieToken;
+  const tokenCookie = useCookie(config.public.authCookieKey, {
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
+  return tokenCookie.value || null;
 }
 
 export function redirectToID(fullPath: string) {
