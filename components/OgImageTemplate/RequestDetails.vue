@@ -22,7 +22,7 @@
         <img
           v-if="photoURL"
           :src="photoURL!"
-          class="rounded-full"
+          class="w-full h-full max-w-56 max-h-56 object-cover rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
       </div>
