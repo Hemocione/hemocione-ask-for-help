@@ -19,9 +19,9 @@
     <!-- Imagem do solicitante -->
     <div class="flex flex-row items-center">
       <div class="rounded-full border border-[#B2493A] w-40 h-40">
+        <!-- v-if="photoURL" -->
         <img
-          v-if="photoURL"
-          :src="photoURL!"
+          src="https://i.pinimg.com/originals/74/7c/5c/747c5c9d6727452611d6d7a8abdfcecf.jpg"
           class="w-full h-full rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
