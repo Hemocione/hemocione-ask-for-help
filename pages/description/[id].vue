@@ -99,6 +99,7 @@ const request = ref<RequestWithAssisted | null>(null);
 const id = route.params.id;
 
 const config = useRuntimeConfig();
+const posthog = usePosthog();
 
 request.value = await $fetch(`/api/request/${id}`, {
   method: "GET",
@@ -107,6 +108,7 @@ request.value = await $fetch(`/api/request/${id}`, {
 if (!request.value) router.push("/");
 
 const shareDonation = () => {
+  posthog?.capture("click_share_request");
   router.push(`/share/${id}`);
 };
 const registerDonation = () => {

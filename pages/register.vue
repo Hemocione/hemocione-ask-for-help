@@ -113,6 +113,7 @@ const requestSchema = ref<Request>({} as Request);
 const errors = ref<{ [key: string]: string }>({});
 const uploadingImage = ref(false);
 const { token, user } = useUserStore();
+const posthog = usePosthog();
 const router = useRouter();
 
 if (user?.id) {
@@ -244,6 +245,7 @@ const formatCpf = () => {
 
 // Envio do formulário
 const registerRequest = async () => {
+  
   const message = ElMessage({
     message: "Criando solicitação...",
     type: "info",
@@ -259,6 +261,7 @@ const registerRequest = async () => {
     return;
   }
 
+  posthog?.capture('click_create_request')
   try {
     const result = await $fetch("/api/request", {
       method: "POST",
