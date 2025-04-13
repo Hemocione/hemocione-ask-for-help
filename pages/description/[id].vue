@@ -6,7 +6,7 @@
       <img
         class="w-6 h-6"
         src="/public/images/go-back.svg"
-        @click="$router.back()"
+        @click="$router.replace('/')"
         alt="Setinha para voltar pra página anterior"
       />
     </div>
