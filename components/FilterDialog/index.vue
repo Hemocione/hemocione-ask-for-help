@@ -1,6 +1,11 @@
 <template>
   <div class="flex flex-col items-center justify-center">
-    <img @click="dialogVisible = true" :src="filterIcon" alt="Filtros" />
+    <img
+      @click="dialogVisible = true"
+      :src="filterIcon"
+      alt="Filtros"
+      class="cursor-pointer"
+    />
 
     <el-dialog
       v-model="dialogVisible"
@@ -25,7 +30,8 @@
           v-for="(type, idx) in bloodTypes"
           :key="idx"
           :class="{
-            'bg-[--hemo-color-primary] text-[--black-0]': selectedBloodTypes.includes(type),
+            'bg-[--hemo-color-primary] text-[--black-0]':
+              selectedBloodTypes.includes(type),
             ' text-[--black-80] border border-[--black-60]':
               !selectedBloodTypes.includes(type),
           }"
