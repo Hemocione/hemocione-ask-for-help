@@ -3,13 +3,19 @@
     class="h-[72px] flex flex-row items-center justify-between gap-4 p-5 bg-[--hemo-color-primary] h-[4.5rem] rounded-b-3xl w-full"
   >
     <div class="flex flex-row items-center gap-3">
-      <img :src="imageURL" class="w-10 h-10 rounded-full" alt="Imagem do usuário logado"/>
+      <img
+        :src="imageURL"
+        class="w-12 h-12 rounded-full bg-[--black-10]"
+        alt="Imagem do usuário logado"
+      />
 
       <p class="text-[--hemo-color-text-primary]">
         {{ dinamicTitle }}
 
         <NuxtLink v-if="!loggedIn" :to="authUrl" class="auth-button" external>
-          <span class="text-[--hemo-color-text-primary] text-base bold">Faça Login</span>
+          <span class="text-[--hemo-color-text-primary] text-base bold"
+            >Faça Login</span
+          >
         </NuxtLink>
       </p>
     </div>
@@ -30,13 +36,14 @@ const config = useRuntimeConfig();
 
 const { hemocioneIdUrl, siteUrl } = config.public;
 
-const imageURL = ref(
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6pTNgFMam7sm-NMkeVDieflex5poRhb8HgA&s"
-);
-
-const loggedIn = computed(() => userStore.loggedIn);
 const user = computed(() => userStore.user);
-
+const imageURL = computed(
+  () =>
+    `/illustrations/bloodCharacters/${
+      !user.value?.bloodType ? "O-" : user.value?.bloodType
+    }.svg`
+);
+const loggedIn = computed(() => userStore.loggedIn);
 const loggedName = computed(
   () => user.value?.givenName + " " + user.value?.surName
 );
