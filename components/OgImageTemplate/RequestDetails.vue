@@ -18,13 +18,11 @@
 
     <!-- Imagem do solicitante -->
     <div class="flex flex-row items-center">
-      <div
-        class="rounded-full border border-[#B2493A] w-36 h-36 overflow-hidden"
-      >
+      <div class="rounded-full border border-[#B2493A] w-40 h-40">
         <img
           v-if="photoURL"
           :src="photoURL!"
-          class="w-full h-full object-cover rounded-full"
+          class="w-full h-full rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
       </div>
