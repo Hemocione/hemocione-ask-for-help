@@ -16,24 +16,23 @@
       Se não puder doar, compartilhe para alcançar o maior número de pessoas!
     </p>
 
-    <div class="flex flex-row items-center gap-x-4 mt-4">
-      <!-- Imagem do solicitante  -->
+    <!-- Imagem do solicitante -->
+    <div class="flex flex-row items-center">
       <div
-        class="rounded-full border border-[#B2493A] w-40 h-40 overflow-hidden"
+        class="rounded-full border border-[#B2493A] w-36 h-36 overflow-hidden"
       >
         <img
           v-if="photoURL"
-          :src="photoURL"
+          :src="photoURL!"
           class="w-full h-full object-cover rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
       </div>
 
-      <!-- infos -->
-      <div class="flex flex-col justify-center items-start gap-y-1">
-        <h2 class="font-bold text-xl">{{ name }}</h2>
-
-        <div class="flex items-center gap-x-1">
+      <!-- Informações do solicitante -->
+      <div class="flex flex-col justify-center items-center">
+        <h2 class="font-bold text-xl text-center text-wrap">{{ name }}</h2>
+        <div class="flex flex-row items-center gap-x-1">
           <p class="text-xs text-[#52575c]">Tipo Sanguíneo</p>
           <div
             class="w-8 h-4 bg-[#bb0a08] text-white rounded-full flex items-center justify-center text-xs font-medium"
@@ -41,15 +40,15 @@
             {{ bloodType }}
           </div>
         </div>
-
-        <div class="flex items-center gap-x-2">
+        <div class="flex flex-row items-center gap-x-2">
           <img src="/images/loc.svg" alt="Localização do usuário solicitante" />
           <p class="text-xs text-[#52575c]">{{ location }}</p>
         </div>
-
-        <div class="rounded-lg flex flex-col items-start">
+        <div class="rounded-lg flex flex-col items-center">
           <p class="text-base font-semibold">Tipos sanguíneos compatíveis</p>
-          <div class="flex flex-wrap gap-2 text-sm max-w-[240px]">
+          <div
+            class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm max-w-[240px]"
+          >
             <div
               v-for="(type, idx) in bloodTypes"
               :key="idx"
@@ -72,21 +71,12 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const props = withDefaults(
-  defineProps<{
-    name: string;
-    bloodType: BloodType;
-    location: string;
-    photoURL: string;
-  }>(),
-  {
-    name: "Carlos Rafael",
-    bloodType: "O+",
-    photoURL:
-      "https://i.pinimg.com/originals/74/7c/5c/747c5c9d6727452611d6d7a8abdfcecf.jpg",
-    location: "Hemocentro de Brasĺlia",
-  }
-);
+const props = defineProps<{
+  name: string;
+  bloodType: BloodType;
+  location: string;
+  photoURL: string;
+}>();
 
 const bloodReceiveCompatibilities: Record<BloodType, BloodType[]> = {
   "O-": ["O-"],
