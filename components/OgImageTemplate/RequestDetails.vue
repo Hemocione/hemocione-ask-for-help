@@ -21,7 +21,7 @@
       <div class="rounded-full border border-[#B2493A] w-40 h-40">
         <!-- v-if="photoURL" -->
         <img
-          src="https://i.pinimg.com/originals/74/7c/5c/747c5c9d6727452611d6d7a8abdfcecf.jpg"
+          src="https://pngfre.com/wp-content/uploads/anime-boy-poster.png"
           class="w-full h-full rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
