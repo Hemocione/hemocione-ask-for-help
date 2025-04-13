@@ -148,7 +148,7 @@ defineOgImageComponent(
     location: request.value?.local_name ?? "",
   },
   {
-    width: 800,
+    width: 1000,
     height: 450,
   }
 );

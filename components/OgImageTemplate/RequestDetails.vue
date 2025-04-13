@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center p-2">
+  <div class="flex flex-col justify-center items-center p-2 bg-white">
     <!-- logo hemocione -->
     <img
       src="/images/assinatura_svg_b.svg"

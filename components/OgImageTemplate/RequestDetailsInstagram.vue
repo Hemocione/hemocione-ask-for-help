@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center p-4 border border-[#a0a4a8] rounded-2xl"
+    class="flex flex-col items-center justify-center p-4 border border-[#a0a4a8] rounded-2xl bg-white"
   >
     <!-- logo hemocione -->
     <img
@@ -15,12 +15,12 @@
 
     <!-- Imagem do solicitante -->
     <div
-      class="rounded-full border border-[#B2493A] w-44 h-44 sm:!w-56 sm:!h-56"
+      class="rounded-full border border-[#B2493A] w-44 h-44"
     >
       <img
         v-if="photoURL"
         :src="photoURL!"
-        class="rounded-full"
+        class="w-full h-full max-w-44 max-h-44 object-cover rounded-full"
         alt="Imagem do usuário solicitante que precisa de doação"
       />
     </div>
@@ -42,7 +42,11 @@
         </div>
       </div>
       <div class="flex flex-row items-center gap-2 pb-4">
-        <img src="/images/loc.svg" alt="Localização do usuário solicitante" />
+        <img
+          src="/images/loc.svg"
+          alt="Localização do usuário solicitante"
+          class="w-2 h-3"
+        />
         <p class="text-xs text-[#52575c]">{{ location }}</p>
       </div>
       <div class="rounded-lg flex flex-col items-center">
@@ -63,7 +67,10 @@
         </div>
       </div>
     </div>
-    <a class="flex flex-row justify-center items-center gap-1" href="https://www.instagram.com/hemocione">
+    <a
+      class="flex flex-row justify-center items-center gap-1"
+      href="https://www.instagram.com/hemocione"
+    >
       <img src="/images/instagram.svg" alt="Instagram Hemocione" />
       <p class="text-xs text-[#bb0a08]">Hemocione</p>
     </a>
