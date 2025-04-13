@@ -72,12 +72,21 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const props = defineProps<{
-  name: string;
-  bloodType: BloodType;
-  location: string;
-  photoURL: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    name: string;
+    bloodType: BloodType;
+    location: string;
+    photoURL: string;
+  }>(),
+  {
+    name: "Carlos Rafael",
+    bloodType: "O+",
+    photoURL:
+      "https://i.pinimg.com/originals/74/7c/5c/747c5c9d6727452611d6d7a8abdfcecf.jpg",
+    location: "Hemocentro de Brasĺlia",
+  }
+);
 
 const bloodReceiveCompatibilities: Record<BloodType, BloodType[]> = {
   "O-": ["O-"],
