@@ -18,7 +18,7 @@ const getSiteUrl = () => {
     return networkAddress || "http://localhost:3000";
   }
 
-  return "https://hemocione-ask-for-help.vercel.app/";
+  return "https://ajudai.hemocione.com.br/";
 };
 
 const siteUrl = getSiteUrl();
