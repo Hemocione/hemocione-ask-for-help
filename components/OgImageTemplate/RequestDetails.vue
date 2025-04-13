@@ -17,16 +17,15 @@
     </p>
 
     <!-- Imagem do solicitante -->
-    <div class="flex flex-row items-center">
-  
-        <!-- v-if="photoURL" -->
-        <img
-          src="https://pngfre.com/wp-content/uploads/anime-boy-poster.png"
-          class=" w-40 h-40 rounded-full"
-          alt="Imagem do usuário solicitante que precisa de doação"
-        />
-      
-      <!-- Informações do solicitante -->
+    <div class="rounded-full border border-[#B2493A] w-40 h-40">
+      <!-- v-if="photoURL" -->
+      <img
+        src="https://pngfre.com/wp-content/uploads/anime-boy-poster.png"
+        class="w-full h-full rounded-full"
+        alt="Imagem do usuário solicitante que precisa de doação"
+      />
+    </div>
+    <!-- <div class="flex flex-row items-center">
       <div class="flex flex-col justify-center items-center">
         <h2 class="font-bold text-xl text-center text-wrap">{{ name }}</h2>
         <div class="flex flex-row items-center gap-x-1">
@@ -59,7 +58,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
