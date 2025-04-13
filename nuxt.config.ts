@@ -82,7 +82,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      authCookieKey: process.env.HEMOCIONE_AUTH_COOKIE_KEY ?? "hemocioneId",
+      authCookieKey: process.env.HEMOCIONE_AUTH_COOKIE_KEY ?? "devHemocioneId",
       hemocioneIdUrl:
         process.env.HEMOCIONE_ID_URL ?? "https://id.d.hemocione.com.br",
       hemocioneIdApiUrl:
@@ -93,6 +93,11 @@ export default defineNuxtConfig({
       instagramUrl:
         process.env.INSTAGRAM_URL ?? "https://www.instagram.com/hemocione/",
       siteUrl,
+      posthog: {
+        publicKey: process.env.NUXT_PUBLIC_POSTHOG_PUBLIC_KEY ?? 'public',
+        host:
+          process.env.NUXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com',
+      }
     },
     hemocioneIdIntegrationSecret:
       process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",

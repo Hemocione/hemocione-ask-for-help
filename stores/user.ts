@@ -12,6 +12,9 @@ export const useUserStore = defineStore("user", {
 
   actions: {
     setUser(user: CurrentUserData | null) {
+      if (user) {
+        identifyOnPosthog(user);
+      }
       this.user = user;
     },
     setToken(token: string | null) {
