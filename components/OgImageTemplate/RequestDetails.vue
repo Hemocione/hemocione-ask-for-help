@@ -16,19 +16,19 @@
       Se não puder doar, compartilhe para alcançar o maior número de pessoas!
     </p>
 
-    <!-- Imagem do solicitante -->
-    <div class="rounded-full border border-[#B2493A] w-40 h-40">
-      <!-- v-if="photoURL" -->
-      <img
-        src="https://pngfre.com/wp-content/uploads/anime-boy-poster.png"
-        class="w-full h-full rounded-full"
-        alt="Imagem do usuário solicitante que precisa de doação"
-      />
-    </div>
-    <!-- <div class="flex flex-row items-center">
-      <div class="flex flex-col justify-center items-center">
+    <div class="flex flex-row items-center">
+      <!-- Imagem do solicitante -->
+      <div class="rounded-full border border-[#B2493A] w-40 h-40">
+        <!-- v-if="photoURL" -->
+        <img
+          src="https://pngfre.com/wp-content/uploads/anime-boy-poster.png"
+          class="w-full h-full rounded-full"
+          alt="Imagem do usuário solicitante que precisa de doação"
+        />
+      </div>
+      <div class="flex flex-col justify-center items-center max-w-[220px]">
         <h2 class="font-bold text-xl text-center text-wrap">{{ name }}</h2>
-        <div class="flex flex-row items-center gap-x-1">
+        <div class="flex flex-row items-center">
           <p class="text-xs text-[#52575c]">Tipo Sanguíneo</p>
           <div
             class="w-8 h-4 bg-[#bb0a08] text-white rounded-full flex items-center justify-center text-xs font-medium"
@@ -36,29 +36,29 @@
             {{ bloodType }}
           </div>
         </div>
-        <div class="flex flex-row items-center gap-x-2">
+        <div class="flex flex-row items-center">
           <img src="/images/loc.svg" alt="Localização do usuário solicitante" />
           <p class="text-xs text-[#52575c]">{{ location }}</p>
         </div>
-        <div class="rounded-lg flex flex-col items-center">
-          <p class="text-base font-semibold">Tipos sanguíneos compatíveis</p>
+      </div>
+      <div class="rounded-lg flex flex-col items-center justify-center max-w-[220px]"> 
+        <p class="text-base font-semibold text-center">Tipos sanguíneos compatíveis</p>
+        <div
+          class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm max-w-[220px]"
+        >
           <div
-            class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm max-w-[240px]"
+            v-for="(type, idx) in bloodTypes"
+            :key="idx"
+            class="flex items-center justify-center w-10 h-5 px-5 py-2 font-bold border rounded-2xl border-[#a0a4a8] text-[#a0a4a8]"
+            :class="{
+              'bg-[#6e91c7] border-[#6e91c7] !text-white': isCompatible(type),
+            }"
           >
-            <div
-              v-for="(type, idx) in bloodTypes"
-              :key="idx"
-              class="flex items-center justify-center w-10 h-5 px-5 py-2 font-bold border rounded-2xl border-[#a0a4a8] text-[#a0a4a8]"
-              :class="{
-                'bg-[#6e91c7] border-[#6e91c7] !text-white': isCompatible(type),
-              }"
-            >
-              {{ type }}
-            </div>
+            {{ type }}
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
