@@ -17,7 +17,7 @@
     </p>
 
     <!-- Imagem do solicitante -->
-    <div class="flex flex-row items-center gap-4">
+    <div class="flex flex-row items-center">
       <div class="rounded-full border border-[#B2493A] w-56 h-56">
         <img
           v-if="photoURL"
