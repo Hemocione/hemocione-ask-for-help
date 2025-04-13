@@ -1,11 +1,11 @@
 <template>
-  <div class="flex flex-col justify-center items-center h-full px-6 bg-white">
+  <div class="flex flex-col justify-center items-start h-full pl-14 bg-white">
     <div class="flex flex-row items-center gap-4">
-      <div class="rounded-full border border-[#B2493A] w-[400px] h-[400px]">
+      <div class="rounded-full border border-[#B2493A] w-[300px] h-[300px]">
         <img
           v-if="photoURL"
           :src="photoURL!"
-          class="w-full h-full max-w-[400px] max-h-[400px] object-cover rounded-full"
+          class="w-full h-full max-w-[300px] max-h-[300px] object-cover rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
       </div>
@@ -25,7 +25,7 @@
           </p>
         </div>
         <div class="rounded-lg flex flex-col items-center">
-          <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-5xl">
+          <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-4xl">
             <div
               v-for="(type, idx) in bloodTypes"
               :key="idx"
