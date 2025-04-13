@@ -16,21 +16,24 @@
       Se não puder doar, compartilhe para alcançar o maior número de pessoas!
     </p>
 
-    <!-- Imagem do solicitante -->
-    <div class="flex flex-row items-center">
-      <div class="rounded-full border border-[#B2493A] w-56 h-56">
+    <div class="flex flex-row items-center gap-x-4 mt-4">
+      <!-- Imagem do solicitante  -->
+      <div
+        class="rounded-full border border-[#B2493A] w-40 h-40 overflow-hidden"
+      >
         <img
           v-if="photoURL"
-          :src="photoURL!"
-          class="rounded-full"
+          :src="photoURL"
+          class="w-full h-full object-cover rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
       </div>
 
-      <!-- Informações do solicitante -->
-      <div class="flex flex-col justify-center items-center">
-        <h2 class="font-bold text-xl text-center text-wrap">{{ name }}</h2>
-        <div class="flex flex-row items-center gap-x-1">
+      <!-- infos -->
+      <div class="flex flex-col justify-center items-start gap-y-1">
+        <h2 class="font-bold text-xl">{{ name }}</h2>
+
+        <div class="flex items-center gap-x-1">
           <p class="text-xs text-[#52575c]">Tipo Sanguíneo</p>
           <div
             class="w-8 h-4 bg-[#bb0a08] text-white rounded-full flex items-center justify-center text-xs font-medium"
@@ -38,15 +41,15 @@
             {{ bloodType }}
           </div>
         </div>
-        <div class="flex flex-row items-center gap-x-2">
+
+        <div class="flex items-center gap-x-2">
           <img src="/images/loc.svg" alt="Localização do usuário solicitante" />
           <p class="text-xs text-[#52575c]">{{ location }}</p>
         </div>
-        <div class="rounded-lg flex flex-col items-center">
+
+        <div class="rounded-lg flex flex-col items-start">
           <p class="text-base font-semibold">Tipos sanguíneos compatíveis</p>
-          <div
-            class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm max-w-[240px]"
-          >
+          <div class="flex flex-wrap gap-2 text-sm max-w-[240px]">
             <div
               v-for="(type, idx) in bloodTypes"
               :key="idx"
