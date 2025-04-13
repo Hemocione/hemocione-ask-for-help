@@ -17,14 +17,12 @@
     </p>
 
     <!-- Imagem do solicitante -->
-    <div class="flex flex-row items-center">
-      <div
-        class="rounded-full border border-[#B2493A] w-36 h-36 overflow-hidden"
-      >
+    <div class="flex flex-row items-center gap-4">
+      <div class="rounded-full border border-[#B2493A] w-56 h-56">
         <img
           v-if="photoURL"
           :src="photoURL!"
-          class="w-full h-full object-cover rounded-full"
+          class="w-full h-full max-w-56 max-h-56 object-cover rounded-full"
           alt="Imagem do usuário solicitante que precisa de doação"
         />
       </div>
@@ -41,7 +39,11 @@
           </div>
         </div>
         <div class="flex flex-row items-center gap-x-2">
-          <img src="/images/loc.svg" alt="Localização do usuário solicitante" />
+          <img
+            src="/images/loc.svg"
+            alt="Localização do usuário solicitante"
+            class="w-2 h-3"
+          />
           <p class="text-xs text-[#52575c]">{{ location }}</p>
         </div>
         <div class="rounded-lg flex flex-col items-center">
