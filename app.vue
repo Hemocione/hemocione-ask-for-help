@@ -14,7 +14,7 @@
 const route = useRoute();
 const hideHeader = computed(() => route?.meta?.hideHeader || false);
 useHead({
-  title: `Pedir Ajuda`,
+  title: `Ajuda aí`,
 });
 useServerSeoMeta({
   description:

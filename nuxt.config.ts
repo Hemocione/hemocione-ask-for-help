@@ -109,7 +109,7 @@ export default defineNuxtConfig({
   site: {
     url: siteUrl,
     indexable: true /* Allow search engines to index the site */,
-    name: "Hemocione Pedir Ajuda",
+    name: "Hemocione Ajuda aí",
     description:
       "Conecta pessoas que precisam de doações de sangue com doadores",
     defaultLocale: "pt-BR",

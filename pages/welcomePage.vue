@@ -6,7 +6,7 @@
         alt="Logo da hemocione"
         class="small-image"
       />
-      <h2 class="pb-2">Pedir ajuda</h2>
+      <h2 class="pb-2">Ajuda aí</h2>
       <p class="max-w-[80%] text-[--black-80]">
         Conectando pessoas que precisam de ajuda, com pessoas que gostam de
         ajudar.
