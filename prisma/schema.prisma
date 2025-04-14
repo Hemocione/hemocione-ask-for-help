@@ -18,6 +18,7 @@ model Request {
   // local_latitude float
   // local_longitude float // TODO: get the location from the user
   review_status   RequestStatus? @default(Pending)
+  review_message  String         @default("")
   active_campagin Boolean
 
   assisted        Assisted          @relation(fields: [assisted_id], references: [id], onDelete: Cascade)
