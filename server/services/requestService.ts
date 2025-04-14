@@ -9,6 +9,9 @@ import {
 
 type CreateRequest = {
   local_name: string;
+  address: string;
+  city: string;
+  state: string;
   cpf: string;
   name: string;
   blood_type: RequestType["blood_type"];
@@ -76,6 +79,9 @@ export async function createRequest(
   return dbClient.request.create({
     data: {
       local_name: request.local_name,
+      address: request.address,
+      city: request.city,
+      state: request.state,
       requester_id,
       assisted_id: assisted.id,
       active_campagin: true,

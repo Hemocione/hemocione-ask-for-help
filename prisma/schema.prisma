@@ -12,9 +12,9 @@ model Request {
   requester_id    String
   assisted_id     Int
   local_name      String
-  address         String
-  city            String
-  state           String
+  address         String         @default("") // TODO: remove this before release v1
+  city            String         @default("") // TODO: remove this before release v1
+  state           String         @default("") // TODO: remove this before release v1
   // local_latitude float
   // local_longitude float // TODO: get the location from the user
   review_status   RequestStatus? @default(Pending)
