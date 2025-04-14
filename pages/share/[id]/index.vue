@@ -7,7 +7,7 @@
       class="absolute top-5 left-5 cursor-pointer"
     />
 
-    <OgImageTemplateRequestDetailsInstagram
+    <OgImageTemplateRequestDetailsComponent
       :name="request?.assisted.name"
       :bloodType="request?.assisted.blood_type"
       :location="request?.local_name"
