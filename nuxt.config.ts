@@ -18,7 +18,7 @@ const getSiteUrl = () => {
     return networkAddress || "http://localhost:3000";
   }
 
-  return "https://ajudai.hemocione.com.br/";
+  return "https://ajudaai.hemocione.com.br/";
 };
 
 const siteUrl = getSiteUrl();
