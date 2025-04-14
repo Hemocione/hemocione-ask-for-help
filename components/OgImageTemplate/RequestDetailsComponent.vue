@@ -32,20 +32,20 @@
     <div class="flex flex-col items-center justify-center pb-4">
       <h2 class="font-bold text-xl text-center py-3">{{ name }}</h2>
       <div class="flex flex-row items-center gap-1">
-        <p class="text-xs text-[#52575c]">Tipo Sanguíneo</p>
+        <p class="text-[#52575c]">Tipo Sanguíneo</p>
         <div
           class="w-8 h-4 bg-[#bb0a08] text-white rounded-full flex items-center justify-center text-xs font-medium"
         >
           {{ bloodType }}
         </div>
       </div>
-      <div class="flex flex-row items-center gap-2 pb-4">
+      <div class="flex flex-row items-center gap-2 py-4">
         <img
           src="/images/loc.svg"
           alt="Localização do usuário solicitante"
-          class="w-2 h-3"
+          class="w-3 h-4"
         />
-        <p class="text-xs text-[#52575c]">{{ location }}</p>
+        <p class="text-[#52575c]">{{ location }}</p>
       </div>
       <div class="rounded-lg flex flex-col items-center">
         <p class="text-base font-semibold mb-5">Tipos sanguíneos compatíveis</p>
