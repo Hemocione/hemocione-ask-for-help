@@ -12,14 +12,17 @@ model Request {
   requester_id    String
   assisted_id     Int
   local_name      String
+  address         String         @default("") // TODO: remove this before release v1
+  city            String         @default("") // TODO: remove this before release v1
+  state           String         @default("") // TODO: remove this before release v1
   // local_latitude float
   // local_longitude float // TODO: get the location from the user
   review_status   RequestStatus? @default(Pending)
   active_campagin Boolean
 
   assisted        Assisted          @relation(fields: [assisted_id], references: [id], onDelete: Cascade)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
   RequestDonators RequestDonators[]
 }
 
@@ -29,8 +32,8 @@ model Assisted {
   name       String
   blood_type BloodType
   photo_url  String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   Request    Request[]
 }
 

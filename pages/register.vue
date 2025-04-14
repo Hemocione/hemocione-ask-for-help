@@ -1,6 +1,6 @@
 <template>
-  <div class="h-dvh bg-white">
-    <div class="p-4 flex-1 flex flex-col h-dvh w-full gap-4 items-center">
+  <div class="h-screen bg-white">
+    <div class="p-4 flex-1 flex flex-col w-full gap-4 items-center">
       <NuxtLink
         class="flex flex-row justify-start items-start w-full p-4"
         to="/"
@@ -13,7 +13,7 @@
       </NuxtLink>
 
       <div
-        class="w-28 h-28 bg-[--mexican-chile] rounded-full flex items-center justify-center"
+        class="w-28 h-28 bg-[--mexican-chile] rounded-full flex items-center justify-center py-10"
         onclick="document.getElementById('file-input').click()"
       >
         <input
@@ -69,6 +69,57 @@
       </div>
 
       <div class="w-full">
+        <label>Endereço</label><span class="text-red-500">*</span>
+        <ElInput
+          class="input"
+          placeholder="Insira o endereço do local para doação"
+          v-model="requestSchema.address"
+        ></ElInput>
+        <p v-if="errors.address" class="text-red-500 text-sm">
+          {{ errors.address }}
+        </p>
+      </div>
+
+      <div class="w-full">
+        <label>Estado</label><span class="text-red-500">*</span>
+        <el-select
+          class="input"
+          placeholder="Selecione o estado correspondente"
+          v-model="requestSchema.state"
+        >
+          <el-option
+            v-for="item in states"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <p v-if="errors.state" class="text-red-500 text-sm pt-2">
+          {{ errors.state }}
+        </p>
+      </div>
+
+      <div class="w-full">
+        <label>Cidade</label><span class="text-red-500">*</span>
+        <el-select
+          class="input"
+          :filterable="true"
+          :allow-create="true"
+          placeholder="Insira a cidade do local para doação"
+          v-model="requestSchema.city"
+        >
+          <el-option
+            v-for="item in cities"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        /></el-select>
+        <p v-if="errors.city" class="text-red-500 text-sm pt-2">
+          {{ errors.city }}
+        </p>
+      </div>
+
+      <div class="w-full">
         <label>Tipo sanguíneo</label><span class="text-red-500">*</span>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 pt-2">
           <el-button
@@ -93,7 +144,9 @@
         </p>
       </div>
     </div>
-    <div class="sticky p-4 bottom-0 left-0 w-full bg-white shadow-lg">
+    <div
+      class="sticky p-4 !bottom-0 !left-0 !right-0 w-full bg-white shadow-lg"
+    >
       <Button @click="registerRequest">Continuar</Button>
     </div>
   </div>
@@ -109,6 +162,8 @@ definePageMeta({
   middleware: ["auth"],
 });
 
+const states = getEstadosListWithLabel();
+const cities = ref<{ value: string; label: string }[]>([]);
 const requestSchema = ref<Request>({} as Request);
 const errors = ref<{ [key: string]: string }>({});
 const uploadingImage = ref(false);
@@ -122,11 +177,19 @@ if (user?.id) {
 
 watch(
   requestSchema,
-  (newValue) => {
+  async (newValue) => {
     for (const key in errors.value) {
       if (newValue[key as keyof typeof requestSchema.value]) {
         delete errors.value[key];
       }
+    }
+    if (newValue.state) {
+      const fetched = await getCidadesFromEstado(newValue.state);
+
+      cities.value = fetched.map((city) => ({
+        value: city,
+        label: city,
+      }));
     }
   },
   { deep: true }
@@ -139,11 +202,25 @@ const validationFormWithZod = () => {
   try {
     const CreateRequestSchema = z.object({
       local_name: z.string({
+        invalid_type_error: "local inválido",
+        required_error: "O local é obrigatório",
+      }),
+      address: z.string({
         invalid_type_error: "Endereço inválido",
         required_error: "O Endereço é obrigatório",
       }),
+      city: z.string({
+        invalid_type_error: "Cidade inválida",
+        required_error: "O Cidade é obrigatória",
+      }),
+      state: z.string({
+        invalid_type_error: "Estado inválido",
+        required_error: "O Estado é obrigatório",
+      }),
       cpf: z
-        .string()
+        .string({
+          required_error: "O CPF é obrigatório",
+        })
         .min(11, "O CPF deve ter 11 dígitos")
         .max(14, "O CPF deve ter no máximo 14 caracteres")
         .refine(isValidCPF, { message: "CPF inválido" }),
@@ -245,7 +322,6 @@ const formatCpf = () => {
 
 // Envio do formulário
 const registerRequest = async () => {
-  
   const message = ElMessage({
     message: "Criando solicitação...",
     type: "info",
@@ -261,7 +337,7 @@ const registerRequest = async () => {
     return;
   }
 
-  posthog?.capture('click_create_request')
+  posthog?.capture("click_create_request");
   try {
     const result = await $fetch("/api/request", {
       method: "POST",
@@ -305,6 +381,9 @@ const isOwnPhoto = computed(() => photo_url.value !== "images/gallery.svg");
 
 <style scoped>
 .input {
-  @apply h-14 pt-2;
+  @apply !h-14 pt-2;
+}
+.input :deep(.el-select__wrapper) {
+  @apply !h-14;
 }
 </style>
