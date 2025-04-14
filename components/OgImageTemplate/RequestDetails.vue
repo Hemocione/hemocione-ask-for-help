@@ -31,7 +31,7 @@
               :key="idx"
               class="flex items-center justify-center w-25 h-20 px-5 py-2 font-bold border rounded-2xl border-[#a0a4a8] text-[#a0a4a8]"
               :class="{
-                'bg-[#6e91c7] border-[#6e91c7] !text-white': isCompatible(type),
+                'bg-[#6e91c7] border-[#6e91c7] text-white': isCompatible(type),
               }"
             >
               {{ type }}
