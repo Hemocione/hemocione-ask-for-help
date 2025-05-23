@@ -1,12 +1,13 @@
 import { createRequest } from "~/server/services/requestService";
 import { DBBloodTypes } from "~/types/blood";
+import { States } from "~/types/state";
 import z from "zod";
 
 const CreateRequestSchema = z.object({
   local_name: z.string(),
   address: z.string(),
   city: z.string(),
-  state: z.string(),
+  state: z.enum(States),
   cpf: z.string(),
   name: z.string(),
   blood_type: z.enum(DBBloodTypes),
@@ -35,7 +36,7 @@ export default defineEventHandler(async (event) => {
       cpf,
       local_name,
       address,
-      city, 
+      city,
       state,
       name,
       photo_url,
