@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen bg-white">
-    <div class="p-4 flex-1 flex flex-col w-full gap-4 items-center pb-8 overflow-y-auto overflow-x-hidden">
+    <div class="p-4 flex-1 flex flex-col w-full gap-4 items-center pb-8 overflow-y-auto overflow-x-hidden" ref="elemScroll">
       <NuxtLink
         class="flex flex-row justify-start items-start w-full p-4"
         to="/"
@@ -124,51 +124,50 @@
           {{ errors.address }}
       </p>
 
-      <div v-if="bloodBankNotFound" class="w-full">
-        <label>Cidade</label><span class="text-red-500">*</span>
-        <ElInput
-          class="input"
-          placeholder="Insira a cidade do local para doação"
-          v-model="requestSchema.city"
-        ></ElInput>
-      </div>
+      <Transition
+        enter-active-class="transform transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-4 scale-95"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transform transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        leave-to-class="opacity-0 -translate-y-4 scale-95"
+      >
+        <div v-if="bloodBankNotFound" class="w-full space-y-2">
+          <label>Cidade</label><span class="text-red-500">*</span>
+          <ElInput
+            class="input"
+            placeholder="Insira a cidade do local para doação"
+            v-model="requestSchema.city"
+          ></ElInput>
+        </div>
+      </Transition>
       <p v-if="errors.city" class="text-red-500 text-sm">
           {{ errors.city }}
       </p>
 
-      <div v-if="bloodBankNotFound" class="w-full">
-        <label>Estado</label><span class="text-red-500">*</span>
-        <el-select v-model="requestSchema.state" size="large" placeholder="Selecione o estado correspondente">
-          <el-option
-            v-for="state in States"
-            :key="state"
-            :label="state"
-            :value="state"
-          />
-        </el-select>
-        <p v-if="errors.state" class="text-red-500 text-sm">
-            {{ errors.state }}
-        </p>
-      </div>
-
-      <div class="w-full">
-        <label>Estado</label><span class="text-red-500">*</span>
-        <el-select
-          class="input"
-          placeholder="Selecione o estado correspondente"
-          v-model="requestSchema.state"
-        >
-          <el-option
-            v-for="item in states"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <p v-if="errors.state" class="text-red-500 text-sm pt-2">
-          {{ errors.state }}
-        </p>
-      </div>
+      <Transition
+        enter-active-class="transform transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-4 scale-95"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transform transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        leave-to-class="opacity-0 -translate-y-4 scale-95"
+      >
+        <div v-if="bloodBankNotFound" class="w-full space-y-2">
+          <label>Estado</label><span class="text-red-500">*</span>
+          <el-select v-model="requestSchema.state" size="large" placeholder="Selecione o estado correspondente">
+            <el-option
+              v-for="state in States"
+              :key="state"
+              :label="state"
+              :value="state"
+            />
+          </el-select>
+          <p v-if="errors.state" class="text-red-500 text-sm">
+              {{ errors.state }}
+          </p>
+        </div>
+      </Transition>
 
       </div>
     <div
@@ -190,7 +189,7 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const states = getEstadosListWithLabel();
+const elemScroll = ref<HTMLElement | null>(null)
 const cities = ref<{ value: string; label: string }[]>([]);
 const requestSchema = ref<Request>({} as Request);
 const errors = ref<{ [key: string]: string }>({});
@@ -236,14 +235,6 @@ const validationFormWithZod = () => {
       address: z.string({
         invalid_type_error: "Endereço inválido",
         required_error: "Endereço é obrigatório",
-      }),
-      city: z.string({
-        invalid_type_error: "Cidade inválida",
-        required_error: "Cidade é obrigatório",
-      }),
-      state: z.string({
-        invalid_type_error: "Estado inválido",
-        required_error: "Estado é obrigatório",
       }),
       city: z.string({
         invalid_type_error: "Cidade inválida",
@@ -437,6 +428,14 @@ const selectedBloodBank = (bank: BloodBank) => {
   requestSchema.value.address = bank.address;
   bloodBankNotFound.value = false;
 }
+
+watch(bloodBankNotFound, () => {
+  setTimeout(() => {
+    if(elemScroll.value && bloodBankNotFound.value) {
+      elemScroll.value.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, 300)
+})
 
 </script>
 
