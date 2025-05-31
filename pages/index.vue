@@ -19,15 +19,18 @@
           class="w-[250px] mx-auto"
         />
       </div>
-      <div class="flex flex-col gap-4 w-full p-4" v-else>
+      <div class="flex flex-col gap-4 w-full p-4">
         <CardRequest
           v-for="(person, idx) in requests"
-          :key="idx"
+          :key="person.id"
           :requesterName="person.assisted.name"
           :requesterLocal="person.local_name"
           :requesterPhoto="person.assisted.photo_url!"
           :bloodType="person.assisted.blood_type"
-          class="cursor-pointer"
+          class="cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg motion-safe:animate-fade-in motion-safe:animate-slide-up"
+          :style="{
+            '--tw-animate-delay': `${idx * 50}ms`
+          }"
           @click="redirect(`description/${person.id}`)"
         />
       </div>
