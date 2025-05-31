@@ -5,35 +5,34 @@
         <SearchBar @update:search="onSearch" />
         <FilterDialog @update:filter="onFilter" />
       </div>
-      <div v-if="fetching" class="flex flex-col gap-4 w-full p-4">
-        <SkeletonCardRequest v-for="i in 3" :key="i" />
-      </div>
-      <div
-        class="flex flex-col items-center gap-4 w-full"
-        v-if="resultsNotFound"
-      >
-        <h2>Nenhum pedido encontrado :(</h2>
-        <img
-          src="/images/rafiki.svg"
-          alt="Imagem ilustrativa de uma pessoa doando sangue"
-          class="w-[250px] mx-auto"
-        />
-      </div>
-      <div class="flex flex-col gap-4 w-full p-4">
-        <CardRequest
-          v-for="(person, idx) in requests"
-          :key="person.id"
-          :requesterName="person.assisted.name"
-          :requesterLocal="person.local_name"
-          :requesterPhoto="person.assisted.photo_url!"
-          :bloodType="person.assisted.blood_type"
-          class="cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg motion-safe:animate-fade-in motion-safe:animate-slide-up"
-          :style="{
-            '--tw-animate-delay': `${idx * 50}ms`
-          }"
-          @click="redirect(`description/${person.id}`)"
-        />
-      </div>
+      <Transition name="fade" mode="out-in">
+        <div v-if="fetching" class="flex flex-col gap-4 w-full p-4">
+          <SkeletonCardRequest v-for="i in 3" :key="i" />
+        </div>
+        <div v-else-if="resultsNotFound" class="flex flex-col items-center gap-4 w-full">
+          <h2>Nenhum pedido encontrado :(</h2>
+          <img
+            src="/images/rafiki.svg"
+            alt="Imagem ilustrativa de uma pessoa doando sangue"
+            class="w-[250px] mx-auto"
+          />
+        </div>
+        <div v-else class="flex flex-col gap-4 w-full p-4">
+          <CardRequest
+            v-for="(person, idx) in requests"
+            :key="person.id"
+            :requesterName="person.assisted.name"
+            :requesterLocal="person.local_name"
+            :requesterPhoto="person.assisted.photo_url!"
+            :bloodType="person.assisted.blood_type"
+            class="cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg motion-safe:animate-fade-in motion-safe:animate-slide-up"
+            :style="{
+              '--tw-animate-delay': `${idx * 50}ms`
+            }"
+            @click="redirect(`description/${person.id}`)"
+          />
+        </div>
+      </Transition>
       <div ref="sentinel" class="px-4">
         <SkeletonCardRequest v-if="fetching && alreadyFetched" />
       </div>
@@ -66,6 +65,8 @@ const sentinel = ref<HTMLDivElement | null>(null);
 const LIMIT_PAGE = 10;
 const fetching = ref(true);
 const alreadyFetched = ref(false);
+const minLoadingTime = 1000; // 1 second in milliseconds
+let loadingStartTime: number;
 
 const query = ref<{
   name?: string;
@@ -81,6 +82,7 @@ const fetchRequests = async () => {
     if (!hasMore.value) return;
 
     fetching.value = true;
+    loadingStartTime = Date.now();
     const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
 
     const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
@@ -99,6 +101,12 @@ const fetchRequests = async () => {
       requests.value = [...requests.value, ...fetchedData];
     }
   } finally {
+    const elapsedTime = Date.now() - loadingStartTime;
+    const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+    
+    // Ensure minimum loading time
+    await new Promise(resolve => setTimeout(resolve, remainingTime));
+    
     fetching.value = false;
     alreadyFetched.value = true;
   }
@@ -145,3 +153,16 @@ onMounted(() => {
   }
 });
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+</style>
