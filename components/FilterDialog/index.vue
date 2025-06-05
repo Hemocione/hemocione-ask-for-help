@@ -4,18 +4,18 @@
       @click="dialogVisible = true"
       :src="filterIcon"
       alt="Filtros"
-      class="cursor-pointer"
+      class="cursor-pointer transition-transform duration-200 hover:scale-110"
     />
 
     <el-dialog
       v-model="dialogVisible"
       :show-close="false"
       :align-center="true"
-      class="bg-[--black-5] border border-[--black-80] p-4 rounded-lg !w-[312px] flex flex-col items-center"
+      class="bg-[--black-5] border border-[--black-80] p-4 rounded-lg !w-[312px] flex flex-col items-center transition-all duration-300 ease-in-out"
     >
       <div class="flex flex-row justify-start items-start w-full gap-5 mb-5">
         <img
-          class="w-4 h-4"
+          class="w-4 h-4 cursor-pointer transition-transform duration-200 hover:scale-110"
           src="/public/images/go-back.svg"
           @click="dialogVisible = false"
           alt="Setinha para voltar pra página anterior"
@@ -30,9 +30,9 @@
           v-for="(type, idx) in bloodTypes"
           :key="idx"
           :class="{
-            'bg-[--hemo-color-primary] text-[--black-0]':
+            'bg-[--hemo-color-primary] text-[--black-0] transform transition-all duration-200 hover:scale-105':
               selectedBloodTypes.includes(type),
-            ' text-[--black-80] border border-[--black-60]':
+            'text-[--black-80] border border-[--black-60] transform transition-all duration-200 hover:scale-105 hover:border-[--hemo-color-primary]':
               !selectedBloodTypes.includes(type),
           }"
           @click="toggleBloodTypeSelection(type)"
@@ -44,10 +44,15 @@
         </el-button>
       </div>
 
-      <div class="flex justify-end">
+      <div class="flex justify-end gap-2">
+        <el-button
+          @click="clearFilters"
+          class="border border-[--black-60] p-2 w-full rounded-2xl text-[--black-80] hover:bg-[--black-10] transform transition-all duration-200 hover:scale-105"
+          >Limpar Filtros</el-button
+        >
         <el-button
           @click="emitBloodTypeSelection"
-          class="bg-[--hemo-color-primary] p-2 w-full rounded-2xl text-[--hemo-color-text-primary] hover:bg-red-500"
+          class="bg-[--hemo-color-primary] p-2 w-full rounded-2xl text-[--hemo-color-text-primary] hover:bg-red-500 transform transition-all duration-200 hover:scale-105"
           >Ver Resultados</el-button
         >
       </div>
@@ -59,17 +64,26 @@
 import { ref } from "vue";
 import { ElButton } from "element-plus";
 import { bloodTypes } from "~/types/blood";
+import { useRouter } from "vue-router";
 
 const emit = defineEmits<{
   (event: "update:filter", value: string[]): void;
 }>();
 
+const router = useRouter();
 const dialogVisible = ref(false);
 const selectedBloodTypes = ref<string[]>([]);
 
 const emitBloodTypeSelection = () => {
   dialogVisible.value = false;
   emit("update:filter", selectedBloodTypes.value);
+};
+
+const clearFilters = () => {
+  selectedBloodTypes.value = [];
+  dialogVisible.value = false;
+  emit("update:filter", []);
+  router.push('/');
 };
 
 const toggleBloodTypeSelection = (type: string) => {
@@ -98,5 +112,17 @@ button.bg-gray-200 {
   padding: 12px;
   background-color: var(--black-10);
   border: none;
+}
+
+:deep(.el-dialog) {
+  transition: all 0.3s ease-in-out;
+}
+
+:deep(.el-dialog__wrapper) {
+  transition: all 0.3s ease-in-out;
+}
+
+:deep(.el-overlay) {
+  transition: all 0.3s ease-in-out;
 }
 </style>

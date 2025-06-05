@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen bg-white">
-    <div class="p-4 flex-1 flex flex-col w-full gap-4 items-center">
+    <div class="p-4 flex-1 flex flex-col w-full gap-4 items-center pb-8 overflow-y-auto overflow-x-hidden" ref="elemScroll">
       <NuxtLink
         class="flex flex-row justify-start items-start w-full p-4"
         to="/"
@@ -13,7 +13,7 @@
       </NuxtLink>
 
       <div
-        class="w-28 h-28 bg-[--mexican-chile] rounded-full flex items-center justify-center py-10"
+        class="p-10 bg-[--mexican-chile] rounded-full flex items-center justify-center"
         onclick="document.getElementById('file-input').click()"
       >
         <input
@@ -57,69 +57,6 @@
       </div>
 
       <div class="w-full">
-        <label>Local para doação</label><span class="text-red-500">*</span>
-        <ElInput
-          class="input"
-          placeholder="Insira Hospital ou Instituição"
-          v-model="requestSchema.local_name"
-        ></ElInput>
-        <p v-if="errors.local_name" class="text-red-500 text-sm">
-          {{ errors.local_name }}
-        </p>
-      </div>
-
-      <div class="w-full">
-        <label>Endereço</label><span class="text-red-500">*</span>
-        <ElInput
-          class="input"
-          placeholder="Insira o endereço do local para doação"
-          v-model="requestSchema.address"
-        ></ElInput>
-        <p v-if="errors.address" class="text-red-500 text-sm">
-          {{ errors.address }}
-        </p>
-      </div>
-
-      <div class="w-full">
-        <label>Estado</label><span class="text-red-500">*</span>
-        <el-select
-          class="input"
-          placeholder="Selecione o estado correspondente"
-          v-model="requestSchema.state"
-        >
-          <el-option
-            v-for="item in states"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <p v-if="errors.state" class="text-red-500 text-sm pt-2">
-          {{ errors.state }}
-        </p>
-      </div>
-
-      <div class="w-full">
-        <label>Cidade</label><span class="text-red-500">*</span>
-        <el-select
-          class="input"
-          :filterable="true"
-          :allow-create="true"
-          placeholder="Insira a cidade do local para doação"
-          v-model="requestSchema.city"
-        >
-          <el-option
-            v-for="item in cities"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-        /></el-select>
-        <p v-if="errors.city" class="text-red-500 text-sm pt-2">
-          {{ errors.city }}
-        </p>
-      </div>
-
-      <div class="w-full">
         <label>Tipo sanguíneo</label><span class="text-red-500">*</span>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 pt-2">
           <el-button
@@ -143,7 +80,96 @@
           {{ errors.blood_type }}
         </p>
       </div>
-    </div>
+    
+      <div class="w-full">
+        <div class="flex justify-between">
+          <div>
+            <label>Local para doação</label><span class="text-red-500">*</span>
+          </div>
+          <div class="flex justify-end" style="align-items: center;">
+            <span class="text-xs mr-1">Não encontrei a localização</span>
+            <ElSwitch
+              v-model="bloodBankNotFound"
+            />  
+          </div>
+        </div>
+        <ElSelect 
+          v-model="requestSchema.local_name" 
+          filterable
+          allow-create
+          placeholder="Insira Hospital ou Instituição">
+          <ElOption
+            v-for="bank in bloodBanks"
+            :key="bank.id"
+            :label="bank.name"
+            :value="bank.name"
+            @click="selectedBloodBank(bank)"
+          />
+        </ElSelect> 
+        <p v-if="errors.local_name" class="text-red-500 text-sm">
+          {{ errors.local_name }}
+        </p>
+      </div>
+
+      <div class="w-full">
+        <label>Endereço</label><span class="text-red-500">*</span>
+        <ElInput
+          class="input"
+          placeholder="Insira o endereço do local para doação"
+          v-model="requestSchema.address"
+          :disabled="!bloodBankNotFound"
+        ></ElInput>
+      </div>
+      <p v-if="errors.address" class="text-red-500 text-sm">
+          {{ errors.address }}
+      </p>
+
+      <Transition
+        enter-active-class="transform transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-4 scale-95"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transform transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        leave-to-class="opacity-0 -translate-y-4 scale-95"
+      >
+        <div v-if="bloodBankNotFound" class="w-full space-y-2">
+          <label>Cidade</label><span class="text-red-500">*</span>
+          <ElInput
+            class="input"
+            placeholder="Insira a cidade do local para doação"
+            v-model="requestSchema.city"
+          ></ElInput>
+        </div>
+      </Transition>
+      <p v-if="errors.city" class="text-red-500 text-sm">
+          {{ errors.city }}
+      </p>
+
+      <Transition
+        enter-active-class="transform transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-4 scale-95"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transform transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        leave-to-class="opacity-0 -translate-y-4 scale-95"
+      >
+        <div v-if="bloodBankNotFound" class="w-full space-y-2">
+          <label>Estado</label><span class="text-red-500">*</span>
+          <el-select v-model="requestSchema.state" size="large" placeholder="Selecione o estado correspondente">
+            <el-option
+              v-for="state in States"
+              :key="state"
+              :label="state"
+              :value="state"
+            />
+          </el-select>
+          <p v-if="errors.state" class="text-red-500 text-sm">
+              {{ errors.state }}
+          </p>
+        </div>
+      </Transition>
+
+      </div>
     <div
       class="sticky p-4 !bottom-0 !left-0 !right-0 w-full bg-white shadow-lg"
     >
@@ -157,12 +183,13 @@ import { ref } from "vue";
 import z from "zod";
 import type { Request } from "~/server/api/request/index.post";
 import { bloodTypes, DBBloodTypes, type BloodType } from "~/types/blood";
+import { States } from "~/types/state"
 
 definePageMeta({
   middleware: ["auth"],
 });
 
-const states = getEstadosListWithLabel();
+const elemScroll = ref<HTMLElement | null>(null)
 const cities = ref<{ value: string; label: string }[]>([]);
 const requestSchema = ref<Request>({} as Request);
 const errors = ref<{ [key: string]: string }>({});
@@ -202,12 +229,12 @@ const validationFormWithZod = () => {
   try {
     const CreateRequestSchema = z.object({
       local_name: z.string({
-        invalid_type_error: "local inválido",
-        required_error: "O local é obrigatório",
+        invalid_type_error: "Local de doação inválido",
+        required_error: "Local de doação é obrigatório",
       }),
       address: z.string({
         invalid_type_error: "Endereço inválido",
-        required_error: "O Endereço é obrigatório",
+        required_error: "Endereço é obrigatório",
       }),
       city: z.string({
         invalid_type_error: "Cidade inválida",
@@ -377,13 +404,46 @@ const photo_url = computed(
   () => requestSchema.value.photo_url || "images/gallery.svg"
 );
 const isOwnPhoto = computed(() => photo_url.value !== "images/gallery.svg");
+
+const config = useRuntimeConfig();
+
+interface BloodBank {
+  name: string;
+  address: string;
+  id: string;
+  latitude: string;
+  longitude: string;
+}
+
+const {data} = await useFetch<BloodBank[]>(`${config.public.hemocioneIdApiUrl}/bloodBanks`, {
+  method: "GET",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+const bloodBanks = computed(() => data.value ?? []);
+const bloodBankNotFound = ref(false);
+
+const selectedBloodBank = (bank: BloodBank) => {
+  requestSchema.value.address = bank.address;
+  bloodBankNotFound.value = false;
+}
+
+watch(bloodBankNotFound, () => {
+  setTimeout(() => {
+    if(elemScroll.value && bloodBankNotFound.value) {
+      elemScroll.value.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, 300)
+})
+
 </script>
 
 <style scoped>
 .input {
   @apply !h-14 pt-2;
 }
-.input :deep(.el-select__wrapper) {
-  @apply !h-14;
+:deep(.el-select__wrapper) {
+  @apply !h-12;
 }
 </style>
