@@ -1780,6 +1780,11 @@
     "@unocss/core" "^66.0.0"
     magic-string "^0.30.17"
 
+"@vercel/functions@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/@vercel/functions/-/functions-2.1.0.tgz#f9301a5ac59c8737953c1f3f884f453c2cc54a35"
+  integrity sha512-1gSbK9zfrbJxk1JTBVERDhLi01mK3fz+gw4GjOjZwHnqs0zsBhQA70HGVtXQX/Z3BTRMfbpAEMVDfhecRw0lDA==
+
 "@vercel/nft@^0.29.2":
   version "0.29.2"
   resolved "https://registry.npmjs.org/@vercel/nft/-/nft-0.29.2.tgz#0a852a67f5f24ee7c55139f065d46175688fcbbb"

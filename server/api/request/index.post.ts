@@ -2,6 +2,8 @@ import { createRequest } from "~/server/services/requestService";
 import { DBBloodTypes } from "~/types/blood";
 import { States } from "~/types/state";
 import z from "zod";
+import { getDiscordNotificationService } from "~/server/services/discord";
+import { runAsync } from "~/server/utils/runAsync";
 
 const CreateRequestSchema = z.object({
   local_name: z.string(),
@@ -30,7 +32,7 @@ export default defineEventHandler(async (event) => {
     requester_id,
   } = await readValidatedBody(event, CreateRequestSchema.parse);
 
-  return await createRequest(
+  const createdRequest = await createRequest(
     {
       blood_type,
       cpf,
@@ -43,4 +45,38 @@ export default defineEventHandler(async (event) => {
     },
     requester_id
   );
+
+  const discordNotificationService = getDiscordNotificationService();
+
+  // Alerta no discord para revisão
+  const embedPromise = discordNotificationService.sendEmbed({
+    title: "🆕 Nova Solicitação de Doação",
+    description: "Uma nova solicitação foi criada e precisa de revisão!",
+    color: 0xFFD700, 
+    fields: [
+      {
+        name: "👤 Solicitante",
+        value: name,
+        inline: true
+      },
+      {
+        name: "🩸 Tipo Sanguíneo",
+        value: blood_type,
+        inline: true
+      },
+      {
+        name: "📍 Local",
+        value: `${local_name}\n${address}${city ? `\n${city} - ${state}` : ''}`,
+        inline: false
+      }
+    ],
+    timestamp: new Date().toISOString(),
+    footer: {
+      text: `ID da Solicitação: ${createdRequest.id}`
+    }
+  })
+
+  runAsync(embedPromise);
+
+  return createdRequest;
 });
