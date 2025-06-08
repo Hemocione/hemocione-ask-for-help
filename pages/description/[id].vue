@@ -37,8 +37,9 @@
               src="/images/loc.svg"
               alt="Localização do usuário solicitante"
             />
-            <p>{{ request.local_name }}</p>
+            <p class="location-text">{{ request.local_name }}</p>
           </span>
+          <p class="text-[--black-80] text-xs">{{ request.address }}</p>
         </div>
 
         <div class="rounded-lg flex flex-col items-center">
@@ -270,5 +271,15 @@ header {
   color: var(--black-80);
   font-size: 0.875rem;
   font-weight: 500;
+  max-width: 100%;
+}
+
+.location-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 </style>

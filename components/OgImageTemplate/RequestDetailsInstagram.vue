@@ -45,8 +45,9 @@
           alt="Localização do usuário solicitante"
           class="w-9 h-10"
         />
-        <p class="text-3xl text-[#52575c]">{{ location }}</p>
+        <p class="text-[#52575c] text-center max-w-48">{{ location }}</p>
       </div>
+      <p class="text-[--black-80] text-xs text-center mb-4">{{ address }}</p>
       <div class="rounded-lg flex flex-col items-center">
         <p class="text-3xl font-semibold mb-5">Tipos sanguíneos compatíveis</p>
         <div
@@ -88,6 +89,7 @@ const props = defineProps<{
   bloodType: BloodType;
   location: string;
   photoURL: string;
+  address: string
 }>();
 
 const bloodReceiveCompatibilities: Record<BloodType, BloodType[]> = {
