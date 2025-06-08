@@ -1780,10 +1780,10 @@
     "@unocss/core" "^66.0.0"
     magic-string "^0.30.17"
 
-"@vercel/functions@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/@vercel/functions/-/functions-2.1.0.tgz#f9301a5ac59c8737953c1f3f884f453c2cc54a35"
-  integrity sha512-1gSbK9zfrbJxk1JTBVERDhLi01mK3fz+gw4GjOjZwHnqs0zsBhQA70HGVtXQX/Z3BTRMfbpAEMVDfhecRw0lDA==
+"@vercel/functions@^1.5.1":
+  version "1.6.0"
+  resolved "https://registry.npmjs.org/@vercel/functions/-/functions-1.6.0.tgz#97c29d5aff62894dc5a5ba5525bcee8bbbf28b82"
+  integrity sha512-R6FKQrYT5MZs5IE1SqeCJWxMuBdHawFcCZboKKw8p7s+6/mcd55Gx6tWmyKnQTyrSEA04NH73Tc9CbqpEle8RA==
 
 "@vercel/nft@^0.29.2":
   version "0.29.2"
