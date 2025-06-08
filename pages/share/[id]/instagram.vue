@@ -20,6 +20,7 @@ defineOgImageComponent(
     bloodType: request.value?.assisted.blood_type ?? "",
     photoURL: request.value?.assisted.photo_url ?? "",
     location: request.value?.local_name ?? "",
+    address: request.value?.address ?? "",
   },
   {
     width: 1080,

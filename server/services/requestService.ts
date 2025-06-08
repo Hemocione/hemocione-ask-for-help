@@ -10,8 +10,8 @@ import {
 type CreateRequest = {
   local_name: string;
   address: string;
-  city: string;
-  state: string;
+  city?: string;
+  state?: string;
   cpf: string;
   name: string;
   blood_type: RequestType["blood_type"];

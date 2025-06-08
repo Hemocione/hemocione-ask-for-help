@@ -99,6 +99,7 @@ export default defineNuxtConfig({
           process.env.NUXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com',
       }
     },
+    discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL ?? "",
     hemocioneIdIntegrationSecret:
       process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",
     hemocioneIdJwtSecretKey:

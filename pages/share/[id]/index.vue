@@ -11,6 +11,7 @@
       :name="request?.assisted.name"
       :bloodType="request?.assisted.blood_type"
       :location="request?.local_name"
+      :address="request?.address"
       :photoURL="request?.assisted.photo_url"
     />
 

@@ -31,6 +31,7 @@
     "@nuxtjs/robots": "^5.2.8",
     "@nuxtjs/seo": "^3.0.1",
     "@pinia/nuxt": "^0.5.5",
+    "@vercel/functions": "^1.5.1",
     "jsonwebtoken": "^9.0.2",
     "lodash-es": "^4.17.21",
     "posthog-js": "^1.235.6",
