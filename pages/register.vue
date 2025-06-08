@@ -94,10 +94,11 @@
           </div>
         </div>
         <ElSelect 
+          v-if="!bloodBankNotFound"
           v-model="requestSchema.local_name" 
           filterable
-          allow-create
-          placeholder="Insira Hospital ou Instituição">
+          placeholder="Insira Hospital ou Instituição"
+        >
           <ElOption
             v-for="bank in bloodBanks"
             :key="bank.id"
@@ -105,7 +106,13 @@
             :value="bank.name"
             @click="selectedBloodBank(bank)"
           />
-        </ElSelect> 
+        </ElSelect>
+        <ElInput
+          v-else
+          v-model="requestSchema.local_name"
+          class="input"
+          placeholder="Insira o nome do local para doação"
+        />
         <p v-if="errors.local_name" class="text-red-500 text-sm">
           {{ errors.local_name }}
         </p>
@@ -133,27 +140,6 @@
         leave-to-class="opacity-0 -translate-y-4 scale-95"
       >
         <div v-if="bloodBankNotFound" class="w-full space-y-2">
-          <label>Cidade</label><span class="text-red-500">*</span>
-          <ElInput
-            class="input"
-            placeholder="Insira a cidade do local para doação"
-            v-model="requestSchema.city"
-          ></ElInput>
-        </div>
-      </Transition>
-      <p v-if="errors.city" class="text-red-500 text-sm">
-          {{ errors.city }}
-      </p>
-
-      <Transition
-        enter-active-class="transform transition-all duration-300 ease-out"
-        enter-from-class="opacity-0 -translate-y-4 scale-95"
-        enter-to-class="opacity-100 translate-y-0 scale-100"
-        leave-active-class="transform transition-all duration-200 ease-in"
-        leave-from-class="opacity-100 translate-y-0 scale-100"
-        leave-to-class="opacity-0 -translate-y-4 scale-95"
-      >
-        <div v-if="bloodBankNotFound" class="w-full space-y-2">
           <label>Estado</label><span class="text-red-500">*</span>
           <el-select v-model="requestSchema.state" size="large" placeholder="Selecione o estado correspondente">
             <el-option
@@ -165,6 +151,35 @@
           </el-select>
           <p v-if="errors.state" class="text-red-500 text-sm">
               {{ errors.state }}
+          </p>
+        </div>
+      </Transition>
+
+      <Transition
+        enter-active-class="transform transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-4 scale-95"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transform transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        leave-to-class="opacity-0 -translate-y-4 scale-95"
+      >
+        <div v-if="bloodBankNotFound" class="w-full space-y-2">
+          <label>Cidade</label><span class="text-red-500">*</span>
+          <el-select 
+            v-model="requestSchema.city" 
+            filterable 
+            allow-create
+            placeholder="Selecione ou digite a cidade"
+          >
+            <el-option
+              v-for="city in cities"
+              :key="city.value"
+              :label="city.label"
+              :value="city.value"
+            />
+          </el-select>
+          <p v-if="errors.city" class="text-red-500 text-sm">
+              {{ errors.city }}
           </p>
         </div>
       </Transition>
@@ -239,11 +254,23 @@ const validationFormWithZod = () => {
       city: z.string({
         invalid_type_error: "Cidade inválida",
         required_error: "O Cidade é obrigatória",
-      }),
+      }).optional().refine((val) => {
+        const isCustomLocation = !bloodBanks.value.some(bank => bank.name === requestSchema.value.local_name);
+        if (isCustomLocation) {
+          return !!val;
+        }
+        return true;
+      }, { message: "Cidade é obrigatória quando o local não está na lista" }),
       state: z.string({
         invalid_type_error: "Estado inválido",
         required_error: "O Estado é obrigatório",
-      }),
+      }).optional().refine((val) => {
+        const isCustomLocation = !bloodBanks.value.some(bank => bank.name === requestSchema.value.local_name);
+        if (isCustomLocation) {
+          return !!val;
+        }
+        return true;
+      }, { message: "Estado é obrigatório quando o local não está na lista" }),
       cpf: z
         .string({
           required_error: "O CPF é obrigatório",
@@ -372,11 +399,11 @@ const registerRequest = async () => {
     });
 
     if (!result?.review_status) {
-      router.replace("/");
+      await router.replace("/");
       return;
     }
 
-    router.push(`review/${result.review_status.toLowerCase()}`);
+    await router.push(`review/${result.review_status.toLowerCase()}`);
 
     message.close();
     ElMessage({
@@ -429,7 +456,10 @@ const selectedBloodBank = (bank: BloodBank) => {
   bloodBankNotFound.value = false;
 }
 
-watch(bloodBankNotFound, () => {
+watch(bloodBankNotFound, (newValue) => {
+  requestSchema.value.local_name = '';
+  requestSchema.value.address = '';
+
   setTimeout(() => {
     if(elemScroll.value && bloodBankNotFound.value) {
       elemScroll.value.scrollIntoView({ behavior: 'smooth', block: 'end' });

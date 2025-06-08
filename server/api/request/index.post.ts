@@ -6,8 +6,8 @@ import z from "zod";
 const CreateRequestSchema = z.object({
   local_name: z.string(),
   address: z.string(),
-  city: z.string(),
-  state: z.enum(States),
+  city: z.string().optional(),
+  state: z.enum(States).optional(),
   cpf: z.string(),
   name: z.string(),
   blood_type: z.enum(DBBloodTypes),

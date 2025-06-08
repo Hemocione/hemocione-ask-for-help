@@ -6,7 +6,7 @@
         <FilterDialog @update:filter="onFilter" />
       </div>
       <Transition name="fade" mode="out-in">
-        <div v-if="fetching" class="flex flex-col gap-4 w-full p-4">
+        <div v-if="fetching && !alreadyFetched" class="flex flex-col gap-4 w-full p-4">
           <SkeletonCardRequest v-for="i in 3" :key="i" />
         </div>
         <div v-else-if="resultsNotFound" class="flex flex-col items-center gap-4 w-full">
