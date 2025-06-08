@@ -13,7 +13,7 @@
       </NuxtLink>
 
       <div
-        class="p-10 bg-[--mexican-chile] rounded-full flex items-center justify-center"
+        class="bg-[--mexican-chile] rounded-full flex items-center justify-center w-28 h-28"
         onclick="document.getElementById('file-input').click()"
       >
         <input
@@ -26,10 +26,7 @@
         />
         <img
           :src="photo_url"
-          class="w-10 h-10"
-          :class="{
-            '!w-28 !h-28 !rounded-full': isOwnPhoto,
-          }"
+          :class="isOwnPhoto ? 'w-full h-full object-cover rounded-full' : 'w-10 h-10 object-contain mx-auto my-auto'"
           :alt="isOwnPhoto ? 'Foto do solicitante' : 'Ícone de coração'"
         />
       </div>
