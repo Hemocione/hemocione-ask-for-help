@@ -122,6 +122,7 @@ export async function paginateListRequest({
     where: {
       active_campagin: true,
       review_status: "Approved",
+      created_at: query.last ? {gte: query.last} : undefined, 
       assisted: {
         name: {
           contains: query.name,
