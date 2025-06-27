@@ -32,7 +32,7 @@ model Assisted {
   cpf        String    @unique
   name       String
   blood_type BloodType
-  photo_url  String?
+  //photo_url  String?
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   Request    Request[]

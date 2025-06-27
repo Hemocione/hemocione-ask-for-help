@@ -13,7 +13,7 @@ const CreateRequestSchema = z.object({
   cpf: z.string(),
   name: z.string(),
   blood_type: z.enum(DBBloodTypes),
-  photo_url: z.string().optional(),
+  //photo_url: z.string().optional(),
   requester_id: z.string(),
 });
 
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     city,
     state,
     name,
-    photo_url,
+    //photo_url,
     requester_id,
   } = await readValidatedBody(event, CreateRequestSchema.parse);
 
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
       city,
       state,
       name,
-      photo_url,
+      //photo_url,
     },
     requester_id
   );
