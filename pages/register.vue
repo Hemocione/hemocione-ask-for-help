@@ -435,8 +435,8 @@ interface BloodBank {
   name: string;
   address: string;
   id: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
 }
 
 const {data} = await useFetch<BloodBank[]>(`${config.public.hemocioneIdApiUrl}/bloodBanks`, {
@@ -450,6 +450,8 @@ const bloodBankNotFound = ref(false);
 
 const selectedBloodBank = (bank: BloodBank) => {
   requestSchema.value.address = bank.address;
+  requestSchema.value.local_longitude = bank.longitude;
+  requestSchema.value.local_latitude= bank.latitude;
   bloodBankNotFound.value = false;
 }
 

@@ -14,6 +14,8 @@ type CreateRequest = {
   state?: string;
   cpf: string;
   name: string;
+  local_latitude: number;
+  local_longitude: number;
   blood_type: RequestType["blood_type"];
   //photo_url?: string;
 };
@@ -82,6 +84,8 @@ export async function createRequest(
       address: request.address,
       city: request.city,
       state: request.state,
+      local_latitude : request.local_latitude,
+      local_longitude : request.local_longitude,
       requester_id,
       assisted_id: assisted.id,
       active_campagin: true,

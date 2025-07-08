@@ -12,6 +12,8 @@ const CreateRequestSchema = z.object({
   state: z.enum(States).optional(),
   cpf: z.string(),
   name: z.string(),
+  local_latitude: z.number(),
+  local_longitude: z.number(),
   blood_type: z.enum(DBBloodTypes),
   //photo_url: z.string().optional(),
   requester_id: z.string(),
@@ -30,6 +32,8 @@ export default defineEventHandler(async (event) => {
     name,
     //photo_url,
     requester_id,
+    local_latitude,
+    local_longitude,
   } = await readValidatedBody(event, CreateRequestSchema.parse);
 
   const createdRequest = await createRequest(
@@ -41,6 +45,8 @@ export default defineEventHandler(async (event) => {
       city,
       state,
       name,
+      local_latitude,
+      local_longitude,
       //photo_url,
     },
     requester_id
