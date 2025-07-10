@@ -17,36 +17,35 @@ const ListRequestSchema = z.object({
     .optional(),
   name: z.string().optional(),
   bloodTypes: z
-    .preprocess((val) => (typeof val === "string" ? [val] : val), 
-      z.array(
-        z
-          .enum(bloodTypes)
-          .transform(bloodTypeToDbType)
-      )
+    .preprocess(
+      (val) => (typeof val === "string" ? [val] : val),
+      z.array(z.enum(bloodTypes).transform(bloodTypeToDbType)),
     )
     .optional(),
   last: z
     .string()
     .transform((str) => new Date(str))
-    .refine((date)=> !isNaN(date.getTime()), {
-	message: "Invalid date",
-	})
+    .refine((date) => !isNaN(date.getTime()), {
+      message: "Invalid date",
+    })
     .optional(),
-
+  active: z.preprocess((val) => {
+    if (val === "true") return true;
+    if (val === "false") return false;
+    return undefined;
+  }, z.boolean().optional()),
 });
 
 export type Request = z.infer<typeof ListRequestSchema>;
 
 export default defineEventHandler(async (event) => {
-  const { page, per_page, bloodTypes, name, last } = await getValidatedQuery(
-    event,
-    ListRequestSchema.parse
-  );
+  const { page, per_page, bloodTypes, name, last, active } =
+    await getValidatedQuery(event, ListRequestSchema.parse);
 
   const query: {
     name?: string;
     bloodTypes?: BloodTypeValues[];
-    last?:Date; 
+    last?: Date;
   } = {};
 
   if (name) {
@@ -57,8 +56,13 @@ export default defineEventHandler(async (event) => {
     query.bloodTypes = bloodTypes.filter((e) => e !== undefined);
   }
 
-  if (last){
+  if (last) {
     query.last = last;
+  }
+
+  if (active) {
+    console.log(active);
+    query.active = active;
   }
 
   return await paginateListRequestOndeDoar({

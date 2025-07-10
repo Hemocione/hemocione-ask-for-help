@@ -45,7 +45,7 @@ export type RequestWithAssisted = Request & {
 
 export async function createRequest(
   request: CreateRequest,
-  requester_id: string
+  requester_id: string,
 ): Promise<Request> {
   let assisted = await dbClient.assisted.findFirst({
     where: {
@@ -84,8 +84,8 @@ export async function createRequest(
       address: request.address,
       city: request.city,
       state: request.state,
-      local_latitude : request.local_latitude,
-      local_longitude : request.local_longitude,
+      local_latitude: request.local_latitude,
+      local_longitude: request.local_longitude,
       requester_id,
       assisted_id: assisted.id,
       active_campagin: true,
@@ -95,7 +95,7 @@ export async function createRequest(
 
 export async function reviewRequest(
   requestId: number,
-  data: { review_status: Request["review_status"] }
+  data: { review_status: Request["review_status"] },
 ) {
   return dbClient.request.update({
     where: {
@@ -126,7 +126,7 @@ export async function paginateListRequest({
     where: {
       active_campagin: true,
       review_status: "Approved",
-      created_at: query.last ? {gte: query.last} : undefined, 
+      created_at: query.last ? { gte: query.last } : undefined,
       assisted: {
         name: {
           contains: query.name,
@@ -157,9 +157,9 @@ export async function paginateListRequestOndeDoar({
 }: PaginateRequest): Promise<RequestWithAssisted[]> {
   const requests = await dbClient.request.findMany({
     where: {
-      active_campagin: true,
+      active_campagin: query.active === true,
       review_status: "Approved",
-      created_at: query.last ? {gte: query.last} : undefined, 
+      created_at: query.last ? { gte: query.last } : undefined,
       assisted: {
         name: {
           contains: query.name,
@@ -182,7 +182,6 @@ export async function paginateListRequestOndeDoar({
 
   return requests.map(hydrateRequest);
 }
-
 
 export const getRequestById = async (id: number) => {
   const request = await dbClient.request.findUnique({
