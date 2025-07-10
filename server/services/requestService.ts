@@ -150,6 +150,40 @@ export async function paginateListRequest({
   return requests.map(hydrateRequest);
 }
 
+export async function paginateListRequestOndeDoar({
+  page = 1,
+  per_page = 10,
+  query = {},
+}: PaginateRequest): Promise<RequestWithAssisted[]> {
+  const requests = await dbClient.request.findMany({
+    where: {
+      active_campagin: true,
+      review_status: "Approved",
+      created_at: query.last ? {gte: query.last} : undefined, 
+      assisted: {
+        name: {
+          contains: query.name,
+          mode: "insensitive",
+        },
+        blood_type: {
+          in: query.bloodTypes,
+        },
+      },
+    },
+    take: per_page,
+    skip: (page - 1) * per_page,
+    include: {
+      assisted: true,
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
+
+  return requests.map(hydrateRequest);
+}
+
+
 export const getRequestById = async (id: number) => {
   const request = await dbClient.request.findUnique({
     where: { id },
