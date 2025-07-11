@@ -60,8 +60,7 @@ export default defineEventHandler(async (event) => {
     query.last = last;
   }
 
-  if (active) {
-    console.log(active);
+  if (active != undefined) {
     query.active = active;
   }
 
