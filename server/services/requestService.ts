@@ -155,7 +155,6 @@ export async function paginateListRequestOndeDoar({
   per_page = 10,
   query = {},
 }: PaginateRequest): Promise<RequestWithAssisted[]> {
-  console.log(query.active, typeof query.active);
   const requests = await dbClient.request.findMany({
     where: {
       active_campagin: query.active,
