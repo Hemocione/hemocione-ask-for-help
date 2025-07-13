@@ -1,10 +1,5 @@
 import z from "zod";
 import { paginateListRequestOndeDoar } from "~/server/services/requestService";
-import { bloodTypes } from "~/types/blood";
-import {
-  bloodTypeToDbType,
-  BloodTypeValues,
-} from "~/utils/bloodTypeTransformation";
 
 const ListRequestSchema = z.object({
   page: z
@@ -14,13 +9,6 @@ const ListRequestSchema = z.object({
   per_page: z
     .string()
     .transform((str) => Number(str))
-    .optional(),
-  name: z.string().optional(),
-  bloodTypes: z
-    .preprocess(
-      (val) => (typeof val === "string" ? [val] : val),
-      z.array(z.enum(bloodTypes).transform(bloodTypeToDbType)),
-    )
     .optional(),
   last: z
     .string()
@@ -39,30 +27,13 @@ const ListRequestSchema = z.object({
 export type Request = z.infer<typeof ListRequestSchema>;
 
 export default defineEventHandler(async (event) => {
-  const { page, per_page, bloodTypes, name, last, active } =
-    await getValidatedQuery(event, ListRequestSchema.parse);
+  const { page, per_page, last, active } =
+    await readValidatedBody(event, ListRequestSchema.parse);
 
-  const query: {
-    name?: string;
-    bloodTypes?: BloodTypeValues[];
-    last?: Date;
-  } = {};
-
-  if (name) {
-    query.name = name;
-  }
-
-  if (bloodTypes) {
-    query.bloodTypes = bloodTypes.filter((e) => e !== undefined);
-  }
-
-  if (last) {
-    query.last = last;
-  }
-
-  if (active != undefined) {
-    query.active = active;
-  }
+  const query = {
+    last,
+    active
+  };
 
   return await paginateListRequestOndeDoar({
     page,
