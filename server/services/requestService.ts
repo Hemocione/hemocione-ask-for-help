@@ -23,6 +23,8 @@ type CreateRequest = {
 type QueryRequest = {
   name?: string;
   bloodTypes?: BloodTypeValues[];
+  last?: Date;
+  active?: boolean;
 };
 
 type PaginateRequest = {
@@ -159,16 +161,7 @@ export async function paginateListRequestOndeDoar({
     where: {
       active_campagin: query.active,
       review_status: "Approved",
-      created_at: query.last ? { gte: query.last } : undefined,
-      assisted: {
-        name: {
-          contains: query.name,
-          mode: "insensitive",
-        },
-        blood_type: {
-          in: query.bloodTypes,
-        },
-      },
+      updated_at: query.last ? { gte: query.last } : undefined,
     },
     take: per_page,
     skip: (page - 1) * per_page,
