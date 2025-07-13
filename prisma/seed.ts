@@ -39,6 +39,8 @@ async function main() {
           address: `Rua ${idx + 1}`,
           city: 'Cidade Teste',
           state: 'Estado',
+          local_latitude: 81.5632,
+          local_longitude: -28.3788,
           review_status: RequestStatus.Approved,
           review_message: '',
           active_campagin: true,
