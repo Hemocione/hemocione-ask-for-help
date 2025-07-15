@@ -17,7 +17,7 @@ type CreateRequest = {
   local_latitude: number;
   local_longitude: number;
   blood_type: RequestType["blood_type"];
-  //photo_url?: string;
+  photo_url?: string;
 };
 
 type QueryRequest = {
@@ -38,7 +38,7 @@ export type RequestWithAssisted = Request & {
     cpf: string;
     name: string;
     blood_type: BloodTypeKeys;
-    //photo_url: string | null;
+    photo_url: string | null;
     id: number;
     created_at: Date;
     updated_at: Date;
@@ -76,7 +76,7 @@ export async function createRequest(
       cpf: request.cpf,
       name: request.name,
       blood_type: request.blood_type!,
-      //photo_url: request.photo_url,
+      photo_url: request.photo_url,
     },
   });
 

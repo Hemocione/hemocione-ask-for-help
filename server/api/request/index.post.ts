@@ -15,7 +15,7 @@ const CreateRequestSchema = z.object({
   local_latitude: z.number(),
   local_longitude: z.number(),
   blood_type: z.enum(DBBloodTypes),
-  //photo_url: z.string().optional(),
+  photo_url: z.string().optional(),
   requester_id: z.string(),
 });
 
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     city,
     state,
     name,
-    //photo_url,
+    photo_url,
     requester_id,
     local_latitude,
     local_longitude,
@@ -47,9 +47,9 @@ export default defineEventHandler(async (event) => {
       name,
       local_latitude,
       local_longitude,
-      //photo_url,
+      photo_url,
     },
-    requester_id
+    requester_id,
   );
 
   const discordNotificationService = getDiscordNotificationService();
@@ -58,29 +58,29 @@ export default defineEventHandler(async (event) => {
   const embedPromise = discordNotificationService.sendEmbed({
     title: "🆕 Nova Solicitação de Doação",
     description: "Uma nova solicitação foi criada e precisa de revisão!",
-    color: 0xFFD700, 
+    color: 0xffd700,
     fields: [
       {
         name: "👤 Solicitante",
         value: name,
-        inline: true
+        inline: true,
       },
       {
         name: "🩸 Tipo Sanguíneo",
         value: blood_type,
-        inline: true
+        inline: true,
       },
       {
         name: "📍 Local",
-        value: `${local_name}\n${address}${city ? `\n${city} - ${state}` : ''}`,
-        inline: false
-      }
+        value: `${local_name}\n${address}${city ? `\n${city} - ${state}` : ""}`,
+        inline: false,
+      },
     ],
     timestamp: new Date().toISOString(),
     footer: {
-      text: `ID da Solicitação: ${createdRequest.id}`
-    }
-  })
+      text: `ID da Solicitação: ${createdRequest.id}`,
+    },
+  });
 
   runAsync(embedPromise);
 

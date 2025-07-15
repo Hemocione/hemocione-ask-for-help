@@ -284,9 +284,9 @@ const validationFormWithZod = () => {
         required_error: "Tipo sanguíneo é obrigatório",
       }),
 
-      //photo_url: z.string({
-       // required_error: "Foto é obrigatório",
-     // }),
+      photo_url: z.string({
+       required_error: "Foto é obrigatório",
+     }),
     });
     CreateRequestSchema.parse(requestSchema.value);
     return true;
