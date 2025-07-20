@@ -14,6 +14,8 @@ type CreateRequest = {
   state?: string;
   cpf: string;
   name: string;
+  local_latitude: number;
+  local_longitude: number;
   blood_type: RequestType["blood_type"];
   photo_url?: string;
 };
@@ -21,6 +23,8 @@ type CreateRequest = {
 type QueryRequest = {
   name?: string;
   bloodTypes?: BloodTypeValues[];
+  last?: Date;
+  active?: boolean;
 };
 
 type PaginateRequest = {
@@ -43,7 +47,7 @@ export type RequestWithAssisted = Request & {
 
 export async function createRequest(
   request: CreateRequest,
-  requester_id: string
+  requester_id: string,
 ): Promise<Request> {
   let assisted = await dbClient.assisted.findFirst({
     where: {
@@ -82,6 +86,8 @@ export async function createRequest(
       address: request.address,
       city: request.city,
       state: request.state,
+      local_latitude: request.local_latitude,
+      local_longitude: request.local_longitude,
       requester_id,
       assisted_id: assisted.id,
       active_campagin: true,
@@ -91,7 +97,7 @@ export async function createRequest(
 
 export async function reviewRequest(
   requestId: number,
-  data: { review_status: Request["review_status"] }
+  data: { review_status: Request["review_status"] },
 ) {
   return dbClient.request.update({
     where: {
@@ -122,6 +128,7 @@ export async function paginateListRequest({
     where: {
       active_campagin: true,
       review_status: "Approved",
+      created_at: query.last ? { gte: query.last } : undefined,
       assisted: {
         name: {
           contains: query.name,
@@ -131,6 +138,30 @@ export async function paginateListRequest({
           in: query.bloodTypes,
         },
       },
+    },
+    take: per_page,
+    skip: (page - 1) * per_page,
+    include: {
+      assisted: true,
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
+
+  return requests.map(hydrateRequest);
+}
+
+export async function paginateListRequestOndeDoar({
+  page = 1,
+  per_page = 10,
+  query = {},
+}: PaginateRequest): Promise<RequestWithAssisted[]> {
+  const requests = await dbClient.request.findMany({
+    where: {
+      active_campagin: query.active,
+      review_status: "Approved",
+      updated_at: query.last ? { gte: query.last } : undefined,
     },
     take: per_page,
     skip: (page - 1) * per_page,
