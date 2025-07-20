@@ -451,7 +451,7 @@ const bloodBankNotFound = ref(false);
 const selectedBloodBank = (bank: BloodBank) => {
   requestSchema.value.address = bank.address;
   requestSchema.value.local_longitude = bank.longitude;
-  requestSchema.value.local_latitude= bank.latitude;
+  requestSchema.value.local_latitude = bank.latitude;
   bloodBankNotFound.value = false;
 }
 

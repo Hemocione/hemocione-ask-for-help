@@ -15,8 +15,8 @@ model Request {
   address         String         @default("") // TODO: remove this before release v1
   city            String         @default("") // TODO: remove this before release v1
   state           String         @default("") // TODO: remove this before release v1
-  local_latitude  Float
-  local_longitude Float // TODO: get the location from the user
+  local_latitude  Float? // TODO: get the location from the user, for now it's optional
+  local_longitude Float? // TODO: get the location from the user, for now it's optional
   review_status   RequestStatus? @default(Pending)
   review_message  String         @default("")
   active_campagin Boolean

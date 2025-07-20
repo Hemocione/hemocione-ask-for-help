@@ -14,8 +14,8 @@ type CreateRequest = {
   state?: string;
   cpf: string;
   name: string;
-  local_latitude: number;
-  local_longitude: number;
+  local_latitude?: number;
+  local_longitude?: number;
   blood_type: RequestType["blood_type"];
   photo_url?: string;
 };
