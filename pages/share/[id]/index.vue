@@ -122,18 +122,7 @@ async function shareHelpRequest(withImage: boolean = false) {
       data.files = [instagramImageFile];
     }
 
-    const navigatorShareable = Boolean(navigator.canShare);
-
-    if (navigatorShareable && navigator.canShare(data)) {
-      await navigator.share(data);
-    } else {
-      navigator.clipboard.writeText(shareUrl.value!);
-      ElMessage({
-        message:
-          "O link do pedido de ajuda foi copiado para a área de transferência.",
-        type: "success",
-      });
-    }
+    await useHemocioneSdk()?.share(data);
   } catch (error) {
     ElMessage({
       message: "Não foi possível compartilhar o pedido de ajuda.",

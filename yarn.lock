@@ -728,6 +728,11 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.9.tgz#50dea3616bc8191fb8e112283b49eaff03e78429"
   integrity sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==
 
+"@hemocione/sdk@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/@hemocione/sdk/-/sdk-0.0.3.tgz#3253371eaac644db78520404b100442d21071eb7"
+  integrity sha512-aBMJOCc2QVnVuFocVFz12/4WpZrObwWTerlqNclM0d5nOMxrbeqTtJJTdV0cMWClmT4vFdNXwSnB9ssjO5LnBw==
+
 "@ioredis/commands@^1.1.1":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
