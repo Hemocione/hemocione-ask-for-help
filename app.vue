@@ -1,9 +1,12 @@
 <template>
   <NuxtLayout>
     <div class="content-wrapper">
-      <WelcomePage v-if="shouldShowWelcome" @close="isOpenWelcome = !isOpenWelcome"></WelcomePage>
+      <WelcomePage
+        v-if="shouldShowWelcome"
+        @close="isOpenWelcome = !isOpenWelcome"
+      ></WelcomePage>
       <template v-else>
-        <Header class="sticky top-0 z-50" v-if="!hideHeader" />
+        <!-- <Header class="sticky top-0 z-50" v-if="!hideHeader" /> -->
         <NuxtPage class="nuxt-page" keepalive />
       </template>
     </div>
@@ -29,7 +32,9 @@ useServerSeoMeta({
 
 import WelcomePage from "~/pages/welcomePage.vue";
 
-const isOpenWelcome = ref<boolean>(getLocalStorage("welcomeAlreadyShown") || true);
+const isOpenWelcome = ref<boolean>(
+  getLocalStorage("welcomeAlreadyShown") || true
+);
 const shouldShowWelcome = computed(() => !isOpenWelcome.value);
 </script>
 <style scoped>
