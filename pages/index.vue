@@ -23,7 +23,7 @@
             :key="person.id"
             :requesterName="person.assisted.name"
             :requesterLocal="person.local_name"
-            :requesterPhoto="person.assisted.photo_url!"
+            :requesterPhoto="person.assisted.photo_url"
             :bloodType="person.assisted.blood_type"
             class="cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg motion-safe:animate-fade-in motion-safe:animate-slide-up"
             :style="{
