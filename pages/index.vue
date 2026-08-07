@@ -95,6 +95,18 @@ const query = ref<{
 const locationEnabled = ref(false);
 
 const requestLocation = () => {
+  // Clicar de novo com o filtro já ligado desliga — sem isso, só dava pra
+  // ligar: o clique sempre disparava uma nova busca de geolocalização e
+  // reforçava locationEnabled = true.
+  if (locationEnabled.value) {
+    query.value.latitude = undefined;
+    query.value.longitude = undefined;
+    query.value.radiusKm = undefined;
+    locationEnabled.value = false;
+    resetAndFetch();
+    return;
+  }
+
   if (!navigator.geolocation) return;
   navigator.geolocation.getCurrentPosition(
     (position) => {
