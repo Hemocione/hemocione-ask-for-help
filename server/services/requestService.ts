@@ -71,14 +71,23 @@ export async function createRequest(
     }
   }
 
-  assisted = await dbClient.assisted.create({
-    data: {
-      cpf: request.cpf,
-      name: request.name,
-      blood_type: request.blood_type!,
-      photo_url: request.photo_url,
-    },
-  });
+  assisted = assisted
+    ? await dbClient.assisted.update({
+        where: { id: assisted.id },
+        data: {
+          name: request.name,
+          blood_type: request.blood_type!,
+          photo_url: request.photo_url,
+        },
+      })
+    : await dbClient.assisted.create({
+        data: {
+          cpf: request.cpf,
+          name: request.name,
+          blood_type: request.blood_type!,
+          photo_url: request.photo_url,
+        },
+      });
 
   return dbClient.request.create({
     data: {
@@ -105,6 +114,10 @@ export async function reviewRequest(
     },
     data: {
       review_status: data.review_status,
+      // A campanha reprovada não deve seguir bloqueando novos pedidos para o
+      // mesmo CPF (createRequest só barra duplicidade quando active_campagin
+      // é true).
+      active_campagin: data.review_status === "Declined" ? false : undefined,
     },
   });
 }
@@ -184,7 +197,9 @@ export const getRequestById = async (id: number) => {
     },
   });
 
-  if (!request) return null;
+  if (!request || request.review_status !== "Approved" || !request.active_campagin) {
+    return null;
+  }
 
   return hydrateRequest(request);
 };

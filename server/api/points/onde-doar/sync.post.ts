@@ -1,5 +1,6 @@
 import z from "zod";
 import { paginateListRequestOndeDoar } from "~/server/services/requestService";
+import { assertSecretAuth } from "~/server/services/auth";
 
 const ListRequestSchema = z.object({
   page: z
@@ -27,6 +28,8 @@ const ListRequestSchema = z.object({
 export type Request = z.infer<typeof ListRequestSchema>;
 
 export default defineEventHandler(async (event) => {
+  assertSecretAuth(event);
+
   const { page, per_page, last, active } =
     await readValidatedBody(event, ListRequestSchema.parse);
 

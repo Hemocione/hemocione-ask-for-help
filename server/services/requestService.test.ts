@@ -1,6 +1,11 @@
 import { describe, test, expect, afterAll } from "vitest";
 import { dbClient } from "~/prisma";
-import { createRequest, paginateListRequest } from "./requestService";
+import {
+  createRequest,
+  paginateListRequest,
+  getRequestById,
+  reviewRequest,
+} from "./requestService";
 
 describe("requestService", () => {
   afterAll(async () => {
@@ -51,5 +56,85 @@ describe("requestService", () => {
 
     const found = results.find((r) => r.id === created.id);
     expect(found?.assisted.photo_url).toBe("https://example.com/ciclana.jpg");
+  });
+
+  test("getRequestById does not leak requests still pending review", async () => {
+    const created = await createRequest(
+      {
+        local_name: "Hospital Teste 3",
+        address: "Rua Teste, 789",
+        cpf: "33333333333",
+        name: "Beltrano de Tal",
+        blood_type: "B_POS",
+      },
+      "requester-3",
+    );
+
+    const found = await getRequestById(created.id);
+
+    expect(found).toBeNull();
+  });
+
+  test("getRequestById does not leak declined requests", async () => {
+    const created = await createRequest(
+      {
+        local_name: "Hospital Teste 4",
+        address: "Rua Teste, 101",
+        cpf: "44444444444",
+        name: "Sicrano de Tal",
+        blood_type: "AB_NEG",
+      },
+      "requester-4",
+    );
+    await reviewRequest(created.id, { review_status: "Declined" });
+
+    const found = await getRequestById(created.id);
+
+    expect(found).toBeNull();
+  });
+
+  test("getRequestById returns approved and active requests", async () => {
+    const created = await createRequest(
+      {
+        local_name: "Hospital Teste 5",
+        address: "Rua Teste, 202",
+        cpf: "55555555555",
+        name: "Fulana de Tal",
+        blood_type: "O_NEG",
+      },
+      "requester-5",
+    );
+    await reviewRequest(created.id, { review_status: "Approved" });
+
+    const found = await getRequestById(created.id);
+
+    expect(found?.id).toBe(created.id);
+  });
+
+  test("declining a request frees the CPF up for a new request", async () => {
+    const firstAttempt = await createRequest(
+      {
+        local_name: "Hospital Teste 6",
+        address: "Rua Teste, 303",
+        cpf: "66666666666",
+        name: "Ciclano de Tal",
+        blood_type: "A_POS",
+      },
+      "requester-6",
+    );
+    await reviewRequest(firstAttempt.id, { review_status: "Declined" });
+
+    const secondAttempt = createRequest(
+      {
+        local_name: "Hospital Teste 6 - segunda tentativa",
+        address: "Rua Teste, 303",
+        cpf: "66666666666",
+        name: "Ciclano de Tal",
+        blood_type: "A_POS",
+      },
+      "requester-6",
+    );
+
+    await expect(secondAttempt).resolves.not.toThrow();
   });
 });

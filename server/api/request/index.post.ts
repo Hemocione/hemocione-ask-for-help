@@ -1,4 +1,5 @@
 import { createRequest } from "~/server/services/requestService";
+import { useHemocioneUserAuth } from "~/server/services/auth";
 import { DBBloodTypes } from "~/types/blood";
 import { States } from "~/types/state";
 import z from "zod";
@@ -16,12 +17,13 @@ const CreateRequestSchema = z.object({
   local_longitude: z.number().optional(),
   blood_type: z.enum(DBBloodTypes),
   photo_url: z.string().optional(),
-  requester_id: z.string(),
 });
 
 export type Request = z.infer<typeof CreateRequestSchema>;
 
 export default defineEventHandler(async (event) => {
+  const hemocioneUser = useHemocioneUserAuth(event);
+
   const {
     blood_type,
     cpf,
@@ -31,7 +33,6 @@ export default defineEventHandler(async (event) => {
     state,
     name,
     photo_url,
-    requester_id,
     local_latitude,
     local_longitude,
   } = await readValidatedBody(event, CreateRequestSchema.parse);
@@ -49,7 +50,7 @@ export default defineEventHandler(async (event) => {
       local_longitude,
       photo_url,
     },
-    requester_id,
+    hemocioneUser.id,
   );
 
   const discordNotificationService = getDiscordNotificationService();
