@@ -9,7 +9,7 @@
         <!-- Local -->
         <div class="flex flex-row items-center gap-3">
           <img
-            src="/public/images/loc.svg"
+            src="/images/loc.svg"
             alt="Localização"
           />
           <p class="text-[--black-80]">

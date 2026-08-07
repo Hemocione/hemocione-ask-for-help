@@ -7,7 +7,7 @@
       >
         <img
           class="w-6 h-6"
-          src="/public/images/go-back.svg"
+          src="/images/go-back.svg"
           alt="Setinha para voltar pra página anterior"
         />
       </NuxtLink>
@@ -210,10 +210,6 @@ const { token, user } = useUserStore();
 const posthog = usePosthog();
 const router = useRouter();
 
-if (user?.id) {
-  requestSchema.value.requester_id = user.id;
-}
-
 watch(
   requestSchema,
   async (newValue) => {
@@ -392,6 +388,9 @@ const registerRequest = async () => {
   try {
     const result = await $fetch("/api/request", {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: requestSchema.value,
     });
 
