@@ -53,8 +53,10 @@ definePageMeta({
 import type { RequestWithAssisted } from "~/server/services/requestService";
 import { useRoute } from "vue-router";
 import { ref, computed } from "vue";
+import { useUserStore } from "~/stores/user";
 
 const route = useRoute();
+const userStore = useUserStore();
 const router = useRouter();
 const id = route.params.id as string;
 const request = ref<RequestWithAssisted | null>(null);
@@ -122,10 +124,8 @@ async function shareHelpRequest(withImage: boolean = false) {
       data.files = [instagramImageFile];
     }
 
-    const navigatorShareable = Boolean(navigator.canShare);
-
-    if (navigatorShareable && navigator.canShare(data)) {
-      await navigator.share(data);
+    if (userStore.iframed || navigator.share) {
+      await useHemocioneSdk()?.share(data);
     } else {
       navigator.clipboard.writeText(shareUrl.value!);
       ElMessage({

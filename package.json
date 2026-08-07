@@ -30,6 +30,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@hemocione/sdk": "^0.0.5",
     "@nuxt/fonts": "^0.10.3",
     "@nuxtjs/robots": "^5.2.8",
     "@nuxtjs/seo": "^3.0.1",
