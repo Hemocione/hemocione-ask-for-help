@@ -25,6 +25,9 @@ type QueryRequest = {
   bloodTypes?: BloodTypeValues[];
   last?: Date;
   active?: boolean;
+  latitude?: number;
+  longitude?: number;
+  radiusKm?: number;
 };
 
 type PaginateRequest = {
@@ -132,37 +135,112 @@ function hydrateRequest(request: Request & { assisted: Assisted }) {
   };
 }
 
+function haversineDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number,
+): number {
+  const R = 6371;
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function boundingBox(
+  lat: number,
+  lng: number,
+  radiusKm: number,
+): { minLat: number; maxLat: number; minLng: number; maxLng: number } {
+  const latDelta = radiusKm / 111.32;
+  const lngDelta = radiusKm / (111.32 * Math.cos((lat * Math.PI) / 180));
+  return {
+    minLat: lat - latDelta,
+    maxLat: lat + latDelta,
+    minLng: lng - lngDelta,
+    maxLng: lng + lngDelta,
+  };
+}
+
+export type RequestWithDistance = RequestWithAssisted & { distanceKm: number };
+
 export async function paginateListRequest({
   page = 1,
   per_page = 10,
   query = {},
 }: PaginateRequest): Promise<RequestWithAssisted[]> {
-  const requests = await dbClient.request.findMany({
-    where: {
-      active_campagin: true,
-      review_status: "Approved",
-      created_at: query.last ? { gte: query.last } : undefined,
-      assisted: {
-        name: {
-          contains: query.name,
-          mode: "insensitive",
-        },
-        blood_type: {
-          in: query.bloodTypes,
-        },
+  const hasLocation =
+    query.latitude !== undefined && query.longitude !== undefined;
+
+  const where: Record<string, unknown> = {
+    active_campagin: true,
+    review_status: "Approved",
+    created_at: query.last ? { gte: query.last } : undefined,
+    assisted: {
+      name: {
+        contains: query.name,
+        mode: "insensitive" as const,
+      },
+      blood_type: {
+        in: query.bloodTypes,
       },
     },
-    take: per_page,
-    skip: (page - 1) * per_page,
+  };
+
+  if (!hasLocation) {
+    const dbRequests = await dbClient.request.findMany({
+      where,
+      take: per_page,
+      skip: (page - 1) * per_page,
+      include: {
+        assisted: true,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+
+    return dbRequests.map(hydrateRequest);
+  }
+
+  const radiusKm = query.radiusKm ?? 10;
+  const box = boundingBox(query.latitude!, query.longitude!, radiusKm);
+  where.local_latitude = { gte: box.minLat, lte: box.maxLat };
+  where.local_longitude = { gte: box.minLng, lte: box.maxLng };
+
+  const dbRequests = await dbClient.request.findMany({
+    where,
     include: {
       assisted: true,
     },
-    orderBy: {
-      id: "asc",
-    },
   });
 
-  return requests.map(hydrateRequest);
+  const withDistance = dbRequests
+    .map(hydrateRequest)
+    .map((r) => {
+      if (r.local_latitude == null || r.local_longitude == null) return null;
+      const distance = haversineDistance(
+        query.latitude!,
+        query.longitude!,
+        r.local_latitude,
+        r.local_longitude,
+      );
+      if (distance > radiusKm) return null;
+      return { ...r, distanceKm: distance };
+    })
+    .filter((r): r is RequestWithDistance => r !== null)
+    .sort((a, b) => a.distanceKm - b.distanceKm);
+
+  const offset = (page - 1) * per_page;
+  return withDistance.slice(offset, offset + per_page);
 }
 
 export async function paginateListRequestOndeDoar({

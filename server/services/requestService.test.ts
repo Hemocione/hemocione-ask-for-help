@@ -137,4 +137,105 @@ describe("requestService", () => {
 
     await expect(secondAttempt).resolves.not.toThrow();
   });
+
+  describe("paginateListRequest with a location filter", () => {
+    const saoPauloCenter = { latitude: -23.5505, longitude: -46.6333 };
+
+    async function createApprovedRequest(opts: {
+      cpf: string;
+      name: string;
+      local_latitude?: number;
+      local_longitude?: number;
+    }) {
+      const created = await createRequest(
+        {
+          local_name: "Hospital Teste",
+          address: "Rua Teste",
+          cpf: opts.cpf,
+          name: opts.name,
+          blood_type: "O_POS",
+          local_latitude: opts.local_latitude,
+          local_longitude: opts.local_longitude,
+        },
+        `requester-${opts.cpf}`,
+      );
+      await reviewRequest(created.id, { review_status: "Approved" });
+      return created;
+    }
+
+    test("returns only requests within radiusKm of the given point", async () => {
+      const nearby = await createApprovedRequest({
+        cpf: "77777777777",
+        name: "Perto de Tal",
+        // ~1.2km do centro de SP
+        local_latitude: -23.56,
+        local_longitude: -46.64,
+      });
+      const farAway = await createApprovedRequest({
+        cpf: "88888888888",
+        name: "Longe de Tal",
+        // Rio de Janeiro, bem além de qualquer raio razoável
+        local_latitude: -22.9068,
+        local_longitude: -43.1729,
+      });
+
+      const results = await paginateListRequest({
+        query: { ...saoPauloCenter, radiusKm: 10 },
+      });
+      const ids = results.map((r) => r.id);
+
+      expect(ids).toContain(nearby.id);
+      expect(ids).not.toContain(farAway.id);
+    });
+
+    test("excludes requests without coordinates when a location filter is active", async () => {
+      const withoutCoords = await createApprovedRequest({
+        cpf: "99999999999",
+        name: "Sem Coordenada",
+      });
+
+      const results = await paginateListRequest({
+        query: { ...saoPauloCenter, radiusKm: 10 },
+      });
+
+      expect(results.map((r) => r.id)).not.toContain(withoutCoords.id);
+    });
+
+    test("without a location filter, requests without coordinates still show up", async () => {
+      const withoutCoords = await createApprovedRequest({
+        cpf: "10101010101",
+        name: "Sem Coordenada Dois",
+      });
+
+      const results = await paginateListRequest({});
+
+      expect(results.map((r) => r.id)).toContain(withoutCoords.id);
+    });
+
+    test("orders results by distance, closest first", async () => {
+      const far = await createApprovedRequest({
+        cpf: "12121212121",
+        name: "Média Distância",
+        local_latitude: -23.6,
+        local_longitude: -46.7,
+      });
+      const near = await createApprovedRequest({
+        cpf: "13131313131",
+        name: "Bem Perto",
+        local_latitude: -23.551,
+        local_longitude: -46.634,
+      });
+
+      const results = await paginateListRequest({
+        query: { ...saoPauloCenter, radiusKm: 50 },
+      });
+      const ids = results.map((r) => r.id);
+      const nearIndex = ids.indexOf(near.id);
+      const farIndex = ids.indexOf(far.id);
+
+      expect(nearIndex).toBeGreaterThanOrEqual(0);
+      expect(farIndex).toBeGreaterThanOrEqual(0);
+      expect(nearIndex).toBeLessThan(farIndex);
+    });
+  });
 });

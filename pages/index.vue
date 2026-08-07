@@ -3,7 +3,17 @@
     <div class="flex-grow w-full pb-20">
       <div class="flex flex-row justify-between items-center w-full p-4">
         <SearchBar @update:search="onSearch" />
-        <FilterDialog @update:filter="onFilter" />
+        <div class="flex flex-row gap-2">
+          <button
+            class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-100 transition-colors"
+            :class="{ 'bg-red-100 border-red-400': locationEnabled }"
+            aria-label="Perto de mim"
+            @click="requestLocation"
+          >
+            <img src="/images/loc.svg" alt="" class="w-5 h-5" />
+          </button>
+          <FilterDialog @update:filter="onFilter" />
+        </div>
       </div>
       <Transition name="fade" mode="out-in">
         <div v-if="fetching && !alreadyFetched" class="flex flex-col gap-4 w-full p-4">
@@ -71,10 +81,37 @@ let loadingStartTime: number;
 const query = ref<{
   name?: string;
   bloodTypes?: string[];
+  latitude?: number;
+  longitude?: number;
+  radiusKm?: number;
 }>({
   name: undefined,
   bloodTypes: undefined,
+  latitude: undefined,
+  longitude: undefined,
+  radiusKm: undefined,
 });
+
+const locationEnabled = ref(false);
+
+const requestLocation = () => {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      query.value.latitude = position.coords.latitude;
+      query.value.longitude = position.coords.longitude;
+      query.value.radiusKm = 10;
+      locationEnabled.value = true;
+      resetAndFetch();
+    },
+    () => {
+      query.value.latitude = undefined;
+      query.value.longitude = undefined;
+      query.value.radiusKm = undefined;
+      locationEnabled.value = false;
+    },
+  );
+};
 
 // Função chamada ao buscar dados no servidor
 const fetchRequests = async () => {

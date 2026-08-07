@@ -25,6 +25,8 @@ model Request {
   created_at      DateTime          @default(now())
   updated_at      DateTime          @updatedAt
   RequestDonators RequestDonators[]
+
+  @@index([local_latitude, local_longitude])
 }
 
 model Assisted {
