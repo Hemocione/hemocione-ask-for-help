@@ -141,7 +141,9 @@ const resultsNotFound = computed(() => {
   return alreadyFetched.value && !requests.value.length && !fetching.value;
 });
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchRequests();
+
   if (sentinel.value) {
     const observer = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting) {
