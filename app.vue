@@ -30,7 +30,9 @@ useServerSeoMeta({
 import WelcomePage from "~/pages/welcomePage.vue";
 
 const isOpenWelcome = ref<boolean>(getLocalStorage("welcomeAlreadyShown") ?? false);
-const shouldShowWelcome = computed(() => !isOpenWelcome.value);
+const shouldShowWelcome = computed(
+  () => !isOpenWelcome.value && route.path === "/"
+);
 </script>
 <style scoped>
 .content-wrapper {

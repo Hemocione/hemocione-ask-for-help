@@ -1,6 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 const getSiteUrl = () => {
+  if (process.env.VERCEL_TARGET_ENV === "staging") {
+    return "https://ajudaai.d.hemocione.com.br";
+  }
+
   if (process.env.VERCEL_ENV === "preview") {
     return `https://${process.env.VERCEL_URL}`;
   }
