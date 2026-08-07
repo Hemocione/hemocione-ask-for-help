@@ -48,6 +48,12 @@ export type RequestWithAssisted = Request & {
   };
 };
 
+// Liga/desliga via env var — desligar volta a exigir revisão manual antes de
+// um pedido aparecer na lista pública.
+export function isAutoApproveEnabled(): boolean {
+  return process.env.AUTO_APPROVE_REQUESTS !== "0";
+}
+
 export async function createRequest(
   request: CreateRequest,
   requester_id: string,
@@ -103,13 +109,17 @@ export async function createRequest(
       requester_id,
       assisted_id: assisted.id,
       active_campagin: true,
+      review_status: isAutoApproveEnabled() ? "Approved" : "Pending",
     },
   });
 }
 
 export async function reviewRequest(
   requestId: number,
-  data: { review_status: Request["review_status"] },
+  data: {
+    review_status?: Request["review_status"];
+    active_campagin?: boolean;
+  },
 ) {
   return dbClient.request.update({
     where: {
@@ -117,10 +127,15 @@ export async function reviewRequest(
     },
     data: {
       review_status: data.review_status,
-      // A campanha reprovada não deve seguir bloqueando novos pedidos para o
-      // mesmo CPF (createRequest só barra duplicidade quando active_campagin
-      // é true).
-      active_campagin: data.review_status === "Declined" ? false : undefined,
+      active_campagin:
+        data.active_campagin !== undefined
+          ? data.active_campagin
+          : // A campanha reprovada não deve seguir bloqueando novos pedidos
+            // para o mesmo CPF (createRequest só barra duplicidade quando
+            // active_campagin é true).
+            data.review_status === "Declined"
+            ? false
+            : undefined,
     },
   });
 }

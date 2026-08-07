@@ -5,7 +5,16 @@ import {
   paginateListRequest,
   getRequestById,
   reviewRequest,
+  isAutoApproveEnabled,
 } from "./requestService";
+
+function withEnv<T>(name: string, value: string | undefined, fn: () => Promise<T>) {
+  const previous = process.env[name];
+  process.env[name] = value;
+  return fn().finally(() => {
+    process.env[name] = previous;
+  });
+}
 
 describe("requestService", () => {
   afterAll(async () => {
@@ -59,20 +68,26 @@ describe("requestService", () => {
   });
 
   test("getRequestById does not leak requests still pending review", async () => {
-    const created = await createRequest(
-      {
-        local_name: "Hospital Teste 3",
-        address: "Rua Teste, 789",
-        cpf: "33333333333",
-        name: "Beltrano de Tal",
-        blood_type: "B_POS",
-      },
-      "requester-3",
-    );
+    const previous = process.env.AUTO_APPROVE_REQUESTS;
+    process.env.AUTO_APPROVE_REQUESTS = "0";
+    try {
+      const created = await createRequest(
+        {
+          local_name: "Hospital Teste 3",
+          address: "Rua Teste, 789",
+          cpf: "33333333333",
+          name: "Beltrano de Tal",
+          blood_type: "B_POS",
+        },
+        "requester-3",
+      );
 
-    const found = await getRequestById(created.id);
+      const found = await getRequestById(created.id);
 
-    expect(found).toBeNull();
+      expect(found).toBeNull();
+    } finally {
+      process.env.AUTO_APPROVE_REQUESTS = previous;
+    }
   });
 
   test("getRequestById does not leak declined requests", async () => {
@@ -236,6 +251,95 @@ describe("requestService", () => {
       expect(nearIndex).toBeGreaterThanOrEqual(0);
       expect(farIndex).toBeGreaterThanOrEqual(0);
       expect(nearIndex).toBeLessThan(farIndex);
+    });
+  });
+
+  describe("auto-approve toggle", () => {
+    test("is enabled by default", async () => {
+      await withEnv("AUTO_APPROVE_REQUESTS", undefined, async () => {
+        expect(isAutoApproveEnabled()).toBe(true);
+      });
+    });
+
+    test("createRequest approves immediately when auto-approve is on", async () => {
+      const created = await withEnv("AUTO_APPROVE_REQUESTS", undefined, () =>
+        createRequest(
+          {
+            local_name: "Hospital Teste 7",
+            address: "Rua Teste, 404",
+            cpf: "14141414141",
+            name: "Autoaprovado de Tal",
+            blood_type: "O_POS",
+          },
+          "requester-7",
+        ),
+      );
+
+      expect(created.review_status).toBe("Approved");
+    });
+
+    test("createRequest stays Pending when AUTO_APPROVE_REQUESTS=0", async () => {
+      const created = await withEnv("AUTO_APPROVE_REQUESTS", "0", () =>
+        createRequest(
+          {
+            local_name: "Hospital Teste 8",
+            address: "Rua Teste, 505",
+            cpf: "15151515151",
+            name: "Manual de Tal",
+            blood_type: "AB_POS",
+          },
+          "requester-8",
+        ),
+      );
+
+      expect(created.review_status).toBe("Pending");
+    });
+  });
+
+  describe("admin hides/unhides a request", () => {
+    test("hiding a request removes it from the public list without changing review_status", async () => {
+      const created = await createRequest(
+        {
+          local_name: "Hospital Teste 9",
+          address: "Rua Teste, 606",
+          cpf: "16161616161",
+          name: "Visivel de Tal",
+          blood_type: "B_NEG",
+        },
+        "requester-9",
+      );
+      await reviewRequest(created.id, { review_status: "Approved" });
+
+      await reviewRequest(created.id, { active_campagin: false });
+
+      const results = await paginateListRequest({ per_page: 1000 });
+      expect(results.map((r) => r.id)).not.toContain(created.id);
+
+      const stillApproved = await dbClient.request.findUnique({
+        where: { id: created.id },
+      });
+      expect(stillApproved?.review_status).toBe("Approved");
+      expect(stillApproved?.active_campagin).toBe(false);
+    });
+
+    test("unhiding a request brings it back to the public list", async () => {
+      const created = await createRequest(
+        {
+          local_name: "Hospital Teste 10",
+          address: "Rua Teste, 707",
+          cpf: "17171717171",
+          name: "Reexibido de Tal",
+          blood_type: "A_NEG",
+        },
+        "requester-10",
+      );
+      await reviewRequest(created.id, { review_status: "Approved" });
+      await reviewRequest(created.id, { active_campagin: false });
+
+      await reviewRequest(created.id, { active_campagin: true });
+
+      const results = await paginateListRequest({ per_page: 1000 });
+      expect(results.map((r) => r.id)).toContain(created.id);
     });
   });
 });
