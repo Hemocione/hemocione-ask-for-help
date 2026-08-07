@@ -78,16 +78,21 @@ const zapUrl = computed(() =>
   shareUrl.value ? getWhatsappUrl(shareText.value, shareUrl.value) : "#"
 );
 
+// Pré-carrega a imagem assim que o pedido está disponível, não quando o
+// drawer abre — o dialog não deve esperar um fetch de imagem pra aparecer.
+// Precisa ficar restrito ao client: o watch com immediate roda durante o
+// setup() no SSR também, e lá `window` não existe (derrubava a página com 500).
 watch(
-  () => props.modelValue,
-  async (visible) => {
-    if (!visible || !props.request || instagramImageBlob.value) return;
+  () => props.request,
+  async (request) => {
+    if (!import.meta.client || !request || instagramImageBlob.value) return;
 
-    const instagramImageUrl = `${window.location.origin}/__og-image__/image/share/${props.request.id}/instagram/og.png`;
+    const instagramImageUrl = `${window.location.origin}/__og-image__/image/share/${request.id}/instagram/og.png`;
     instagramImageBlob.value = await fetch(instagramImageUrl).then((res) =>
       res.blob()
     );
-  }
+  },
+  { immediate: true }
 );
 
 async function shareHelpRequest(withImage: boolean = false) {
