@@ -83,6 +83,8 @@
   <div v-else>
     <p>Carregando...</p>
   </div>
+
+  <ShareRequestDrawer v-model="shareDrawerVisible" :request="request" />
 </template>
 
 <script setup lang="ts">
@@ -108,9 +110,10 @@ request.value = await $fetch(`/api/request/${id}`, {
 
 if (!request.value) router.push("/");
 
+const shareDrawerVisible = ref(false);
 const shareDonation = () => {
   posthog?.capture("click_share_request");
-  router.push(`/share/${id}`);
+  shareDrawerVisible.value = true;
 };
 const registerDonation = () => {
   console.log("Button clicked");
