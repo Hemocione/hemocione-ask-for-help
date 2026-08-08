@@ -3,7 +3,7 @@
     <div class="content-wrapper">
       <WelcomePage v-if="shouldShowWelcome" @close="isOpenWelcome = !isOpenWelcome"></WelcomePage>
       <template v-else>
-        <Header class="sticky top-0 z-50" v-if="!hideHeader" />
+        <Header class="sticky top-0 z-50" v-if="!hideHeader && !iframed" />
         <NuxtPage class="nuxt-page" keepalive />
       </template>
     </div>
@@ -11,8 +11,12 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { useUserStore } from "~/stores/user";
+
 const route = useRoute();
 const hideHeader = computed(() => route?.meta?.hideHeader || false);
+const { iframed } = storeToRefs(useUserStore());
 useHead({
   title: `Ajuda aí`,
 });
@@ -29,8 +33,10 @@ useServerSeoMeta({
 
 import WelcomePage from "~/pages/welcomePage.vue";
 
-const isOpenWelcome = ref<boolean>(getLocalStorage("welcomeAlreadyShown") || true);
-const shouldShowWelcome = computed(() => !isOpenWelcome.value);
+const isOpenWelcome = ref<boolean>(getLocalStorage("welcomeAlreadyShown") ?? false);
+const shouldShowWelcome = computed(
+  () => !isOpenWelcome.value && route.path === "/"
+);
 </script>
 <style scoped>
 .content-wrapper {

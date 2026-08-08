@@ -16,7 +16,7 @@
       <div class="flex flex-row justify-start items-start w-full gap-5 mb-5">
         <img
           class="w-4 h-4 cursor-pointer transition-transform duration-200 hover:scale-110"
-          src="/public/images/go-back.svg"
+          src="/images/go-back.svg"
           @click="dialogVisible = false"
           alt="Setinha para voltar pra página anterior"
         />

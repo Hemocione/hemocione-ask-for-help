@@ -25,12 +25,31 @@ const ListRequestSchema = z.object({
       )
     )
     .optional(),
-});
+  latitude: z
+    .string()
+    .transform((str) => Number(str))
+    .optional(),
+  longitude: z
+    .string()
+    .transform((str) => Number(str))
+    .optional(),
+  radiusKm: z
+    .string()
+    .transform((str) => Number(str))
+    .optional(),
+}).refine(
+  (data) => {
+    const hasLat = data.latitude !== undefined;
+    const hasLng = data.longitude !== undefined;
+    return (hasLat && hasLng) || (!hasLat && !hasLng);
+  },
+  { message: "latitude and longitude must be provided together" },
+);
 
 export type Request = z.infer<typeof ListRequestSchema>;
 
 export default defineEventHandler(async (event) => {
-  const { page, per_page, bloodTypes, name } = await getValidatedQuery(
+  const { page, per_page, bloodTypes, name, latitude, longitude, radiusKm } = await getValidatedQuery(
     event,
     ListRequestSchema.parse
   );
@@ -38,6 +57,9 @@ export default defineEventHandler(async (event) => {
   const query: {
     name?: string;
     bloodTypes?: BloodTypeValues[];
+    latitude?: number;
+    longitude?: number;
+    radiusKm?: number;
   } = {};
 
   if (name) {
@@ -46,6 +68,12 @@ export default defineEventHandler(async (event) => {
 
   if (bloodTypes) {
     query.bloodTypes = bloodTypes.filter((e) => e !== undefined);
+  }
+
+  if (latitude !== undefined && longitude !== undefined) {
+    query.latitude = latitude;
+    query.longitude = longitude;
+    query.radiusKm = radiusKm ?? 10;
   }
 
   return await paginateListRequest({

@@ -9,7 +9,7 @@
         <!-- Local -->
         <div class="flex flex-row items-center gap-3">
           <img
-            src="/public/images/loc.svg"
+            src="/images/loc.svg"
             alt="Localização"
           />
           <p class="text-[--black-80]">
@@ -32,9 +32,9 @@
       class="rounded-full max-w-5/12 overflow-hidden border border-[--hemo-color-primary]"
     >
       <img
-        :src="requesterPhoto"
+        :src="requesterPhoto || '/images/gallery.svg'"
         class="w-20 h-20 object-cover"
-        alt="Requester Photo"
+        alt="Foto do solicitante"
       />
     </div>
   </div>
@@ -46,7 +46,7 @@ import { defineProps } from "vue";
 type Props = {
   requesterName: string;
   requesterLocal: string;
-  requesterPhoto: string;
+  requesterPhoto: string | null;
   bloodType: string;
 };
 

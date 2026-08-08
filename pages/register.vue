@@ -7,7 +7,7 @@
       >
         <img
           class="w-6 h-6"
-          src="/public/images/go-back.svg"
+          src="/images/go-back.svg"
           alt="Setinha para voltar pra página anterior"
         />
       </NuxtLink>
@@ -20,7 +20,6 @@
           id="file-input"
           type="file"
           accept="image/*"
-          capture="environment"
           class="hidden"
           @change="handleFileSelect($event)"
         />
@@ -183,8 +182,13 @@
 
       </div>
     <div
-      class="sticky p-4 !bottom-0 !left-0 !right-0 w-full bg-white shadow-lg"
+      class="sticky p-4 !bottom-0 !left-0 !right-0 w-full bg-white shadow-lg flex flex-col gap-2"
     >
+      <p class="text-xs text-center text-[--black-80]">
+        Seu pedido ficará visível por {{ requestExpirationDays }} dias. Depois
+        disso, ele é encerrado automaticamente — se ainda precisar, é só
+        registrar um novo pedido.
+      </p>
       <Button @click="registerRequest">Continuar</Button>
     </div>
   </div>
@@ -209,10 +213,6 @@ const uploadingImage = ref(false);
 const { token, user } = useUserStore();
 const posthog = usePosthog();
 const router = useRouter();
-
-if (user?.id) {
-  requestSchema.value.requester_id = user.id;
-}
 
 watch(
   requestSchema,
@@ -285,8 +285,8 @@ const validationFormWithZod = () => {
       }),
 
       photo_url: z.string({
-        required_error: "Foto é obrigatório",
-      }),
+       required_error: "Foto é obrigatório",
+     }),
     });
     CreateRequestSchema.parse(requestSchema.value);
     return true;
@@ -392,15 +392,11 @@ const registerRequest = async () => {
   try {
     const result = await $fetch("/api/request", {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: requestSchema.value,
     });
-
-    if (!result?.review_status) {
-      await router.replace("/");
-      return;
-    }
-
-    await router.push(`review/${result.review_status.toLowerCase()}`);
 
     message.close();
     ElMessage({
@@ -408,6 +404,21 @@ const registerRequest = async () => {
       type: "success",
       duration: 3000,
     });
+
+    if (!result?.review_status) {
+      await router.replace("/");
+      return;
+    }
+
+    // Auto-aprovado: o pedido já está no ar, não faz sentido passar pela
+    // tela genérica de "seu pedido foi aprovado" — vai direto pra página
+    // real do pedido, de onde já dá pra compartilhar.
+    if (result.review_status === "Approved") {
+      await router.push(`/description/${result.id}`);
+      return;
+    }
+
+    await router.push(`review/${result.review_status.toLowerCase()}`);
   } catch (err: any) {
     if (err.status === 409) {
       message.close();
@@ -430,13 +441,14 @@ const photo_url = computed(
 const isOwnPhoto = computed(() => photo_url.value !== "images/gallery.svg");
 
 const config = useRuntimeConfig();
+const requestExpirationDays = config.public.requestExpirationDays;
 
 interface BloodBank {
   name: string;
   address: string;
   id: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
 }
 
 const {data} = await useFetch<BloodBank[]>(`${config.public.hemocioneIdApiUrl}/bloodBanks`, {
@@ -450,6 +462,8 @@ const bloodBankNotFound = ref(false);
 
 const selectedBloodBank = (bank: BloodBank) => {
   requestSchema.value.address = bank.address;
+  requestSchema.value.local_longitude = bank.longitude;
+  requestSchema.value.local_latitude = bank.latitude;
   bloodBankNotFound.value = false;
 }
 

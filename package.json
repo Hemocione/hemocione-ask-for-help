@@ -7,6 +7,7 @@
     "migrate-dev": "npx prisma migrate dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "test": "vitest run",
     "migrate:deploy": "if [ \"$ENABLE_MIGRATIONS\" = \"1\" ]; then npx prisma migrate deploy; else echo \"no migrations enabled\"; fi",
     "postinstall": "yarn migrate:deploy && npx prisma generate && nuxt prepare",
     "utils:reset-db": "npx prisma db push --force-reset && npx prisma db push"
@@ -23,10 +24,13 @@
     "postcss": "^8.4.47",
     "prisma": "6.5.0",
     "tailwindcss": "^3.4.14",
+    "tsx": "^4.20.3",
+    "vitest": "^4.1.10",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@hemocione/sdk": "^0.0.5",
     "@nuxt/fonts": "^0.10.3",
     "@nuxtjs/robots": "^5.2.8",
     "@nuxtjs/seo": "^3.0.1",
@@ -39,5 +43,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
