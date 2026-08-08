@@ -398,19 +398,27 @@ const registerRequest = async () => {
       body: requestSchema.value,
     });
 
-    if (!result?.review_status) {
-      await router.replace("/");
-      return;
-    }
-
-    await router.push(`review/${result.review_status.toLowerCase()}`);
-
     message.close();
     ElMessage({
       message: "Solicitação criada com sucesso!",
       type: "success",
       duration: 3000,
     });
+
+    if (!result?.review_status) {
+      await router.replace("/");
+      return;
+    }
+
+    // Auto-aprovado: o pedido já está no ar, não faz sentido passar pela
+    // tela genérica de "seu pedido foi aprovado" — vai direto pra página
+    // real do pedido, de onde já dá pra compartilhar.
+    if (result.review_status === "Approved") {
+      await router.push(`/description/${result.id}`);
+      return;
+    }
+
+    await router.push(`review/${result.review_status.toLowerCase()}`);
   } catch (err: any) {
     if (err.status === 409) {
       message.close();
