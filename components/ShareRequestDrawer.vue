@@ -8,12 +8,11 @@
     class="share-drawer"
   >
     <div class="flex flex-col items-center gap-6 px-6 pb-8">
-      <OgImageTemplateRequestDetailsComponent
-        :name="request?.assisted.name"
-        :bloodType="request?.assisted.blood_type"
-        :location="request?.local_name"
-        :address="request?.address"
-        :photoURL="request?.assisted.photo_url"
+      <img
+        v-if="instagramImageLocalUrl"
+        :src="instagramImageLocalUrl"
+        alt="Prévia do compartilhamento"
+        class="instagram-image"
       />
 
       <div class="flex flex-row items-center justify-center gap-10">
@@ -64,6 +63,7 @@ const emit = defineEmits<{
 const userStore = useUserStore();
 
 const instagramImageBlob = ref<Blob | null>(null);
+const instagramImageLocalUrl = ref<string | null>(null);
 const shareUrl = computed(() =>
   props.request
     ? `${window.location.origin}/description/${props.request.id}`
@@ -82,6 +82,12 @@ const zapUrl = computed(() =>
 // drawer abre — o dialog não deve esperar um fetch de imagem pra aparecer.
 // Precisa ficar restrito ao client: o watch com immediate roda durante o
 // setup() no SSR também, e lá `window` não existe (derrubava a página com 500).
+//
+// O preview mostrado no drawer é essa MESMA imagem (via object URL), não um
+// componente Vue renderizado "ao vivo" com sua própria <img> independente —
+// mesmo padrão do Ticket/Footer.vue no hemocione-digital-event. Só existe UM
+// carregamento de imagem pra coordenar, e o que o usuário vê no preview é
+// exatamente o que vai ser compartilhado.
 watch(
   () => props.request,
   async (request) => {
@@ -91,20 +97,7 @@ watch(
     instagramImageBlob.value = await fetch(instagramImageUrl).then((res) =>
       res.blob()
     );
-  },
-  { immediate: true }
-);
-
-// O ElDrawer só monta o conteúdo do slot na primeira vez que abre — a foto do
-// solicitante (usada no preview dentro do drawer) só começava a carregar
-// nesse instante, correndo contra a animação de subida e aparecendo como se
-// não tivesse carregado. Pré-carrega assim que o pedido chega, igual à
-// imagem do Instagram acima.
-watch(
-  () => props.request?.assisted.photo_url,
-  (photoUrl) => {
-    if (!import.meta.client || !photoUrl) return;
-    new Image().src = photoUrl;
+    instagramImageLocalUrl.value = URL.createObjectURL(instagramImageBlob.value);
   },
   { immediate: true }
 );
@@ -151,3 +144,13 @@ async function shareHelpRequest(withImage: boolean = false) {
   }
 }
 </script>
+
+<style scoped>
+.instagram-image {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+  border-radius: 1rem;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+}
+</style>
