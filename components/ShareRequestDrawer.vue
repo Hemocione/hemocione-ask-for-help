@@ -95,6 +95,20 @@ watch(
   { immediate: true }
 );
 
+// O ElDrawer só monta o conteúdo do slot na primeira vez que abre — a foto do
+// solicitante (usada no preview dentro do drawer) só começava a carregar
+// nesse instante, correndo contra a animação de subida e aparecendo como se
+// não tivesse carregado. Pré-carrega assim que o pedido chega, igual à
+// imagem do Instagram acima.
+watch(
+  () => props.request?.assisted.photo_url,
+  (photoUrl) => {
+    if (!import.meta.client || !photoUrl) return;
+    new Image().src = photoUrl;
+  },
+  { immediate: true }
+);
+
 async function shareHelpRequest(withImage: boolean = false) {
   try {
     const data: {
