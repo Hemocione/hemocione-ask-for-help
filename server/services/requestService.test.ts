@@ -6,6 +6,7 @@ import {
   getRequestById,
   reviewRequest,
   isAutoApproveEnabled,
+  getRequestExpirationDays,
 } from "./requestService";
 
 function withEnv<T>(name: string, value: string | undefined, fn: () => Promise<T>) {
@@ -340,6 +341,101 @@ describe("requestService", () => {
 
       const results = await paginateListRequest({ per_page: 1000 });
       expect(results.map((r) => r.id)).toContain(created.id);
+    });
+  });
+
+  describe("expiração do pedido", () => {
+    test("getRequestExpirationDays usa 30 dias por padrão", async () => {
+      await withEnv("REQUEST_EXPIRATION_DAYS", undefined, async () => {
+        expect(getRequestExpirationDays()).toBe(30);
+      });
+    });
+
+    test("getRequestExpirationDays respeita a env var", async () => {
+      await withEnv("REQUEST_EXPIRATION_DAYS", "7", async () => {
+        expect(getRequestExpirationDays()).toBe(7);
+      });
+    });
+
+    test("createRequest seta expires_at ~N dias no futuro", async () => {
+      const created = await withEnv("REQUEST_EXPIRATION_DAYS", "10", () =>
+        createRequest(
+          {
+            local_name: "Hospital Expira",
+            address: "Rua Expira, 1",
+            cpf: "18181818181",
+            name: "Expira de Tal",
+            blood_type: "O_POS",
+          },
+          "requester-expira-1",
+        ),
+      );
+
+      expect(created.expires_at).not.toBeNull();
+      const daysAhead =
+        (created.expires_at!.getTime() - created.created_at.getTime()) /
+        (1000 * 60 * 60 * 24);
+      expect(daysAhead).toBeCloseTo(10, 1);
+    });
+
+    test("paginateListRequest exclui pedidos expirados", async () => {
+      const created = await createRequest(
+        {
+          local_name: "Hospital Expirado",
+          address: "Rua Expirado, 1",
+          cpf: "19191919191",
+          name: "Expirado de Tal",
+          blood_type: "O_POS",
+        },
+        "requester-expira-2",
+      );
+      await dbClient.request.update({
+        where: { id: created.id },
+        data: { expires_at: new Date(Date.now() - 1000) },
+      });
+
+      const results = await paginateListRequest({ per_page: 1000 });
+      expect(results.map((r) => r.id)).not.toContain(created.id);
+    });
+
+    test("paginateListRequest inclui pedidos sem expiração (legado)", async () => {
+      const created = await createRequest(
+        {
+          local_name: "Hospital Legado",
+          address: "Rua Legado, 1",
+          cpf: "20202020212",
+          name: "Legado de Tal",
+          blood_type: "O_POS",
+        },
+        "requester-expira-3",
+      );
+      await dbClient.request.update({
+        where: { id: created.id },
+        data: { expires_at: null },
+      });
+
+      const results = await paginateListRequest({ per_page: 1000 });
+      expect(results.map((r) => r.id)).toContain(created.id);
+    });
+
+    test("getRequestById retorna null para pedido expirado", async () => {
+      const created = await createRequest(
+        {
+          local_name: "Hospital Expirado 2",
+          address: "Rua Expirado, 2",
+          cpf: "21212121213",
+          name: "Expirado de Tal 2",
+          blood_type: "O_POS",
+        },
+        "requester-expira-4",
+      );
+      await dbClient.request.update({
+        where: { id: created.id },
+        data: { expires_at: new Date(Date.now() - 1000) },
+      });
+
+      const found = await getRequestById(created.id);
+      expect(found).toBeNull();
     });
   });
 });

@@ -101,7 +101,8 @@ export default defineNuxtConfig({
         publicKey: process.env.NUXT_PUBLIC_POSTHOG_PUBLIC_KEY ?? 'public',
         host:
           process.env.NUXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com',
-      }
+      },
+      requestExpirationDays: Number(process.env.REQUEST_EXPIRATION_DAYS ?? 30),
     },
     discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL ?? "",
     hemocioneIdIntegrationSecret:

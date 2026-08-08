@@ -182,8 +182,13 @@
 
       </div>
     <div
-      class="sticky p-4 !bottom-0 !left-0 !right-0 w-full bg-white shadow-lg"
+      class="sticky p-4 !bottom-0 !left-0 !right-0 w-full bg-white shadow-lg flex flex-col gap-2"
     >
+      <p class="text-xs text-center text-[--black-80]">
+        Seu pedido ficará visível por {{ requestExpirationDays }} dias. Depois
+        disso, ele é encerrado automaticamente — se ainda precisar, é só
+        registrar um novo pedido.
+      </p>
       <Button @click="registerRequest">Continuar</Button>
     </div>
   </div>
@@ -428,6 +433,7 @@ const photo_url = computed(
 const isOwnPhoto = computed(() => photo_url.value !== "images/gallery.svg");
 
 const config = useRuntimeConfig();
+const requestExpirationDays = config.public.requestExpirationDays;
 
 interface BloodBank {
   name: string;

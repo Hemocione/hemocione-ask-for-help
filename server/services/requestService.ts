@@ -54,6 +54,19 @@ export function isAutoApproveEnabled(): boolean {
   return process.env.AUTO_APPROVE_REQUESTS !== "0";
 }
 
+// Quantos dias um pedido fica visível publicamente antes de expirar.
+export function getRequestExpirationDays(): number {
+  const raw = process.env.REQUEST_EXPIRATION_DAYS;
+  const parsed = raw ? Number(raw) : NaN;
+  return Number.isFinite(parsed) ? parsed : 30;
+}
+
+// Pedidos criados antes desse campo existir têm expires_at null — tratamos
+// como "nunca expira" em vez de backfillar uma data arbitrária no histórico.
+function notExpiredFilter(): Record<string, unknown> {
+  return { OR: [{ expires_at: null }, { expires_at: { gt: new Date() } }] };
+}
+
 export async function createRequest(
   request: CreateRequest,
   requester_id: string,
@@ -98,6 +111,9 @@ export async function createRequest(
         },
       });
 
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + getRequestExpirationDays());
+
   return dbClient.request.create({
     data: {
       local_name: request.local_name,
@@ -110,6 +126,7 @@ export async function createRequest(
       assisted_id: assisted.id,
       active_campagin: true,
       review_status: isAutoApproveEnabled() ? "Approved" : "Pending",
+      expires_at: expiresAt,
     },
   });
 }
@@ -198,6 +215,7 @@ export async function paginateListRequest({
   const where: Record<string, unknown> = {
     active_campagin: true,
     review_status: "Approved",
+    ...notExpiredFilter(),
     created_at: query.last ? { gte: query.last } : undefined,
     assisted: {
       name: {
@@ -290,7 +308,9 @@ export const getRequestById = async (id: number) => {
     },
   });
 
-  if (!request || request.review_status !== "Approved" || !request.active_campagin) {
+  const isExpired = request?.expires_at != null && request.expires_at <= new Date();
+
+  if (!request || request.review_status !== "Approved" || !request.active_campagin || isExpired) {
     return null;
   }
 
