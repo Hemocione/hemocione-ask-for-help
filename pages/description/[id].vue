@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div v-if="request" class="app-container">
     <div
       class="flex flex-row justify-start items-start w-full p-4 pt-6 cursor-pointer"
@@ -82,6 +83,7 @@
   <!-- TODO: adicionar loading -->
   <div v-else>
     <p>Carregando...</p>
+  </div>
   </div>
 </template>
 
