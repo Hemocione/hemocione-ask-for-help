@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div v-if="request" class="app-container">
     <div
       class="flex flex-row justify-start items-start w-full p-4 pt-6 cursor-pointer"
@@ -85,6 +86,7 @@
   </div>
 
   <ShareRequestDrawer v-model="shareDrawerVisible" :request="request" />
+  </div>
 </template>
 
 <script setup lang="ts">
