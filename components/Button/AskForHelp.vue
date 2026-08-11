@@ -1,7 +1,7 @@
 <template>
   <Button>
     <img
-      src="/public/images/gotinha.svg"
+      src="/images/gotinha.svg"
       class="w-6 h-6"
       alt="Ícone de coração"
     />

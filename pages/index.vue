@@ -3,7 +3,17 @@
     <div class="flex-grow w-full pb-20">
       <div class="flex flex-row justify-between items-center w-full p-4">
         <SearchBar @update:search="onSearch" />
-        <FilterDialog @update:filter="onFilter" />
+        <div class="flex flex-row gap-2">
+          <button
+            class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-100 transition-colors"
+            :class="{ 'bg-red-100 border-red-400': locationEnabled }"
+            aria-label="Perto de mim"
+            @click="requestLocation"
+          >
+            <img src="/images/loc.svg" alt="" class="w-5 h-5" />
+          </button>
+          <FilterDialog @update:filter="onFilter" />
+        </div>
       </div>
       <Transition name="fade" mode="out-in">
         <div v-if="fetching && !alreadyFetched" class="flex flex-col gap-4 w-full p-4">
@@ -23,7 +33,7 @@
             :key="person.id"
             :requesterName="person.assisted.name"
             :requesterLocal="person.local_name"
-            :requesterPhoto="person.assisted.photo_url!"
+            :requesterPhoto="person.assisted.photo_url"
             :bloodType="person.assisted.blood_type"
             class="cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg motion-safe:animate-fade-in motion-safe:animate-slide-up"
             :style="{
@@ -71,10 +81,49 @@ let loadingStartTime: number;
 const query = ref<{
   name?: string;
   bloodTypes?: string[];
+  latitude?: number;
+  longitude?: number;
+  radiusKm?: number;
 }>({
   name: undefined,
   bloodTypes: undefined,
+  latitude: undefined,
+  longitude: undefined,
+  radiusKm: undefined,
 });
+
+const locationEnabled = ref(false);
+
+const requestLocation = () => {
+  // Clicar de novo com o filtro já ligado desliga — sem isso, só dava pra
+  // ligar: o clique sempre disparava uma nova busca de geolocalização e
+  // reforçava locationEnabled = true.
+  if (locationEnabled.value) {
+    query.value.latitude = undefined;
+    query.value.longitude = undefined;
+    query.value.radiusKm = undefined;
+    locationEnabled.value = false;
+    resetAndFetch();
+    return;
+  }
+
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      query.value.latitude = position.coords.latitude;
+      query.value.longitude = position.coords.longitude;
+      query.value.radiusKm = 10;
+      locationEnabled.value = true;
+      resetAndFetch();
+    },
+    () => {
+      query.value.latitude = undefined;
+      query.value.longitude = undefined;
+      query.value.radiusKm = undefined;
+      locationEnabled.value = false;
+    },
+  );
+};
 
 // Função chamada ao buscar dados no servidor
 const fetchRequests = async () => {
@@ -141,7 +190,9 @@ const resultsNotFound = computed(() => {
   return alreadyFetched.value && !requests.value.length && !fetching.value;
 });
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchRequests();
+
   if (sentinel.value) {
     const observer = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting) {

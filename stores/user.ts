@@ -4,6 +4,8 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     user: null as CurrentUserData | null,
     token: null as string | null,
+    iframed: false as boolean,
+    iframeValidated: false as boolean,
   }),
 
   getters: {
@@ -19,6 +21,10 @@ export const useUserStore = defineStore("user", {
     },
     setToken(token: string | null) {
       this.token = token;
+    },
+    setIsIframed(value: boolean) {
+      this.iframed = value;
+      this.iframeValidated = true;
     },
 
     clear() {

@@ -12,17 +12,17 @@
       <p class="text-[--hemo-color-text-primary]">
         {{ dinamicTitle }}
 
-        <NuxtLink v-if="!loggedIn" :to="authUrl" class="auth-button" external>
-          <span class="text-[--hemo-color-text-primary] text-base bold"
-            >Faça Login</span
-          >
+        <NuxtLink :to="authUrl" class="auth-button" external>
+          <span class="text-[--hemo-color-text-primary] text-base bold">{{
+            loggedIn ? "Sair" : "Faça Login"
+          }}</span>
         </NuxtLink>
       </p>
     </div>
 
     <!-- TODO: Integrar com o menu do app -->
     <!-- <button class="w-10 h-10 flex items-center justify-center">
-      <img src="/public/images/hamburger.svg" alt="Menu" class="w-6 h-4" />
+      <img src="/images/hamburger.svg" alt="Menu" class="w-6 h-4" />
     </button> -->
   </header>
 </template>

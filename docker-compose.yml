@@ -3,7 +3,7 @@ services:
     image: postgres:14
     container_name: my-postgres
     environment:
-      POSTGRES_DB: competitions
+      POSTGRES_DB: ask_for_help
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_SSL: "off" # Disable SSL
