@@ -3,7 +3,7 @@ import { sendPushToUser, type PushConfig } from "./pushNotificationService";
 
 const config: PushConfig = {
   hemocioneIdApiUrl: "https://hemocione-id.test",
-  notificationSecret: "s3cret",
+  backofficeSecret: "s3cret",
 };
 const content = { title: "Seu pedido foi aprovado", body: "Já está visível." };
 
@@ -18,7 +18,7 @@ describe("pushNotificationService", () => {
     vi.stubGlobal("$fetch", fetchMock);
     vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await sendPushToUser("user-1", content, { ...config, notificationSecret: "" });
+    await sendPushToUser("user-1", content, { ...config, backofficeSecret: "" });
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -33,7 +33,7 @@ describe("pushNotificationService", () => {
       "https://hemocione-id.test/notifications/push",
       {
         method: "POST",
-        headers: { "x-hemocione-notification-secret": "s3cret" },
+        headers: { "x-secret": "s3cret" },
         body: {
           userIds: ["user-1"],
           title: "Seu pedido foi aprovado",

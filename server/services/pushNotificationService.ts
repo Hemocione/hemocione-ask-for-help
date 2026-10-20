@@ -5,14 +5,14 @@ export type PushContent = { title: string; body: string };
 
 export type PushConfig = {
   hemocioneIdApiUrl: string;
-  notificationSecret: string;
+  backofficeSecret: string;
 };
 
 export function getPushConfig(): PushConfig {
   const config = useRuntimeConfig();
   return {
     hemocioneIdApiUrl: config.public.hemocioneIdApiUrl,
-    notificationSecret: config.hemocioneNotificationSecret,
+    backofficeSecret: config.backofficeSecret,
   };
 }
 
@@ -23,7 +23,7 @@ export async function sendPushToUser(
   content: PushContent,
   config: PushConfig
 ): Promise<void> {
-  if (!config.hemocioneIdApiUrl || !config.notificationSecret) {
+  if (!config.hemocioneIdApiUrl || !config.backofficeSecret) {
     console.warn("Notificação não configurada: push não enviado");
     return;
   }
@@ -31,7 +31,7 @@ export async function sendPushToUser(
   try {
     await $fetch(`${config.hemocioneIdApiUrl}/notifications/push`, {
       method: "POST",
-      headers: { "x-hemocione-notification-secret": config.notificationSecret },
+      headers: { "x-secret": config.backofficeSecret },
       body: {
         userIds: [externalId],
         title: content.title,
