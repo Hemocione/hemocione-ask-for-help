@@ -19,7 +19,7 @@ const currData = {
     title: "Seu pedido está em análise!",
     photo_url: "/images/fi-rr-search-alt.png",
     reason:
-      "Acompanhe o seu pedido na aba de configurações. Quaisquer atualizações sobre a solicitação serão notificadas via e-mail.",
+      "Acompanhe o seu pedido na aba de configurações. Quaisquer atualizações sobre a solicitação serão enviadas como notificação no app Hemocione.",
     backgroundColor: "var(--mexican-chile)",
   },
   approved: {
