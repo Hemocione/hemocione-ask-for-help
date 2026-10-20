@@ -105,8 +105,7 @@ export default defineNuxtConfig({
       requestExpirationDays: Number(process.env.REQUEST_EXPIRATION_DAYS ?? 30),
     },
     discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL ?? "",
-    oneSignalAppId: process.env.ONESIGNAL_APP_ID ?? "",
-    oneSignalRestApiKey: process.env.ONESIGNAL_REST_API_KEY ?? "",
+    hemocioneNotificationSecret: process.env.HEMOCIONE_NOTIFICATION_SECRET ?? "",
     hemocioneIdIntegrationSecret:
       process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",
     hemocioneIdJwtSecretKey:

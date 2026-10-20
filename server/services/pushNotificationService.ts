@@ -1,30 +1,18 @@
-// Push via OneSignal. O external_id é o Hemocione ID do usuário, o mesmo
-// valor que o app envia no OneSignal.login(user.id).
-const ONESIGNAL_API_URL = "https://onesignal.com/api/v1/notifications";
-
+// O envio de push fica no hemocione-id, que é dono da integração com o
+// OneSignal. Aqui só pedimos o envio, usando o Hemocione ID do usuário como
+// destinatário.
 export type PushContent = { title: string; body: string };
 
-export type OneSignalCredentials = { appId: string; restApiKey: string };
+export type PushConfig = {
+  hemocioneIdApiUrl: string;
+  notificationSecret: string;
+};
 
-export function getOneSignalCredentials(): OneSignalCredentials {
+export function getPushConfig(): PushConfig {
   const config = useRuntimeConfig();
   return {
-    appId: config.oneSignalAppId,
-    restApiKey: config.oneSignalRestApiKey,
-  };
-}
-
-export function buildOneSignalPayload(
-  appId: string,
-  externalId: string,
-  content: PushContent
-) {
-  return {
-    app_id: appId,
-    target_channel: "push",
-    include_aliases: { external_id: [externalId] },
-    headings: { en: content.title, pt: content.title },
-    contents: { en: content.body, pt: content.body },
+    hemocioneIdApiUrl: config.public.hemocioneIdApiUrl,
+    notificationSecret: config.hemocioneNotificationSecret,
   };
 }
 
@@ -33,20 +21,24 @@ export function buildOneSignalPayload(
 export async function sendPushToUser(
   externalId: string,
   content: PushContent,
-  credentials: OneSignalCredentials
+  config: PushConfig
 ): Promise<void> {
-  if (!credentials.appId || !credentials.restApiKey) {
-    console.warn("OneSignal não configurado: push não enviado");
+  if (!config.hemocioneIdApiUrl || !config.notificationSecret) {
+    console.warn("Notificação não configurada: push não enviado");
     return;
   }
 
   try {
-    await $fetch(ONESIGNAL_API_URL, {
+    await $fetch(`${config.hemocioneIdApiUrl}/notifications/push`, {
       method: "POST",
-      headers: { Authorization: `Key ${credentials.restApiKey}` },
-      body: buildOneSignalPayload(credentials.appId, externalId, content),
+      headers: { "x-hemocione-notification-secret": config.notificationSecret },
+      body: {
+        userIds: [externalId],
+        title: content.title,
+        body: content.body,
+      },
     });
   } catch (error) {
-    console.error("Falha ao enviar push pelo OneSignal", error);
+    console.error("Falha ao enviar push pelo hemocione-id", error);
   }
 }

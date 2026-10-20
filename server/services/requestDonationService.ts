@@ -1,7 +1,7 @@
 import { dbClient } from "~/prisma";
 import type { HemocioneUserAuthTokenData } from "~/server/services/auth";
 import {
-  getOneSignalCredentials,
+  getPushConfig,
   sendPushToUser,
 } from "~/server/services/pushNotificationService";
 import { getRequestById } from "~/server/services/requestService";
@@ -124,7 +124,7 @@ export async function createRequestDonation({
         title: "Nova doação registrada",
         body: `Alguém registrou doação para o pedido de ${request.assisted.name}.`,
       },
-      getOneSignalCredentials()
+      getPushConfig()
     );
   }
 

@@ -1,58 +1,53 @@
 import { describe, test, expect, vi, afterEach } from "vitest";
-import {
-  buildOneSignalPayload,
-  sendPushToUser,
-} from "./pushNotificationService";
+import { sendPushToUser, type PushConfig } from "./pushNotificationService";
 
-const credentials = { appId: "app-123", restApiKey: "key-abc" };
+const config: PushConfig = {
+  hemocioneIdApiUrl: "https://hemocione-id.test",
+  notificationSecret: "s3cret",
+};
 const content = { title: "Seu pedido foi aprovado", body: "Já está visível." };
 
 describe("pushNotificationService", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
-  test("buildOneSignalPayload usa o Hemocione ID como external_id", () => {
-    const payload = buildOneSignalPayload(credentials.appId, "user-1", content);
-
-    expect(payload.app_id).toBe("app-123");
-    expect(payload.target_channel).toBe("push");
-    expect(payload.include_aliases).toEqual({ external_id: ["user-1"] });
-    expect(payload.headings.pt).toBe("Seu pedido foi aprovado");
-    expect(payload.contents.pt).toBe("Já está visível.");
-  });
-
-  test("sem credenciais, não chama a API", async () => {
+  test("sem segredo configurado, não chama o hemocione-id", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("$fetch", fetchMock);
+    vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await sendPushToUser("user-1", content, { appId: "", restApiKey: "" });
+    await sendPushToUser("user-1", content, { ...config, notificationSecret: "" });
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  test("com credenciais, envia para a API do OneSignal com a chave", async () => {
+  test("envia para o endpoint interno com o segredo e o Hemocione ID", async () => {
     const fetchMock = vi.fn().mockResolvedValue({});
     vi.stubGlobal("$fetch", fetchMock);
 
-    await sendPushToUser("user-1", content, credentials);
+    await sendPushToUser("user-1", content, config);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://onesignal.com/api/v1/notifications",
-      expect.objectContaining({
+      "https://hemocione-id.test/notifications/push",
+      {
         method: "POST",
-        headers: { Authorization: "Key key-abc" },
-      })
+        headers: { "x-hemocione-notification-secret": "s3cret" },
+        body: {
+          userIds: ["user-1"],
+          title: "Seu pedido foi aprovado",
+          body: "Já está visível.",
+        },
+      }
     );
   });
 
-  test("falha na API não lança erro para quem disparou", async () => {
+  test("falha no envio não lança erro para quem disparou", async () => {
     vi.stubGlobal("$fetch", vi.fn().mockRejectedValue(new Error("offline")));
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    await expect(
-      sendPushToUser("user-1", content, credentials)
-    ).resolves.toBeUndefined();
+    await expect(sendPushToUser("user-1", content, config)).resolves.toBeUndefined();
     expect(errorSpy).toHaveBeenCalled();
   });
 });

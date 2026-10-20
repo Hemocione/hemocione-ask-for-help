@@ -1,7 +1,7 @@
 import { assertSecretAuth } from "~/server/services/auth";
 import { reviewRequest } from "~/server/services/requestService";
 import {
-  getOneSignalCredentials,
+  getPushConfig,
   sendPushToUser,
   type PushContent,
 } from "~/server/services/pushNotificationService";
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
       ? REVIEW_PUSH[review_status]
       : undefined;
   if (push) {
-    await sendPushToUser(updated.requester_id, push, getOneSignalCredentials());
+    await sendPushToUser(updated.requester_id, push, getPushConfig());
   }
 
   return { success: true };
