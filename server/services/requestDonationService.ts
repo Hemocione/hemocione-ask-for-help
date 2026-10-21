@@ -81,7 +81,7 @@ export async function createRequestDonation({
       headers: hemocioneIdHeaders(token),
       body: {
         donationDate: todayInSaoPaulo(),
-        label: `Doação via Ajuda Aí - local ${request.local_name} & pedido #${request.id}`,
+        label: `Doação via Ajuda Aí - local ${request.local_name} e pedido #${request.id}`,
       },
     }
   ).catch((error) => {

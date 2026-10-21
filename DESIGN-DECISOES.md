@@ -51,7 +51,9 @@ O vínculo entre doador e solicitante já existe via `request_id` → `Request.r
    - Tabela doador → receptor: O- para todos; O+ para O+, A+, B+, AB+; A- para A+, A-, AB+, AB-; A+ para A+, AB+; B- para B+, B-, AB+, AB-; B+ para B+, AB+; AB- para AB+, AB-; AB+ só para AB+.
    - Sem tipo sanguíneo cadastrado: bloqueia com mensagem pedindo para completar o cadastro no Hemocione ID.
 3. O servidor chama `POST /donations` no Hemocione ID, com o Bearer do próprio usuário, `donationDate` de hoje e o `label`:
-   `Doação via Ajuda Aí - local {local_name} & pedido #{id}`
+   `Doação via Ajuda Aí - local {local_name} e pedido #{id}`
+
+   O `&` foi trocado por `e`, porque o `hemocione-id` escapa `&` para `&amp;` (middleware `xssEscape`).
    Sem `bloodBanksLocationId`, porque o `ask-for-help` não identifica o hemocentro com segurança.
 4. Se o Hemocione ID responder 409 (intervalo mínimo entre doações não respeitado), mostra a mensagem e não cria registro.
 5. Se der certo, grava `RequestDonation` com o `donation_id` retornado e `status = Declared`.
