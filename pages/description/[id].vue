@@ -73,6 +73,8 @@
         />
         Compartilhar este pedido
       </Button>
+      <!-- Renderizado só no cliente: o estado depende do login, e o SSR não o conhece. -->
+      <ClientOnly>
       <p v-if="donationBlockedReason" class="text-xs text-[--black-80]">
         {{ donationBlockedReason }}
       </p>
@@ -99,6 +101,7 @@
         <img src="/images/plus_donation_gray.svg" alt="Plus_donation" class="plus_donation" width="20" height="20" />
         Eu doei
       </Button>
+      </ClientOnly>
     </div>
   </div>
   <!-- TODO: adicionar loading -->
