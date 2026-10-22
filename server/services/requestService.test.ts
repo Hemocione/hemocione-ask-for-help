@@ -1,4 +1,4 @@
-import { describe, test, expect, afterAll } from "vitest";
+import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import { dbClient } from "~/prisma";
 import {
   createRequest,
@@ -18,6 +18,13 @@ function withEnv<T>(name: string, value: string | undefined, fn: () => Promise<T
 }
 
 describe("requestService", () => {
+  // Começa com as tabelas vazias: alguns testes listam a primeira página e
+  // esperam achar o pedido que acabaram de criar.
+  beforeAll(async () => {
+    await dbClient.request.deleteMany();
+    await dbClient.assisted.deleteMany();
+  });
+
   afterAll(async () => {
     await dbClient.request.deleteMany();
     await dbClient.assisted.deleteMany();
