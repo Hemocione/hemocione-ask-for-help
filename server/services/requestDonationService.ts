@@ -122,7 +122,8 @@ export async function createRequestDonation({
       request.requester_id,
       {
         title: "Nova doação registrada",
-        body: `Alguém registrou doação para o pedido de ${request.assisted.name}.`,
+        // Sem o nome do assistido: a mensagem aparece na tela bloqueada.
+        body: "Alguém registrou uma doação para um dos seus pedidos.",
       },
       getPushConfig()
     );
