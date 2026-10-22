@@ -1,5 +1,9 @@
 import { dbClient } from "~/prisma";
 import type { HemocioneUserAuthTokenData } from "~/server/services/auth";
+import {
+  getPushConfig,
+  sendPushToUser,
+} from "~/server/services/pushNotificationService";
 import { getRequestById } from "~/server/services/requestService";
 import { canDonateTo } from "~/utils/donationCompatibility";
 
@@ -93,8 +97,9 @@ export async function createRequestDonation({
     });
   });
 
+  let donation;
   try {
-    return await dbClient.requestDonation.create({
+    donation = await dbClient.requestDonation.create({
       data: {
         request_id: requestId,
         donor_id: user.id,
@@ -110,6 +115,21 @@ export async function createRequestDonation({
     }).catch(() => undefined);
     throw error;
   }
+
+  // Quem doou não precisa ser avisado da própria doação.
+  if (request.requester_id !== user.id) {
+    await sendPushToUser(
+      request.requester_id,
+      {
+        title: "Nova doação registrada",
+        // Sem o nome do assistido: a mensagem aparece na tela bloqueada.
+        body: "Alguém registrou uma doação para um dos seus pedidos.",
+      },
+      getPushConfig()
+    );
+  }
+
+  return donation;
 }
 
 export async function deleteRequestDonation({

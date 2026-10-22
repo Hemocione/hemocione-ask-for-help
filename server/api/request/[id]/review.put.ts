@@ -1,6 +1,22 @@
 import { assertSecretAuth } from "~/server/services/auth";
 import { reviewRequest } from "~/server/services/requestService";
+import {
+  getPushConfig,
+  sendPushToUser,
+  type PushContent,
+} from "~/server/services/pushNotificationService";
 import z from "zod";
+
+const REVIEW_PUSH: Partial<Record<"Approved" | "Declined", PushContent>> = {
+  Approved: {
+    title: "Seu pedido foi aprovado",
+    body: "Ele já está visível na tela inicial.",
+  },
+  Declined: {
+    title: "Seu pedido não foi aprovado",
+    body: "Abra o app para ver os detalhes.",
+  },
+};
 
 const ReviewRequestBodySchema = z
   .object({
@@ -28,10 +44,18 @@ export default defineEventHandler(async (event) => {
     event,
     ReviewRequestParamsSchema.parse
   );
-  await reviewRequest(id, {
+  const updated = await reviewRequest(id, {
     review_status,
     active_campagin,
   });
+
+  const push =
+    review_status === "Approved" || review_status === "Declined"
+      ? REVIEW_PUSH[review_status]
+      : undefined;
+  if (push) {
+    await sendPushToUser(updated.requester_id, push, getPushConfig());
+  }
 
   return { success: true };
 });
