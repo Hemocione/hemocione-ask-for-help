@@ -167,19 +167,32 @@ const donationBlockedReason = computed(() => {
 
 const loginToDonate = () => redirectToID(route.fullPath);
 
+// O servidor é a fonte da verdade: lê o estado real em vez de deduzir pelo
+// erro. Assim um 409 de "já registrou" também atualiza o botão.
+const loadDonationStatus = async () => {
+  if (!loggedIn.value) return;
+  try {
+    const status = (await fetchWithAuth(`/api/request/${id}/donation`)) as
+      | { registered: boolean }
+      | null;
+    donationRegistered.value = Boolean(status?.registered);
+  } catch (error) {
+    donationError.value = "Não foi possível verificar sua doação. Tente de novo.";
+  }
+};
+
 const runDonationAction = async (
   action: () => Promise<unknown>,
-  fallbackError: string,
-  registered: boolean
+  fallbackError: string
 ) => {
   donationLoading.value = true;
   donationError.value = "";
   try {
     await action();
-    donationRegistered.value = registered;
   } catch (error: any) {
     donationError.value = error?.data?.statusMessage ?? fallbackError;
   } finally {
+    await loadDonationStatus();
     donationLoading.value = false;
   }
 };
@@ -187,24 +200,16 @@ const runDonationAction = async (
 const registerDonation = () =>
   runDonationAction(
     () => fetchWithAuth(`/api/request/${id}/donation`, { method: "POST" }),
-    "Não foi possível registrar a doação.",
-    true
+    "Não foi possível registrar a doação."
   );
 
 const cancelDonation = () =>
   runDonationAction(
     () => fetchWithAuth(`/api/request/${id}/donation`, { method: "DELETE" }),
-    "Não foi possível cancelar a doação.",
-    false
+    "Não foi possível cancelar a doação."
   );
 
-onMounted(async () => {
-  if (!loggedIn.value) return;
-  const status = (await fetchWithAuth(`/api/request/${id}/donation`)) as
-    | { registered: boolean }
-    | null;
-  donationRegistered.value = Boolean(status?.registered);
-});
+onMounted(loadDonationStatus);
 
 const bloodCompatibilities = request.value
   ? bloodReceiveCompatibilities[request.value.assisted.blood_type]
