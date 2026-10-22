@@ -25,7 +25,7 @@ model Request {
   assisted        Assisted          @relation(fields: [assisted_id], references: [id], onDelete: Cascade)
   created_at      DateTime          @default(now())
   updated_at      DateTime          @updatedAt
-  RequestDonators RequestDonators[]
+  RequestDonation RequestDonation[]
 
   @@index([local_latitude, local_longitude])
 }
@@ -41,17 +41,25 @@ model Assisted {
   Request    Request[]
 }
 
-model RequestDonators {
-  id         Int @id @default(autoincrement())
-  request_id Int
-  donator_id Int @unique
+model RequestDonation {
+  id                  Int                     @id @default(autoincrement())
+  request_id          Int
+  donor_id            String
+  donation_id         Int                     @unique
+  status              RequestDonationStatus   @default(Declared)
+  verification_method String?
 
   request Request @relation(fields: [request_id], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  @@unique([request_id, donator_id])
+  @@unique([request_id, donor_id])
+}
+
+enum RequestDonationStatus {
+  Declared
+  Verified
 }
 
 enum RequestStatus {

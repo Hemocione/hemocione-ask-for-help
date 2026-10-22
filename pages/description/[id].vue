@@ -73,11 +73,35 @@
         />
         Compartilhar este pedido
       </Button>
-      <!-- TODO: adicionar quando implementar a lógica de registrar doação -->
-      <!-- <Button @click="registerDonation">
-				<img src="/images/plus_donation_gray.svg" alt="Plus_donation" class="plus_donation" width="20" height="20" />
-				Registrar doação
-			</Button> -->
+      <!-- Renderizado só no cliente: o estado depende do login, e o SSR não o conhece. -->
+      <ClientOnly>
+      <p v-if="donationBlockedReason" class="text-xs text-[--black-80]">
+        {{ donationBlockedReason }}
+      </p>
+      <p v-if="donationError" class="text-xs text-red-600">
+        {{ donationError }}
+      </p>
+
+      <Button v-if="!loggedIn" @click="loginToDonate">
+        Entrar para registrar doação
+      </Button>
+      <Button
+        v-else-if="donationRegistered"
+        :disabled="donationLoading"
+        @click="cancelDonation"
+      >
+        Cancelar registro de doação
+      </Button>
+      <Button
+        v-else
+        :disabled="!canRegister || donationLoading"
+        :class="{ 'opacity-50 cursor-not-allowed': !canRegister }"
+        @click="registerDonation"
+      >
+        <img src="/images/plus_donation_gray.svg" alt="Plus_donation" class="plus_donation" width="20" height="20" />
+        Eu doei
+      </Button>
+      </ClientOnly>
     </div>
   </div>
   <!-- TODO: adicionar loading -->
@@ -91,6 +115,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { redirectToID } from "~/middleware/auth";
+import { useUserStore } from "~/stores/user";
 import type { RequestWithAssisted } from "~/server/services/requestService";
 import {
   bloodReceiveCompatibilities,
@@ -117,9 +143,73 @@ const shareDonation = () => {
   posthog?.capture("click_share_request");
   shareDrawerVisible.value = true;
 };
-const registerDonation = () => {
-  console.log("Button clicked");
+const userStore = useUserStore();
+const user = computed(() => userStore.user);
+const loggedIn = computed(() => userStore.loggedIn);
+
+const donationRegistered = ref(false);
+const donationLoading = ref(false);
+const donationError = ref("");
+
+const canRegister = computed(() =>
+  request.value
+    ? canDonateTo(user.value?.bloodType, request.value.assisted.blood_type)
+    : false
+);
+
+const donationBlockedReason = computed(() => {
+  if (!loggedIn.value || donationRegistered.value || canRegister.value) return "";
+  if (!user.value?.bloodType) {
+    return "Complete seu tipo sanguíneo no Hemocione ID para registrar doação.";
+  }
+  return "Seu tipo sanguíneo não é compatível com este pedido.";
+});
+
+const loginToDonate = () => redirectToID(route.fullPath);
+
+// O servidor é a fonte da verdade: lê o estado real em vez de deduzir pelo
+// erro. Assim um 409 de "já registrou" também atualiza o botão.
+const loadDonationStatus = async () => {
+  if (!loggedIn.value) return;
+  try {
+    const status = (await fetchWithAuth(`/api/request/${id}/donation`)) as
+      | { registered: boolean }
+      | null;
+    donationRegistered.value = Boolean(status?.registered);
+  } catch (error) {
+    donationError.value = "Não foi possível verificar sua doação. Tente de novo.";
+  }
 };
+
+const runDonationAction = async (
+  action: () => Promise<unknown>,
+  fallbackError: string
+) => {
+  donationLoading.value = true;
+  donationError.value = "";
+  try {
+    await action();
+  } catch (error: any) {
+    donationError.value = error?.data?.statusMessage ?? fallbackError;
+  } finally {
+    await loadDonationStatus();
+    donationLoading.value = false;
+  }
+};
+
+const registerDonation = () =>
+  runDonationAction(
+    () => fetchWithAuth(`/api/request/${id}/donation`, { method: "POST" }),
+    "Não foi possível registrar a doação."
+  );
+
+const cancelDonation = () =>
+  runDonationAction(
+    () => fetchWithAuth(`/api/request/${id}/donation`, { method: "DELETE" }),
+    "Não foi possível cancelar a doação."
+  );
+
+onMounted(loadDonationStatus);
 
 const bloodCompatibilities = request.value
   ? bloodReceiveCompatibilities[request.value.assisted.blood_type]

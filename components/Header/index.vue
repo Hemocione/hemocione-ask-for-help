@@ -20,10 +20,42 @@
       </p>
     </div>
 
-    <!-- TODO: Integrar com o menu do app -->
-    <!-- <button class="w-10 h-10 flex items-center justify-center">
-      <img src="/images/hamburger.svg" alt="Menu" class="w-6 h-4" />
-    </button> -->
+    <button
+      class="w-10 h-10 flex items-center justify-center"
+      aria-label="Abrir menu"
+      @click="menuOpen = true"
+    >
+      <img src="/images/hamburger.svg" alt="" class="w-6 h-4" />
+    </button>
+
+    <ElDrawer v-model="menuOpen" direction="rtl" size="70%" :with-header="false">
+      <nav class="flex flex-col gap-4 text-lg">
+        <NuxtLink
+          v-for="item in menuItems"
+          :key="item.label"
+          :to="item.href"
+          class="py-2"
+          @click="menuOpen = false"
+        >
+          {{ item.label }}
+        </NuxtLink>
+
+        <a
+          v-for="item in externalMenuItems"
+          :key="item.label"
+          :href="item.href"
+          target="_blank"
+          rel="noopener"
+          class="py-2"
+        >
+          {{ item.label }}
+        </a>
+
+        <NuxtLink v-if="loggedIn" :to="authUrl" external class="py-2">
+          Sair
+        </NuxtLink>
+      </nav>
+    </ElDrawer>
   </header>
 </template>
 
@@ -35,6 +67,18 @@ const userStore = useUserStore();
 const config = useRuntimeConfig();
 
 const { hemocioneIdUrl, siteUrl } = config.public;
+
+const menuOpen = ref(false);
+
+const menuItems = [{ label: "Início", href: "/" }];
+
+const externalMenuItems = [
+  { label: "Eventos", href: "https://eventos.hemocione.com.br" },
+  { label: "Competições", href: "https://copa.hemocione.com.br" },
+  { label: "Onde doar", href: "https://ondedoar.hemocione.com.br" },
+  { label: "Loja", href: "https://loja.hemocione.com.br" },
+  { label: "Apoie", href: "https://apoie.hemocione.com.br" },
+];
 
 const user = computed(() => userStore.user);
 const imageURL = computed(
