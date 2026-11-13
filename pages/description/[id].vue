@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { RequestWithAssisted } from "~/server/services/requestService";
+import type { PublicRequestView } from "~/server/services/requestService";
 import {
   bloodReceiveCompatibilities,
   bloodTypes,
@@ -100,7 +100,7 @@ import {
 
 const route = useRoute();
 const router = useRouter();
-const request = ref<RequestWithAssisted | null>(null);
+const request = ref<PublicRequestView | null>(null);
 const id = route.params.id;
 
 const config = useRuntimeConfig();

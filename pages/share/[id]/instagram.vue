@@ -7,8 +7,8 @@ const route = useRoute();
 // const router = useRouter();
 
 const id = route.params.id as string;
-import type { RequestWithAssisted } from "~/server/services/requestService";
-const request = ref<RequestWithAssisted | null>(null);
+import type { PublicRequestView } from "~/server/services/requestService";
+const request = ref<PublicRequestView | null>(null);
 
 request.value = await $fetch(`/api/request/${id}`, {
   method: "GET",

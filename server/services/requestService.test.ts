@@ -1,4 +1,4 @@
-import { describe, test, expect, afterAll } from "vitest";
+import { describe, test, expect, afterAll, vi } from "vitest";
 import { dbClient } from "~/prisma";
 import {
   createRequest,
@@ -7,6 +7,9 @@ import {
   reviewRequest,
   isAutoApproveEnabled,
   getRequestExpirationDays,
+  listPublicRequests,
+  getPublicRequestById,
+  listOndeDoarRequests,
 } from "./requestService";
 
 function withEnv<T>(name: string, value: string | undefined, fn: () => Promise<T>) {
@@ -436,6 +439,175 @@ describe("requestService", () => {
 
       const found = await getRequestById(created.id);
       expect(found).toBeNull();
+    });
+  });
+
+  describe("respostas públicas não expõem CPF nem requester_id", () => {
+    const CPF = "00000000272";
+    const REQUESTER = "requester-cpf-leak-check";
+
+    function findKeys(value: unknown, keys: string[], path = "$"): string[] {
+      if (Array.isArray(value)) {
+        return value.flatMap((v, i) => findKeys(v, keys, `${path}[${i}]`));
+      }
+      if (value && typeof value === "object" && !(value instanceof Date)) {
+        return Object.entries(value).flatMap(([k, v]) => [
+          ...(keys.includes(k) ? [`${path}.${k}`] : []),
+          ...findKeys(v, keys, `${path}.${k}`),
+        ]);
+      }
+      return [];
+    }
+
+    async function createApproved() {
+      await dbClient.request.updateMany({
+        where: { assisted: { cpf: CPF } },
+        data: { active_campagin: false },
+      });
+      const created = await createRequest(
+        {
+          local_name: "Hemocentro Vazamento",
+          address: "Rua Vazamento, 1",
+          cpf: CPF,
+          name: "Paciente Vazamento",
+          blood_type: "B_NEG",
+          photo_url: "https://example.com/vazamento.jpg",
+          local_latitude: -10.5,
+          local_longitude: -40.5,
+        },
+        REQUESTER,
+      );
+      await dbClient.request.update({
+        where: { id: created.id },
+        data: { review_status: "Approved", active_campagin: true },
+      });
+      return created;
+    }
+
+    function expectNoSecrets(value: unknown) {
+      expect(findKeys(value, ["cpf", "requester_id", "assisted_id"])).toEqual([]);
+      const json = JSON.stringify(value);
+      expect(json).not.toContain(CPF);
+      expect(json).not.toContain(REQUESTER);
+    }
+
+    test("listPublicRequests (sem e com filtro de local)", async () => {
+      const created = await createApproved();
+
+      const plain = await listPublicRequests({ per_page: 1000 });
+      const found = plain.find((r) => r.id === created.id);
+      expect(found?.assisted).toEqual({
+        name: "Paciente Vazamento",
+        blood_type: "B-",
+        photo_url: "https://example.com/vazamento.jpg",
+      });
+      expect(found?.local_name).toBe("Hemocentro Vazamento");
+      expect(found?.address).toBe("Rua Vazamento, 1");
+      expectNoSecrets(plain);
+
+      const near = await listPublicRequests({
+        query: { latitude: -10.5, longitude: -40.5, radiusKm: 5 },
+      });
+      expect(near.map((r) => r.id)).toContain(created.id);
+      expectNoSecrets(near);
+    });
+
+    test("getPublicRequestById", async () => {
+      const created = await createApproved();
+      const found = await getPublicRequestById(created.id);
+
+      expect(found?.assisted.name).toBe("Paciente Vazamento");
+      expectNoSecrets(found);
+    });
+
+    test("listOndeDoarRequests não traz o paciente", async () => {
+      const created = await createApproved();
+      const all = await listOndeDoarRequests({ per_page: 1000 });
+
+      expect(all.map((r) => r.id)).toContain(created.id);
+      expectNoSecrets(all);
+      expect(findKeys(all, ["assisted"])).toEqual([]);
+    });
+
+    describe("handlers reais das rotas", () => {
+      async function loadHandler(path: string) {
+        vi.resetModules();
+        vi.stubGlobal("defineEventHandler", (fn: unknown) => fn);
+        vi.stubGlobal("useRuntimeConfig", () => ({ secret: "test-secret" }));
+        vi.stubGlobal("createError", (opts: { statusCode?: number }) =>
+          Object.assign(new Error("http error"), opts),
+        );
+        vi.stubGlobal(
+          "getValidatedQuery",
+          async (event: { query: unknown }, parse: (v: unknown) => unknown) =>
+            parse(event.query),
+        );
+        vi.stubGlobal(
+          "getValidatedRouterParams",
+          async (event: { params: unknown }, parse: (v: unknown) => unknown) =>
+            parse(event.params),
+        );
+        vi.stubGlobal(
+          "readValidatedBody",
+          async (event: { body: unknown }, parse: (v: unknown) => unknown) =>
+            parse(event.body),
+        );
+        return (await import(path)).default as (event: unknown) => Promise<unknown>;
+      }
+
+      afterAll(() => {
+        vi.unstubAllGlobals();
+      });
+
+      test("GET /api/requests", async () => {
+        const created = await createApproved();
+        const handler = await loadHandler("~/server/api/requests/index.get");
+        const result = (await handler({
+          query: { per_page: "1000" },
+          headers: new Headers(),
+        })) as { id: number }[];
+
+        expect(result.map((r) => r.id)).toContain(created.id);
+        expectNoSecrets(result);
+      });
+
+      test("GET /api/request/:id", async () => {
+        const created = await createApproved();
+        const handler = await loadHandler("~/server/api/request/[id]/index.get");
+        const result = await handler({
+          params: { id: String(created.id) },
+          headers: new Headers(),
+        });
+
+        expect(result).toMatchObject({ id: created.id });
+        expectNoSecrets(result);
+      });
+
+      test("POST /api/points/onde-doar/sync exige o secret e não traz o paciente", async () => {
+        const created = await createApproved();
+        const handler = await loadHandler("~/server/api/points/onde-doar/sync.post");
+
+        await expect(
+          handler({ body: {}, headers: new Headers() }),
+        ).rejects.toMatchObject({ statusCode: 401 });
+
+        const result = (await handler({
+          body: { per_page: "1000" },
+          headers: new Headers({ "x-secret": "test-secret" }),
+        })) as { id: number }[];
+
+        expect(result.map((r) => r.id)).toContain(created.id);
+        expectNoSecrets(result);
+        expect(findKeys(result, ["assisted"])).toEqual([]);
+      });
+
+      test("GET /api/requests/pending continua exigindo o secret", async () => {
+        const handler = await loadHandler("~/server/api/requests/pending.get");
+
+        await expect(
+          handler({ headers: new Headers() }),
+        ).rejects.toMatchObject({ statusCode: 401 });
+      });
     });
   });
 });
