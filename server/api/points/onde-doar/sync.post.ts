@@ -1,5 +1,5 @@
 import z from "zod";
-import { paginateListRequestOndeDoar } from "~/server/services/requestService";
+import { listOndeDoarRequests } from "~/server/services/requestService";
 import { assertSecretAuth } from "~/server/services/auth";
 
 const ListRequestSchema = z.object({
@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
     active
   };
 
-  return await paginateListRequestOndeDoar({
+  return await listOndeDoarRequests({
     page,
     per_page,
     query,

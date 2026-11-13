@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { debounce } from "lodash-es";
-import type { RequestWithAssisted } from "~/server/services/requestService";
+import type { PublicRequestView } from "~/server/services/requestService";
 
 const router = useRouter();
 const posthog = usePosthog();
@@ -68,7 +68,7 @@ const redirect = (path: string) => {
   router.push(`/${path}`);
 };
 
-const requests = ref<RequestWithAssisted[]>([]);
+const requests = ref<PublicRequestView[]>([]);
 const page = ref(1);
 const hasMore = ref(true);
 const sentinel = ref<HTMLDivElement | null>(null);
@@ -134,7 +134,7 @@ const fetchRequests = async () => {
     loadingStartTime = Date.now();
     const params = { ...query.value, page: page.value, per_page: LIMIT_PAGE };
 
-    const fetchedData: RequestWithAssisted[] = await $fetch("/api/requests", {
+    const fetchedData: PublicRequestView[] = await $fetch("/api/requests", {
       method: "GET",
       params,
     });

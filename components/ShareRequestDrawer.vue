@@ -49,11 +49,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import { useUserStore } from "~/stores/user";
-import type { RequestWithAssisted } from "~/server/services/requestService";
+import type { PublicRequestView } from "~/server/services/requestService";
 
 const props = defineProps<{
   modelValue: boolean;
-  request: RequestWithAssisted | null;
+  request: PublicRequestView | null;
 }>();
 
 const emit = defineEmits<{

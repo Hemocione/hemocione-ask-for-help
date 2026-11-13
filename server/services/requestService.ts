@@ -6,6 +6,12 @@ import {
   BloodTypeValues,
   dbTypeToBloodType,
 } from "~/utils/bloodTypeTransformation";
+import {
+  toOndeDoarRequest,
+  toPublicRequest,
+  type OndeDoarRequest,
+  type PublicRequest,
+} from "./publicRequest";
 
 type CreateRequest = {
   local_name: string;
@@ -276,11 +282,13 @@ export async function paginateListRequest({
   return withDistance.slice(offset, offset + per_page);
 }
 
-export async function paginateListRequestOndeDoar({
+// Sync do ondedoar (POST /api/points/onde-doar/sync). Não carrega o Assisted:
+// o ondedoar só precisa do local de doação e do estado do pedido.
+export async function listOndeDoarRequests({
   page = 1,
   per_page = 10,
   query = {},
-}: PaginateRequest): Promise<RequestWithAssisted[]> {
+}: PaginateRequest): Promise<OndeDoarRequest[]> {
   const requests = await dbClient.request.findMany({
     where: {
       active_campagin: query.active,
@@ -289,15 +297,12 @@ export async function paginateListRequestOndeDoar({
     },
     take: per_page,
     skip: (page - 1) * per_page,
-    include: {
-      assisted: true,
-    },
     orderBy: {
       id: "asc",
     },
   });
 
-  return requests.map(hydrateRequest);
+  return requests.map(toOndeDoarRequest);
 }
 
 export const getRequestById = async (id: number) => {
@@ -316,6 +321,24 @@ export const getRequestById = async (id: number) => {
 
   return hydrateRequest(request);
 };
+
+export type PublicRequestView = PublicRequest<BloodTypeKeys>;
+
+// Rotas sem login (GET /api/requests e GET /api/request/:id) usam só estas
+// duas funções: elas passam pela allowlist e nunca devolvem CPF nem requester_id.
+export async function listPublicRequests(
+  args: PaginateRequest,
+): Promise<PublicRequestView[]> {
+  const requests = await paginateListRequest(args);
+  return requests.map(toPublicRequest);
+}
+
+export async function getPublicRequestById(
+  id: number,
+): Promise<PublicRequestView | null> {
+  const request = await getRequestById(id);
+  return request ? toPublicRequest(request) : null;
+}
 
 export async function getAllPendingRequests(): Promise<RequestWithAssisted[]> {
   const pendingStatus = "Pending" as RequestStatus;

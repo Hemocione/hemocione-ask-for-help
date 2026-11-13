@@ -1,5 +1,5 @@
 import z from "zod";
-import { paginateListRequest } from "~/server/services/requestService";
+import { listPublicRequests } from "~/server/services/requestService";
 import { bloodTypes } from "~/types/blood";
 import {
   bloodTypeToDbType,
@@ -76,7 +76,7 @@ export default defineEventHandler(async (event) => {
     query.radiusKm = radiusKm ?? 10;
   }
 
-  return await paginateListRequest({
+  return await listPublicRequests({
     page,
     per_page,
     query,
